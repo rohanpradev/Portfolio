@@ -2,8 +2,9 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField } from "astro/config";
 
-const siteUrl = process.env.PUBLIC_SITE_URL ?? "https://yourusername.github.io";
-const basePath = process.env.PUBLIC_BASE_PATH?.trim();
+const configuredSiteUrl = process.env.PUBLIC_SITE_URL?.trim();
+const siteUrl = configuredSiteUrl || "https://yourusername.github.io";
+const basePath = process.env.PUBLIC_BASE_PATH?.trim() || undefined;
 
 export default defineConfig({
 	site: siteUrl,

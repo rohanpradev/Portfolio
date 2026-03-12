@@ -1,5 +1,5 @@
-const siteUrl =
-	import.meta.env.PUBLIC_SITE_URL ?? "https://yourusername.github.io";
+const configuredSiteUrl = import.meta.env.PUBLIC_SITE_URL?.trim();
+const siteUrl = configuredSiteUrl || "https://yourusername.github.io";
 const basePath =
 	import.meta.env.BASE_URL === "/"
 		? ""

@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -13,16 +13,16 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL != '' && vars.PUBLIC_SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
+      PUBLIC_BASE_PATH: ${{ vars.PUBLIC_BASE_PATH != '' && vars.PUBLIC_BASE_PATH || (github.event.repository.name == format('{0}.github.io', github.repository_owner) && '' || format('/{0}', github.event.repository.name)) }}
+      PUBLIC_RESUME_URL: ${{ vars.PUBLIC_RESUME_URL }}
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v5
 
       - name: Install, build, and upload your site
         uses: withastro/action@v5
-        env:
-          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
-          PUBLIC_BASE_PATH: ${{ vars.PUBLIC_BASE_PATH }}
-          PUBLIC_RESUME_URL: ${{ vars.PUBLIC_RESUME_URL }}
 
   deploy:
     needs: build
