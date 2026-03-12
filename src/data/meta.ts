@@ -1,5 +1,28 @@
-const configuredSiteUrl = import.meta.env.PUBLIC_SITE_URL?.trim();
-const siteUrl = configuredSiteUrl || "https://yourusername.github.io";
+function stripOuterQuotes(value: string | undefined) {
+	if (!value) {
+		return "";
+	}
+
+	return value.trim().replace(/^(['"])(.*)\1$/, "$2");
+}
+
+function resolveSiteUrl() {
+	const raw = stripOuterQuotes(import.meta.env.PUBLIC_SITE_URL);
+
+	if (!raw) {
+		return "https://yourusername.github.io";
+	}
+
+	const candidate = /^[a-z]+:\/\//i.test(raw) ? raw : `https://${raw}`;
+
+	try {
+		return new URL(candidate).toString().replace(/\/$/, "");
+	} catch {
+		return "https://yourusername.github.io";
+	}
+}
+
+const siteUrl = resolveSiteUrl();
 const basePath =
 	import.meta.env.BASE_URL === "/"
 		? ""
