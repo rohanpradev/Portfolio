@@ -1,5 +1,5 @@
 ---
-import { site } from "../data/meta";
+import { site, withBasePath } from "../data/meta";
 ---
 
 <footer class="pt-10 sm:pt-14">
@@ -28,7 +28,7 @@ import { site } from "../data/meta";
 
     <div class="flex flex-col gap-3 px-2 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
       <p>&copy; {new Date().getFullYear()} {site.author}. All rights reserved.</p>
-      <a href="/resume" class="font-medium text-slate-700 hover:text-slate-900">Resume and contact details</a>
+      <a href={withBasePath("/resume")} class="font-medium text-slate-700 hover:text-slate-900">Resume and contact details</a>
     </div>
   </div>
 </footer>

@@ -1,10 +1,11 @@
 ---
-import { existsSync } from "node:fs";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import { site } from "../data/meta";
+import { site, withBasePath } from "../data/meta";
 
-const resumeAvailable = existsSync(new URL("../../public/resume.pdf", import.meta.url));
+const configuredResumeUrl = import.meta.env.PUBLIC_RESUME_URL?.trim() ?? "";
+const resumeUrl = configuredResumeUrl.startsWith("/") ? withBasePath(configuredResumeUrl) : configuredResumeUrl;
+const resumeAvailable = Boolean(resumeUrl);
 
 const resumeHighlights = [
   "9+ years across enterprise web delivery, secure integrations, and scalable frontend systems",
@@ -39,9 +40,9 @@ const resumeHighlights = [
 
       <div class="flex flex-col gap-3">
         {resumeAvailable ? (
-          <a href="/resume.pdf" class="primary-button" download>Download PDF</a>
+          <a href={resumeUrl} class="primary-button" download>Download PDF</a>
         ) : (
-          <a href="/contact" class="primary-button">Request Resume</a>
+          <a href={withBasePath("/contact")} class="primary-button">Request Resume</a>
         )}
         <a href={`mailto:${site.email}`} class="secondary-button">Email directly</a>
       </div>

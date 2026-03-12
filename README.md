@@ -1,49 +1,69 @@
-# Starlight Starter Kit: Basics
+# M Rohan Pradev Portfolio
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Astro 6 portfolio site for M Rohan Pradev, tuned for static deployment on GitHub Pages.
 
-```
-bun create astro@latest -- --template starlight
-```
+## Stack
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- Astro 6
+- Tailwind CSS 4
+- Astro image optimization
+- GitHub Pages via GitHub Actions
 
-## 🚀 Project Structure
+## Local development
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+```bash
+bun install
+bun run dev
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+Useful commands:
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+- `bun run check`
+- `bun run build`
+- `bun run preview`
 
-Static assets, like favicons, can be placed in the `public/` directory.
+## Environment variables
 
-## 🧞 Commands
+Copy `.env.example` to `.env` for local testing.
 
-All commands are run from the root of the project, from a terminal:
+- `PUBLIC_SITE_URL`: production site URL, for example `https://yourusername.github.io`
+- `PUBLIC_BASE_PATH`: repository base path, for example `/portfolio`. Leave empty for `yourusername.github.io` repos or custom domains.
+- `PUBLIC_RESUME_URL`: optional public URL for a downloadable resume, such as `/resume.pdf`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+If `PUBLIC_RESUME_URL` is not set, the resume page falls back to a request-based CTA instead of a broken download link.
 
-## 👀 Want to learn more?
+## GitHub Pages deployment
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+This project is configured to use the official Astro GitHub Action from the Astro deployment guide:
+
+- workflow file: `.github/workflows/deploy.yml`
+- deployment target: GitHub Pages
+- site output: static `dist/`
+
+### Repository setup
+
+1. In GitHub, open your repository settings.
+2. In `Settings -> Pages`, set `Source` to `GitHub Actions`.
+3. In `Settings -> Secrets and variables -> Actions`, add these repository variables:
+   - `PUBLIC_SITE_URL`
+   - `PUBLIC_BASE_PATH`
+   - `PUBLIC_RESUME_URL` if you want a public resume link
+
+### How `PUBLIC_BASE_PATH` should be set
+
+- Repository named `yourusername.github.io`: leave `PUBLIC_BASE_PATH` empty
+- Repository named something else, such as `portfolio`: set `PUBLIC_BASE_PATH=/portfolio`
+- Custom domain: leave `PUBLIC_BASE_PATH` empty after the custom domain is live
+
+### Custom domain
+
+If you later move from the default GitHub Pages URL to a custom domain:
+
+1. Add `public/CNAME` with your domain on a single line
+2. Update `PUBLIC_SITE_URL` to the custom domain
+3. Clear `PUBLIC_BASE_PATH`
+
+## Notes
+
+- The contact page is static so the site remains compatible with GitHub Pages.
+- All internal links and metadata are base-aware, so repository-path deployments work correctly.

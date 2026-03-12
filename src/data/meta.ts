@@ -1,4 +1,23 @@
-const siteUrl = import.meta.env.PUBLIC_SITE_URL ?? "https://yourdomain.com";
+const siteUrl =
+	import.meta.env.PUBLIC_SITE_URL ?? "https://yourusername.github.io";
+const basePath =
+	import.meta.env.BASE_URL === "/"
+		? ""
+		: import.meta.env.BASE_URL.replace(/\/$/, "");
+
+export function withBasePath(path: string) {
+	if (!path.startsWith("/")) {
+		return path;
+	}
+
+	if (!basePath) {
+		return path;
+	}
+
+	return path === "/" ? `${basePath}/` : `${basePath}${path}`;
+}
+
+const homeUrl = new URL(withBasePath("/"), siteUrl).toString();
 
 export const site = {
 	name: "M Rohan Pradev",
@@ -14,7 +33,9 @@ export const site = {
 	email: "rohanpradev@hotmail.com",
 	availability:
 		"Open to senior full-stack, frontend architecture, and AI product roles.",
-	ogImage: "/og-cover.svg",
+	basePath,
+	homeUrl,
+	ogImage: withBasePath("/og-cover.svg"),
 	keywords: [
 		"Senior full-stack engineer",
 		"React engineer",
@@ -32,10 +53,10 @@ export const site = {
 		"Web performance",
 	],
 	nav: [
-		{ label: "Work", href: "/#projects" },
-		{ label: "Experience", href: "/#experience" },
-		{ label: "About", href: "/about" },
-		{ label: "Contact", href: "/contact" },
+		{ label: "Work", href: withBasePath("/#projects") },
+		{ label: "Experience", href: withBasePath("/#experience") },
+		{ label: "About", href: withBasePath("/about") },
+		{ label: "Contact", href: withBasePath("/contact") },
 	],
 	social: {
 		github: "https://github.com/rohanpradev",

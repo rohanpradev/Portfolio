@@ -1,7 +1,7 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { site } from "../data/meta";
+import { site, withBasePath } from "../data/meta";
 import "../styles/globals.css";
 
 interface Props {
@@ -23,13 +23,17 @@ const {
 const canonical = new URL(Astro.url.pathname, site.url).toString();
 const socialImage = image.startsWith("http") ? image : new URL(image, site.url).toString();
 const sameAs = [site.social.github, site.social.linkedin].filter(Boolean);
-const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const pathnameWithoutBase =
+	site.basePath && Astro.url.pathname.startsWith(site.basePath)
+		? Astro.url.pathname.slice(site.basePath.length) || "/"
+		: Astro.url.pathname;
+const pathname = pathnameWithoutBase.replace(/\/$/, "") || "/";
 const segments = pathname === "/" ? [] : pathname.slice(1).split("/");
 const breadcrumbs = [
-  { name: "Home", item: new URL("/", site.url).toString() },
+  { name: "Home", item: new URL(withBasePath("/"), site.url).toString() },
   ...segments.map((segment, index) => ({
     name: segment.split("-").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" "),
-    item: new URL(`/${segments.slice(0, index + 1).join("/")}`, site.url).toString(),
+    item: new URL(withBasePath(`/${segments.slice(0, index + 1).join("/")}`), site.url).toString(),
   })),
 ];
 
@@ -39,14 +43,14 @@ const jsonLd = {
     {
       "@type": "WebSite",
       name: site.name,
-      url: site.url,
+      url: site.homeUrl,
       description: site.description,
       inLanguage: "en",
     },
     {
       "@type": "Person",
       name: site.author,
-      url: site.url,
+      url: site.homeUrl,
       jobTitle: site.role,
       description: site.description,
       email: site.email,
@@ -64,7 +68,7 @@ const jsonLd = {
       isPartOf: {
         "@type": "WebSite",
         name: site.name,
-        url: site.url,
+        url: site.homeUrl,
       },
       about: {
         "@type": "Person",
@@ -99,9 +103,9 @@ const jsonLd = {
     <meta name="keywords" content={keywords.join(", ")} />
     <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large"} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="shortcut icon" href="/favicon.svg" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
+    <link rel="shortcut icon" href={withBasePath("/favicon.svg")} />
+    <link rel="manifest" href={withBasePath("/site.webmanifest")} />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
