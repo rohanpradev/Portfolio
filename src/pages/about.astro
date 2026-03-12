@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ExperienceCard from "../components/ExperienceCard.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import Badge from "../components/Badge.astro";
+import { site } from "../data/meta";
+import { experiences } from "../data/experiences";
+import { skillGroups } from "../data/skills";
+
+const principles = [
+  {
+    title: "Own critical modules end to end",
+    description:
+      "Architecture, implementation, integration, review quality, and delivery pressure are handled as one connected responsibility.",
+  },
+  {
+    title: "Favor clarity in secure systems",
+    description:
+      "Authentication, RBAC, and API contracts should make the product safer without turning the codebase into a maze.",
+  },
+  {
+    title: "Use AI where it earns its place",
+    description:
+      "Generative AI and retrieval workflows are valuable when they improve the product and stay understandable to the engineering team.",
+  },
+];
+---
+
+<BaseLayout title={`About | ${site.name}`} description="Background, working style, and technical strengths for M Rohan Pradev.">
+  <section class="section-shell pt-8 sm:pt-10">
+    <div class="surface-card-strong p-8 sm:p-10 lg:p-12">
+      <SectionHeading
+        eyebrow="About"
+        title="Senior full-stack engineering for enterprise applications, cloud-native services, and AI-powered workflows."
+        description="The core profile is a React, TypeScript, and Node.js engineer with deep ownership across frontend systems, secure integrations, architecture reviews, and team enablement. The goal is always the same: ship robust software without letting the codebase decay under delivery pressure."
+      />
+
+      <div class="mt-10 grid gap-4 lg:grid-cols-3">
+        {principles.map((principle) => (
+          <article class="rounded-[20px] border border-slate-900/8 bg-white/80 p-6">
+            <h2 class="text-2xl font-semibold text-slate-900">{principle.title}</h2>
+            <p class="mt-3 text-sm leading-7 text-slate-600">{principle.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell py-16 sm:py-20 lg:py-24">
+    <div class="grid gap-10 lg:grid-cols-[0.8fr_1fr] lg:items-start">
+      <SectionHeading
+        eyebrow="Timeline"
+        title="Experience across enterprise domains, reusable platforms, and production-grade integrations."
+        description="From hotel operations and pension workflows to manufacturing systems, the strongest value has been bringing structure, speed, and confidence to complex delivery environments."
+      />
+      <div class="space-y-5">
+        {experiences.map((experience) => <ExperienceCard {...experience} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-shell pb-16 sm:pb-20 lg:pb-24">
+    <SectionHeading
+      eyebrow="Core Strengths"
+      title="Breadth across the stack, with strongest leverage in frontend systems and product architecture."
+      description="The technical range is useful because it allows better tradeoffs between UI quality, backend integration, cloud constraints, and delivery timelines."
+    />
+
+    <div class="mt-10 grid gap-5 lg:grid-cols-2">
+      {skillGroups.map((group) => (
+        <article class="surface-card-strong p-6">
+          <h2 class="text-2xl font-semibold text-slate-900">{group.title}</h2>
+          <p class="mt-3 text-sm leading-7 text-slate-600">{group.description}</p>
+          <div class="mt-5 flex flex-wrap gap-2">
+            {group.items.map((item) => <Badge variant="secondary">{item}</Badge>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,50 @@
+---
+import { existsSync } from "node:fs";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { site } from "../data/meta";
+
+const resumeAvailable = existsSync(new URL("../../public/resume.pdf", import.meta.url));
+
+const resumeHighlights = [
+  "9+ years across enterprise web delivery, secure integrations, and scalable frontend systems",
+  "Expertise in React, TypeScript, Node.js, PostgreSQL, MongoDB, and Azure-backed application delivery",
+  "Architecture reviews, mentoring, PR quality, and AI integration as recurring strengths",
+];
+---
+
+<BaseLayout
+  title={`Resume | ${site.name}`}
+  description={resumeAvailable
+    ? "Download the latest resume for M Rohan Pradev."
+    : "Resume request page for M Rohan Pradev."}
+>
+  <section class="section-shell pt-8 sm:pt-10">
+    <div class="surface-card-strong grid gap-8 p-8 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div>
+        <SectionHeading
+          eyebrow="Resume"
+          title={resumeAvailable ? "Download the latest resume package." : "Resume is currently shared on request."}
+          description={resumeAvailable
+            ? "Use the direct download below for the latest PDF version."
+            : "A public PDF is not in the repository right now, so the best path is to request it directly by email or through the contact page."}
+        />
+
+        <div class="mt-8 grid gap-3 sm:grid-cols-3">
+          {resumeHighlights.map((item) => (
+              <div class="rounded-xl border border-slate-900/8 bg-white/80 px-4 py-4 text-sm text-slate-700">{item}</div>
+          ))}
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        {resumeAvailable ? (
+          <a href="/resume.pdf" class="primary-button" download>Download PDF</a>
+        ) : (
+          <a href="/contact" class="primary-button">Request Resume</a>
+        )}
+        <a href={`mailto:${site.email}`} class="secondary-button">Email directly</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

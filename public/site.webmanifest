@@ -1,0 +1,15 @@
+{
+  "name": "M Rohan Pradev Portfolio",
+  "short_name": "Rohan",
+  "description": "Senior full-stack engineer portfolio focused on product systems, performance, and delivery quality.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#0f172a",
+  "background_color": "#f8f2e8",
+  "display": "standalone"
+}

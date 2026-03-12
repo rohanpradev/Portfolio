@@ -1,0 +1,50 @@
+---
+import Icon from "./Icon.astro";
+
+type IconName =
+  | "briefcase"
+  | "calendar"
+  | "check"
+  | "github"
+  | "layers"
+  | "linkedin"
+  | "mail"
+  | "map-pin"
+  | "sparkles";
+
+interface Props {
+  variant?: "secondary" | "outline" | "accent" | "dark";
+  icon?: IconName;
+  iconPosition?: "left" | "right";
+  href?: string;
+  target?: string;
+  rel?: string;
+  class?: string;
+}
+
+const {
+  variant = "secondary",
+  icon,
+  iconPosition = "left",
+  href,
+  target,
+  rel,
+  class: className = "",
+} = Astro.props as Props;
+
+const classes = ["badge", `badge-${variant}`, className];
+---
+
+{href ? (
+  <a href={href} target={target} rel={rel} class:list={classes}>
+    {icon && iconPosition === "left" && <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />}
+    <slot />
+    {icon && iconPosition === "right" && <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />}
+  </a>
+) : (
+  <span class:list={classes}>
+    {icon && iconPosition === "left" && <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />}
+    <slot />
+    {icon && iconPosition === "right" && <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />}
+  </span>
+)}

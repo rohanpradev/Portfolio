@@ -1,0 +1,37 @@
+---
+import { Image } from "astro:assets";
+import Badge from "./Badge.astro";
+import type { Project } from "../data/projects";
+
+const { title, description, tech, image, alt } = Astro.props as Project;
+---
+
+<article class="surface-card-strong group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1">
+  <div class="relative overflow-hidden">
+    <div aria-hidden="true" class="absolute inset-0 z-10 bg-[linear-gradient(180deg,rgba(15,23,42,0.04),rgba(15,23,42,0.5))]"></div>
+    <Image
+      src={image}
+      alt={alt}
+      format="webp"
+      quality={82}
+      widths={[480, 768, 1200]}
+      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 40vw"
+      class="h-64 w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+      loading="lazy"
+    />
+    <div class="absolute left-5 top-5 z-20">
+      <Badge variant="accent" icon="sparkles">Case Study</Badge>
+    </div>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-5 p-6">
+    <div>
+      <h3 class="text-2xl font-semibold text-slate-900">{title}</h3>
+      <p class="mt-3 text-sm leading-7 text-slate-600 sm:text-base">{description}</p>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      {tech.map((item) => <Badge variant="secondary">{item}</Badge>)}
+    </div>
+  </div>
+</article>

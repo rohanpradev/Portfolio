@@ -1,0 +1,132 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { site } from "../data/meta";
+import "../styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  keywords?: string[];
+}
+
+const {
+  title = site.title,
+  description = site.description,
+  image = site.ogImage,
+  noindex = false,
+  keywords = site.keywords,
+} = Astro.props as Props;
+
+const canonical = new URL(Astro.url.pathname, site.url).toString();
+const socialImage = image.startsWith("http") ? image : new URL(image, site.url).toString();
+const sameAs = [site.social.github, site.social.linkedin].filter(Boolean);
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const segments = pathname === "/" ? [] : pathname.slice(1).split("/");
+const breadcrumbs = [
+  { name: "Home", item: new URL("/", site.url).toString() },
+  ...segments.map((segment, index) => ({
+    name: segment.split("-").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" "),
+    item: new URL(`/${segments.slice(0, index + 1).join("/")}`, site.url).toString(),
+  })),
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: site.name,
+      url: site.url,
+      description: site.description,
+      inLanguage: "en",
+    },
+    {
+      "@type": "Person",
+      name: site.author,
+      url: site.url,
+      jobTitle: site.role,
+      description: site.description,
+      email: site.email,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: site.location,
+      },
+      sameAs,
+    },
+    {
+      "@type": "WebPage",
+      name: title,
+      url: canonical,
+      description,
+      isPartOf: {
+        "@type": "WebSite",
+        name: site.name,
+        url: site.url,
+      },
+      about: {
+        "@type": "Person",
+        name: site.author,
+      },
+    },
+    ...(breadcrumbs.length > 1
+      ? [{
+          "@type": "BreadcrumbList",
+          itemListElement: breadcrumbs.map((crumb, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: crumb.name,
+            item: crumb.item,
+          })),
+        }]
+      : []),
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.author} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="keywords" content={keywords.join(", ")} />
+    <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large"} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content={`${site.name} portfolio preview`} />
+    <meta property="og:locale" content="en_IN" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class="selection:bg-primary selection:text-white">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm">
+      Skip to content
+    </a>
+    <Header />
+    <main id="main-content" class="pb-12 sm:pb-16">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

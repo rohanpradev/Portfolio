@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { site } from "../data/meta";
+import { projects } from "../data/projects";
+---
+
+<BaseLayout title={`Projects | ${site.name}`} description="Selected enterprise and product engineering case studies from M Rohan Pradev.">
+  <section class="section-shell pt-8 sm:pt-10">
+    <div class="surface-card-strong p-8 sm:p-10">
+      <SectionHeading
+        eyebrow="Projects"
+        title="A single high-leverage case study instead of a padded project list."
+        description="The strongest portfolio piece here is the smart manufacturing and office experience work, where frontend architecture, backend services, caching, cloud integration, and AI-enabled workflows all came together in one product surface."
+      />
+    </div>
+  </section>
+
+  <section class="section-shell py-16 sm:py-20 lg:py-24">
+    <div class="mx-auto max-w-5xl">
+      {projects.map((project) => <ProjectCard {...project} />)}
+    </div>
+  </section>
+</BaseLayout>

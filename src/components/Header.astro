@@ -1,0 +1,57 @@
+---
+import { site } from "../data/meta";
+---
+
+<header class="sticky top-0 z-40 pt-4 sm:pt-5">
+  <div class="section-shell">
+    <div class="surface-card-strong flex items-center justify-between px-4 py-3 sm:px-6">
+      <a href="/" class="flex items-center gap-3 text-slate-900">
+        <img
+          src="/brand-mark.svg"
+          alt="M Rohan Pradev logo"
+          width="44"
+          height="44"
+          class="h-11 w-11 rounded-xl shadow-panel"
+          decoding="async"
+        />
+        <span>
+          <span class="block text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Portfolio</span>
+          <span class="block text-base font-semibold">{site.author}</span>
+        </span>
+      </a>
+
+      <nav class="hidden items-center gap-5 text-sm font-medium text-slate-600 lg:flex">
+        {site.nav.map((item) => (
+          <a href={item.href} class="transition hover:text-slate-900">{item.label}</a>
+        ))}
+      </nav>
+
+      <div class="hidden items-center gap-3 lg:flex">
+        <a href={`mailto:${site.email}`} class="secondary-button px-4 py-2.5">{site.email}</a>
+        <a href="/contact" class="primary-button px-4 py-2.5">Start a project</a>
+      </div>
+
+      <details class="relative lg:hidden">
+        <summary class="grid h-11 w-11 cursor-pointer place-items-center rounded-xl border border-slate-900/10 bg-white/80 text-slate-900 transition hover:bg-white">
+          <span class="sr-only">Open menu</span>
+          <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M4 7h16" />
+            <path d="M4 12h16" />
+            <path d="M4 17h16" />
+          </svg>
+        </summary>
+        <div class="surface-card-strong absolute right-0 top-[calc(100%+0.85rem)] w-[min(20rem,calc(100vw-2rem))] p-4">
+          <nav class="grid gap-2 text-sm font-medium text-slate-700">
+            {site.nav.map((item) => (
+              <a href={item.href} class="rounded-xl px-4 py-3 transition hover:bg-slate-900/5">{item.label}</a>
+            ))}
+          </nav>
+          <div class="mt-4 grid gap-2">
+            <a href="/resume" class="secondary-button w-full px-4 py-3">Resume</a>
+            <a href="/contact" class="primary-button w-full px-4 py-3">Contact</a>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
