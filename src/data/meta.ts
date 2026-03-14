@@ -50,7 +50,7 @@ export const site = {
 	description:
 		"Senior full-stack engineer in Bengaluru building fast, secure, and maintainable product systems with React, TypeScript, Node.js, Redis, Azure, and AI-assisted workflows.",
 	shortDescription:
-		"Case-study-driven portfolio for enterprise product engineering, frontend architecture, and AI-enabled workflow design.",
+		"Portfolio focused on enterprise product engineering, frontend architecture, and AI-enabled workflow design.",
 	url: siteUrl,
 	author: "M Rohan Pradev",
 	role: "Senior Full-Stack Engineer",
@@ -79,7 +79,7 @@ export const site = {
 	],
 	nav: [
 		{ label: "Home", href: withBasePath("/") },
-		{ label: "Case Study", href: withBasePath("/projects") },
+		{ label: "Projects", href: withBasePath("/projects") },
 		{ label: "About", href: withBasePath("/about") },
 		{ label: "Contact", href: withBasePath("/contact") },
 	],

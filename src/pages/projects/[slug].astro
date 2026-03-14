@@ -1,17 +1,12 @@
 ---
 import { Image } from "astro:assets";
-import { getCollection, render, type CollectionEntry } from "astro:content";
+import { render, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Badge from "../../components/Badge.astro";
 import { site, withBasePath } from "../../data/meta";
 
 export async function getStaticPaths() {
-	const projects = await getCollection("projects");
-
-	return projects.map((project) => ({
-		params: { slug: project.id },
-		props: { project },
-	}));
+	return [];
 }
 
 interface Props {

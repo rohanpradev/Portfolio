@@ -21,11 +21,8 @@ const featuredProject =
 	projectEntries.find((project) => project.data.featured) ?? projectEntries[0];
 
 if (!featuredProject) {
-	throw new Error("Expected at least one project case study.");
+	throw new Error("Expected at least one featured project.");
 }
-
-const featuredHref = withBasePath(`/projects/${featuredProject.id}`);
-const featuredUrl = new URL(featuredHref, site.url).toString();
 
 const heroStats = [
 	{ value: "9+", label: "Years in software" },
@@ -105,23 +102,10 @@ const deliveryPrinciples = [
 	},
 ];
 
-const homeStructuredData = [
-	{
-		"@type": "ItemList",
-		name: "Portfolio case studies",
-		itemListElement: projectEntries.map((project, index) => ({
-			"@type": "ListItem",
-			position: index + 1,
-			url: new URL(withBasePath(`/projects/${project.id}`), site.url).toString(),
-			name: project.data.title,
-		})),
-	},
-];
 ---
 
 <BaseLayout
-	description="Case-study-driven portfolio for enterprise product engineering, frontend architecture, secure integrations, and AI-assisted workflows."
-	structuredData={homeStructuredData}
+	description="Portfolio for enterprise product engineering, frontend architecture, secure integrations, and AI-assisted workflows."
 >
 	<Hero
 		title="M Rohan Pradev"
@@ -152,8 +136,8 @@ const homeStructuredData = [
 			<div class="surface-card-strong p-8 sm:p-10">
 				<SectionHeading
 					eyebrow="Flagship Project"
-					title="One case study that proves full-stack depth better than a padded project grid."
-					description="This portfolio centers on a high-signal delivery story: smart manufacturing and workplace operations work where frontend architecture, backend orchestration, caching, data sync, cloud integration, and AI-assisted workflows all had to coexist cleanly."
+					title="One flagship project shown as a concise portfolio summary for now."
+					description="This project captures the strongest mix of frontend architecture, backend orchestration, caching, data sync, cloud integration, and AI-assisted workflows without publishing the full detailed walkthrough yet."
 				/>
 
 				<div class="mt-8 grid gap-4 sm:grid-cols-2">
@@ -174,7 +158,7 @@ const homeStructuredData = [
 				</div>
 
 				<div class="mt-8 flex flex-wrap gap-3">
-					<a href={featuredHref} class="primary-button">Read case study</a>
+					<a href={withBasePath("/contact")} class="primary-button">Request project details</a>
 					<a href={withBasePath("/projects")} class="secondary-button">Browse project overview</a>
 				</div>
 			</div>
@@ -185,7 +169,6 @@ const homeStructuredData = [
 				tech={featuredProject.data.tech}
 				image={featuredProject.data.cover}
 				alt={featuredProject.data.coverAlt}
-				href={featuredHref}
 				company={featuredProject.data.company}
 				duration={featuredProject.data.duration}
 				outcomes={featuredProject.data.outcomes}
@@ -310,7 +293,7 @@ const homeStructuredData = [
 				<div class="mt-8 flex flex-wrap gap-3">
 					<a href={`mailto:${site.email}`} class="primary-button">Email {site.author}</a>
 					<a href={withBasePath("/contact")} class="secondary-button">Open contact page</a>
-					<a href={featuredUrl} class="secondary-button">Share the case study</a>
+					<a href={withBasePath("/contact")} class="secondary-button">Request project details</a>
 				</div>
 			</div>
 

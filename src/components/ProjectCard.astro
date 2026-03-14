@@ -14,7 +14,7 @@ interface Props {
 	tech: string[];
 	image: ImageMetadata;
 	alt: string;
-	href: string;
+	href?: string;
 	company?: string;
 	duration?: string;
 	outcomes?: Outcome[];
@@ -31,11 +31,17 @@ const {
 	duration,
 	outcomes = [],
 } = Astro.props as Props;
+
+const isLinked = Boolean(href);
+const Tag = isLinked ? "a" : "article";
 ---
 
-<a
-	href={href}
-	class="surface-card-strong group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1.5"
+<Tag
+	{...(isLinked ? { href } : {})}
+	class:list={[
+		"surface-card-strong flex h-full flex-col overflow-hidden transition duration-300",
+		isLinked && "group hover:-translate-y-1.5",
+	]}
 >
 	<div class="relative overflow-hidden">
 		<div
@@ -53,7 +59,7 @@ const {
 			loading="lazy"
 		/>
 		<div class="absolute left-5 top-5 z-20 flex flex-wrap gap-2">
-			<Badge variant="accent" icon="sparkles">Featured Case Study</Badge>
+			<Badge variant="accent" icon="sparkles">Featured Project</Badge>
 			{company && <Badge variant="outline">{company}</Badge>}
 		</div>
 		{duration && (
@@ -86,25 +92,31 @@ const {
 			{tech.map((item) => <Badge variant="secondary">{item}</Badge>)}
 		</div>
 
-		<div class="mt-auto inline-flex items-center gap-3 text-sm font-semibold text-slate-900">
-			<span>Read the full case study</span>
-			<span
-				aria-hidden="true"
-				class="grid h-8 w-8 place-items-center rounded-full border border-slate-900/10 bg-white/90 transition duration-300 group-hover:translate-x-0.5"
-			>
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.8"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="h-4 w-4"
-				>
-					<path d="M7 17 17 7" />
-					<path d="M8 7h9v9" />
-				</svg>
-			</span>
+		<div class="mt-auto text-sm font-semibold text-slate-900">
+			{isLinked ? (
+				<div class="inline-flex items-center gap-3">
+					<span>Open project details</span>
+					<span
+						aria-hidden="true"
+						class="grid h-8 w-8 place-items-center rounded-full border border-slate-900/10 bg-white/90 transition duration-300 group-hover:translate-x-0.5"
+					>
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-4 w-4"
+						>
+							<path d="M7 17 17 7" />
+							<path d="M8 7h9v9" />
+						</svg>
+					</span>
+				</div>
+			) : (
+				<span>Detailed walkthrough available on request.</span>
+			)}
 		</div>
 	</div>
-</a>
+</Tag>

@@ -3,42 +3,23 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import { site, withBasePath } from "../data/meta";
+import { site } from "../data/meta";
 
 const projects = (await getCollection("projects")).sort(
 	(a, b) => a.data.order - b.data.order,
 );
-
-const structuredData = [
-	{
-		"@type": "CollectionPage",
-		name: "Project Case Studies",
-		description:
-			"Selected case studies from M Rohan Pradev covering enterprise product delivery, frontend architecture, backend integration, and AI-assisted workflows.",
-		mainEntity: {
-			"@type": "ItemList",
-			itemListElement: projects.map((project, index) => ({
-				"@type": "ListItem",
-				position: index + 1,
-				url: new URL(withBasePath(`/projects/${project.id}`), site.url).toString(),
-				name: project.data.title,
-			})),
-		},
-	},
-];
 ---
 
 <BaseLayout
 	title={`Projects | ${site.name}`}
-	description="Selected case studies from M Rohan Pradev covering enterprise product delivery, frontend architecture, backend orchestration, and AI-assisted workflows."
-	structuredData={structuredData}
+	description="Selected project summaries from M Rohan Pradev covering enterprise product delivery, frontend architecture, backend orchestration, and AI-assisted workflows."
 >
 	<section class="section-shell pt-8 sm:pt-10">
 		<div class="surface-card-strong p-8 sm:p-10 lg:p-12">
 			<SectionHeading
 				eyebrow="Projects"
-				title="Case studies focused on the work that actually proves engineering depth."
-				description="This portfolio favors high-signal case studies over filler thumbnails. Each project is meant to show system judgment, delivery context, and the tradeoffs behind the implementation."
+				title="Project summaries focused on the work that actually proves engineering depth."
+				description="This page keeps the strongest project visible without exposing the full detailed walkthrough publicly right now."
 			/>
 		</div>
 	</section>
@@ -52,7 +33,6 @@ const structuredData = [
 					tech={project.data.tech}
 					image={project.data.cover}
 					alt={project.data.coverAlt}
-					href={withBasePath(`/projects/${project.id}`)}
 					company={project.data.company}
 					duration={project.data.duration}
 					outcomes={project.data.outcomes}
