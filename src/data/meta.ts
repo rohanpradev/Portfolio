@@ -1,3 +1,5 @@
+import profilePhoto from "../assets/profile/my-photo.jpeg";
+
 function stripOuterQuotes(value: string | undefined) {
 	if (!value) {
 		return "";
@@ -46,38 +48,38 @@ export const site = {
 	name: "M Rohan Pradev",
 	title: "M Rohan Pradev | Senior Full-Stack Engineer",
 	description:
-		"Senior Full-Stack Engineer with 9+ years of experience delivering scalable, secure, and high-performance web applications with React, TypeScript, Node.js, PostgreSQL, MongoDB, Azure, and generative AI integrations.",
+		"Senior full-stack engineer in Bengaluru building fast, secure, and maintainable product systems with React, TypeScript, Node.js, Redis, Azure, and AI-assisted workflows.",
 	shortDescription:
-		"Enterprise-grade full-stack engineering for high-performance products, secure integrations, and AI-powered workflows.",
+		"Case-study-driven portfolio for enterprise product engineering, frontend architecture, and AI-enabled workflow design.",
 	url: siteUrl,
 	author: "M Rohan Pradev",
 	role: "Senior Full-Stack Engineer",
+	headline:
+		"Senior full-stack engineer for enterprise web platforms, secure integrations, and AI-assisted product experiences.",
 	location: "Bengaluru, Karnataka, India",
 	email: "rohanpradev@hotmail.com",
 	availability:
 		"Open to senior full-stack, frontend architecture, and AI product roles.",
 	basePath,
 	homeUrl,
-	ogImage: withBasePath("/og-cover.svg"),
-	keywords: [
-		"Senior full-stack engineer",
-		"React engineer",
-		"TypeScript engineer",
-		"Node.js engineer",
-		"Next.js developer",
-		"Azure engineer",
-		"PostgreSQL developer",
-		"MongoDB developer",
-		"OpenAI API integration",
-		"RAG applications",
-		"Astro portfolio",
-		"Frontend architecture",
-		"Microservices",
-		"Web performance",
+	ogImage: withBasePath("/og-cover.png"),
+	ogImageWidth: 1200,
+	ogImageHeight: 630,
+	profilePhoto,
+	expertise: [
+		"React architecture",
+		"TypeScript application design",
+		"Node.js services",
+		"Redis caching",
+		"Azure-aligned delivery",
+		"OpenAI integrations",
+		"Retrieval-augmented generation",
+		"Frontend performance",
+		"Secure API integration",
 	],
 	nav: [
-		{ label: "Work", href: withBasePath("/#projects") },
-		{ label: "Experience", href: withBasePath("/#experience") },
+		{ label: "Home", href: withBasePath("/") },
+		{ label: "Case Study", href: withBasePath("/projects") },
 		{ label: "About", href: withBasePath("/about") },
 		{ label: "Contact", href: withBasePath("/contact") },
 	],

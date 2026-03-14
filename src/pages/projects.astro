@@ -1,25 +1,63 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import { site } from "../data/meta";
-import { projects } from "../data/projects";
+import { site, withBasePath } from "../data/meta";
+
+const projects = (await getCollection("projects")).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+
+const structuredData = [
+	{
+		"@type": "CollectionPage",
+		name: "Project Case Studies",
+		description:
+			"Selected case studies from M Rohan Pradev covering enterprise product delivery, frontend architecture, backend integration, and AI-assisted workflows.",
+		mainEntity: {
+			"@type": "ItemList",
+			itemListElement: projects.map((project, index) => ({
+				"@type": "ListItem",
+				position: index + 1,
+				url: new URL(withBasePath(`/projects/${project.id}`), site.url).toString(),
+				name: project.data.title,
+			})),
+		},
+	},
+];
 ---
 
-<BaseLayout title={`Projects | ${site.name}`} description="Selected enterprise and product engineering case studies from M Rohan Pradev.">
-  <section class="section-shell pt-8 sm:pt-10">
-    <div class="surface-card-strong p-8 sm:p-10">
-      <SectionHeading
-        eyebrow="Projects"
-        title="A single high-leverage case study instead of a padded project list."
-        description="The strongest portfolio piece here is the smart manufacturing and office experience work, where frontend architecture, backend services, caching, cloud integration, and AI-enabled workflows all came together in one product surface."
-      />
-    </div>
-  </section>
+<BaseLayout
+	title={`Projects | ${site.name}`}
+	description="Selected case studies from M Rohan Pradev covering enterprise product delivery, frontend architecture, backend orchestration, and AI-assisted workflows."
+	structuredData={structuredData}
+>
+	<section class="section-shell pt-8 sm:pt-10">
+		<div class="surface-card-strong p-8 sm:p-10 lg:p-12">
+			<SectionHeading
+				eyebrow="Projects"
+				title="Case studies focused on the work that actually proves engineering depth."
+				description="This portfolio favors high-signal case studies over filler thumbnails. Each project is meant to show system judgment, delivery context, and the tradeoffs behind the implementation."
+			/>
+		</div>
+	</section>
 
-  <section class="section-shell py-16 sm:py-20 lg:py-24">
-    <div class="mx-auto max-w-5xl">
-      {projects.map((project) => <ProjectCard {...project} />)}
-    </div>
-  </section>
+	<section class="section-shell py-16 sm:py-20 lg:py-24">
+		<div class="grid gap-6">
+			{projects.map((project) => (
+				<ProjectCard
+					title={project.data.title}
+					description={project.data.description}
+					tech={project.data.tech}
+					image={project.data.cover}
+					alt={project.data.coverAlt}
+					href={withBasePath(`/projects/${project.id}`)}
+					company={project.data.company}
+					duration={project.data.duration}
+					outcomes={project.data.outcomes}
+				/>
+			))}
+		</div>
+	</section>
 </BaseLayout>

@@ -20,15 +20,22 @@ import { site, withBasePath } from "../data/meta";
         </a>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 text-sm font-semibold">
-        <a href={site.social.github} target="_blank" rel="noreferrer" class="secondary-button px-4 py-2.5">GitHub</a>
-        <a href={site.social.linkedin} target="_blank" rel="noreferrer" class="secondary-button px-4 py-2.5">LinkedIn</a>
+      <div class="grid gap-3 text-sm font-semibold">
+        <div class="flex flex-wrap items-center gap-3">
+          <a href={site.social.github} target="_blank" rel="noreferrer" class="secondary-button px-4 py-2.5">GitHub</a>
+          <a href={site.social.linkedin} target="_blank" rel="noreferrer" class="secondary-button px-4 py-2.5">LinkedIn</a>
+        </div>
+        <a href={withBasePath("/projects")} class="text-slate-700 transition hover:text-slate-900">View flagship case study</a>
       </div>
     </div>
 
     <div class="flex flex-col gap-3 px-2 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
       <p>&copy; {new Date().getFullYear()} {site.author}. All rights reserved.</p>
-      <a href={withBasePath("/resume")} class="font-medium text-slate-700 hover:text-slate-900">Resume and contact details</a>
+      <div class="flex flex-wrap gap-4">
+        <a href={withBasePath("/resume")} class="font-medium text-slate-700 hover:text-slate-900">Resume</a>
+        <a href={withBasePath("/about")} class="font-medium text-slate-700 hover:text-slate-900">About</a>
+        <a href={withBasePath("/contact")} class="font-medium text-slate-700 hover:text-slate-900">Contact</a>
+      </div>
     </div>
   </div>
 </footer>

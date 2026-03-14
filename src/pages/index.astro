@@ -1,6 +1,8 @@
 ---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import rohanPhoto from "../assets/profile/rohan-profile.jpeg";
+import myPhoto from "../assets/profile/my-photo.jpeg";
 import Hero from "../components/Hero.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import ExperienceCard from "../components/ExperienceCard.astro";
@@ -9,251 +11,344 @@ import CompanyMarquee from "../components/CompanyMarquee.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import Badge from "../components/Badge.astro";
 import { site, withBasePath } from "../data/meta";
-import { projects } from "../data/projects";
 import { experiences } from "../data/experiences";
-import { skillGroups } from "../data/skills";
 import { testimonials } from "../data/testimonials";
 
+const projectEntries = (await getCollection("projects")).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+const featuredProject =
+	projectEntries.find((project) => project.data.featured) ?? projectEntries[0];
+
+if (!featuredProject) {
+	throw new Error("Expected at least one project case study.");
+}
+
+const featuredHref = withBasePath(`/projects/${featuredProject.id}`);
+const featuredUrl = new URL(featuredHref, site.url).toString();
+
 const heroStats = [
-  { value: "9+", label: "Years in software" },
-  { value: `${experiences.length}`, label: "Career chapters" },
-  { value: "Enterprise + AI", label: "Delivery focus" },
+	{ value: "9+", label: "Years in software" },
+	{ value: `${experiences.length}`, label: "Career chapters" },
+	{ value: "Enterprise + AI", label: "Delivery focus" },
 ];
 
 const heroHighlights = [
-  {
-    title: "Own modules end to end",
-    detail: "From UI architecture and API design to reviews, delivery, and production hardening.",
-  },
-  {
-    title: "Cloud and workflow systems with real operating context",
-    detail: "Redis caching, Azure services, external data sync, and backend orchestration built for production use.",
-  },
-  {
-    title: "Modern products with AI readiness",
-    detail: "Generative AI, retrieval workflows, and cloud-native systems without losing maintainability.",
-  },
+	{
+		title: "Own critical modules end to end",
+		detail:
+			"Architecture, implementation, reviews, and release confidence handled as one connected responsibility.",
+	},
+	{
+		title: "Translate system complexity into product clarity",
+		detail:
+			"React surfaces, service boundaries, caching, and integration work that keep the user experience readable under pressure.",
+	},
+	{
+		title: "Use AI where it improves the workflow",
+		detail:
+			"LLM and retrieval features applied with product discipline so the system stays explainable and supportable.",
+	},
 ];
 
 const focusAreas = [
-  {
-    icon: "layers",
-    title: "React and TypeScript systems",
-    note: "Architecture and maintainability",
-    description:
-      "Designing application surfaces that stay maintainable as requirements, teams, and data flows become more complex.",
-  },
-  {
-    icon: "check",
-    title: "Secure backend integration",
-    note: "APIs, auth, and service boundaries",
-    description:
-      "Building REST APIs, auth flows, and service boundaries that are reliable enough for enterprise-grade products.",
-  },
-  {
-    icon: "briefcase",
-    title: "Azure and cloud-native delivery",
-    note: "Operational resilience in production",
-    description:
-      "Using cloud services, containers, and infrastructure patterns that keep deployments resilient and understandable.",
-  },
-  {
-    icon: "sparkles",
-    title: "Generative AI integration",
-    note: "Useful AI without system drift",
-    description:
-      "Applying OpenAI APIs, RAG patterns, and AI SDKs where they improve workflows without turning the system into a black box.",
-  },
+	{
+		icon: "layers",
+		title: "Frontend systems for real product pressure",
+		note: "React, TypeScript, maintainable UI architecture",
+		description:
+			"Interfaces designed to stay fast, legible, and scalable as business flows and data complexity grow.",
+	},
+	{
+		icon: "check",
+		title: "Secure API and service integration",
+		note: "Node.js, auth, contracts, predictable boundaries",
+		description:
+			"Backend decisions that reduce friction for the UI and make the application safer to extend.",
+	},
+	{
+		icon: "briefcase",
+		title: "Cloud-ready delivery and operability",
+		note: "Azure-aligned services, jobs, resilience",
+		description:
+			"Operational work shaped around clarity, reliability, and systems that teams can actually maintain.",
+	},
+	{
+		icon: "sparkles",
+		title: "AI-enabled product work with engineering discipline",
+		note: "OpenAI patterns, retrieval, product usefulness",
+		description:
+			"AI integration that improves workflows without turning the codebase into an opaque experiment.",
+	},
 ] as const;
 
-const engagementPaths = [
-  {
-    title: "Enterprise product delivery",
-    description: "Own a feature area or application module from architecture through release confidence.",
-  },
-  {
-    title: "Frontend platform leadership",
-    description: "Improve component systems, routing, data loading, and maintainable UI foundations.",
-  },
-  {
-    title: "API and auth architecture",
-    description: "Design cleaner service contracts, Swagger documentation, and secure identity integrations.",
-  },
-  {
-    title: "AI-enabled experience design",
-    description: "Integrate LLM and retrieval workflows in a way that still meets engineering quality standards.",
-  },
+const deliveryPrinciples = [
+	{
+		title: "Architect for the next iteration",
+		description:
+			"The first release should solve the current problem without blocking the next three product decisions.",
+	},
+	{
+		title: "Keep interfaces legible",
+		description:
+			"Complex operational systems fail when the UI becomes dense, slow, or too coupled to backend shape.",
+	},
+	{
+		title: "Favor understandable integration boundaries",
+		description:
+			"Sync jobs, caches, and service contracts should absorb complexity instead of exporting it to every layer.",
+	},
+	{
+		title: "Treat AI as product infrastructure",
+		description:
+			"Useful AI features need the same clarity, operability, and guardrails as the rest of the application.",
+	},
+];
+
+const homeStructuredData = [
+	{
+		"@type": "ItemList",
+		name: "Portfolio case studies",
+		itemListElement: projectEntries.map((project, index) => ({
+			"@type": "ListItem",
+			position: index + 1,
+			url: new URL(withBasePath(`/projects/${project.id}`), site.url).toString(),
+			name: project.data.title,
+		})),
+	},
 ];
 ---
 
-<BaseLayout>
-  <Hero
-    title="M Rohan Pradev"
-    subtitle="Senior Full-Stack Engineer delivering scalable, secure, and high-performance web applications across enterprise products, cloud-native backends, and AI-enabled experiences."
-    ctaText="Explore Projects"
-    ctaHref="#projects"
-    resumeHref={withBasePath("/resume")}
-    resumeLabel="View Resume"
-    photo={rohanPhoto}
-    photoAlt="Photo of M Rohan Pradev"
-    status={site.availability}
-    location={site.location}
-    email={site.email}
-    stats={heroStats}
-    highlights={heroHighlights}
-    socialLinks={[
-      { label: "GitHub", href: site.social.github },
-      { label: "LinkedIn", href: site.social.linkedin },
-    ]}
-  />
+<BaseLayout
+	description="Case-study-driven portfolio for enterprise product engineering, frontend architecture, secure integrations, and AI-assisted workflows."
+	structuredData={homeStructuredData}
+>
+	<Hero
+		title="M Rohan Pradev"
+		subtitle="Senior full-stack engineer building scalable web platforms, secure integrations, and AI-assisted product experiences with a strong bias for clarity, speed, and maintainable delivery."
+		ctaText="View Flagship Project"
+		ctaHref="#projects"
+		resumeHref={withBasePath("/resume")}
+		resumeLabel="View Resume"
+		photo={myPhoto}
+		photoAlt="Portrait of M Rohan Pradev"
+		status={site.availability}
+		location={site.location}
+		email={site.email}
+		stats={heroStats}
+		highlights={heroHighlights}
+		socialLinks={[
+			{ label: "GitHub", href: site.social.github },
+			{ label: "LinkedIn", href: site.social.linkedin },
+		]}
+	/>
 
-  <div class="deferred-section">
-    <CompanyMarquee />
-  </div>
+	<div class="deferred-section">
+		<CompanyMarquee />
+	</div>
 
-  <section id="projects" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
-    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-      <SectionHeading
-        eyebrow="Selected Work"
-        title="A flagship smart manufacturing and workplace operations build."
-        description="This project captures the strongest mix of frontend architecture, backend orchestration, caching strategy, cloud integration, and AI-enabled product work in the portfolio."
-      />
-      <a href={withBasePath("/projects")} class="secondary-button w-fit">View case study</a>
-    </div>
+	<section id="projects" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
+		<div class="grid gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+			<div class="surface-card-strong p-8 sm:p-10">
+				<SectionHeading
+					eyebrow="Flagship Project"
+					title="One case study that proves full-stack depth better than a padded project grid."
+					description="This portfolio centers on a high-signal delivery story: smart manufacturing and workplace operations work where frontend architecture, backend orchestration, caching, data sync, cloud integration, and AI-assisted workflows all had to coexist cleanly."
+				/>
 
-    <div class="mt-10">
-      {projects.map((project) => <ProjectCard {...project} />)}
-    </div>
-  </section>
+				<div class="mt-8 grid gap-4 sm:grid-cols-2">
+					{featuredProject.data.services.map((service) => (
+						<div class="rounded-[20px] border border-slate-900/8 bg-white/82 px-5 py-5">
+							<p class="text-sm font-semibold text-slate-900">{service}</p>
+						</div>
+					))}
+				</div>
 
-  <section class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
-    <div class="grid gap-6 lg:grid-cols-[0.94fr_1.06fr] lg:items-start">
-      <div class="surface-card-strong p-8 sm:p-10">
-        <p class="eyebrow">Professional Summary</p>
-        <h2 class="mt-4 max-w-[16ch] text-[clamp(2.8rem,4vw,4.4rem)] font-semibold leading-[1.02] text-slate-900">
-          Full-stack engineering shaped by security, scale, and delivery ownership.
-        </h2>
-        <p class="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-          Senior engineer with 9+ years of experience delivering scalable, secure, and high-performance web applications.
-          Strongest leverage comes from combining React and TypeScript frontend systems, Node.js service design, Azure-aligned
-          backend integrations, and architecture reviews that keep products moving without accumulating chaos.
-        </p>
+				<div class="mt-8 rounded-[24px] bg-slate-900 px-6 py-6 text-white">
+					<p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/68">
+						Why it matters
+					</p>
+					<p class="mt-3 text-base leading-7 text-white/84 sm:text-lg">
+						The value here is not a one-off feature. It is the ability to shape product systems so they remain fast, understandable, and operable as delivery scope grows.
+					</p>
+				</div>
 
-        <div class="mt-8 grid gap-4 sm:grid-cols-2">
-          {engagementPaths.map((path) => (
-            <article class="rounded-[20px] border border-slate-900/8 bg-white/80 p-5">
-              <h3 class="text-lg font-semibold text-slate-900">{path.title}</h3>
-              <p class="mt-2 text-sm leading-7 text-slate-600">{path.description}</p>
-            </article>
-          ))}
-        </div>
-      </div>
+				<div class="mt-8 flex flex-wrap gap-3">
+					<a href={featuredHref} class="primary-button">Read case study</a>
+					<a href={withBasePath("/projects")} class="secondary-button">Browse project overview</a>
+				</div>
+			</div>
 
-      <div class="grid content-start gap-4 sm:grid-cols-2 lg:self-start">
-        {focusAreas.map((item) => (
-          <article class="surface-card h-fit p-5">
-            <div class="space-y-3">
-              <Badge variant="outline" icon={item.icon}>Focus Area</Badge>
-              <p class="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                {item.note}
-              </p>
-            </div>
-            <h3 class="mt-4 text-[1.8rem] font-semibold leading-[1.15] text-slate-900">{item.title}</h3>
-            <p class="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
+			<ProjectCard
+				title={featuredProject.data.title}
+				description={featuredProject.data.description}
+				tech={featuredProject.data.tech}
+				image={featuredProject.data.cover}
+				alt={featuredProject.data.coverAlt}
+				href={featuredHref}
+				company={featuredProject.data.company}
+				duration={featuredProject.data.duration}
+				outcomes={featuredProject.data.outcomes}
+			/>
+		</div>
 
-  <section id="experience" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
-    <div class="grid gap-10 lg:grid-cols-[0.8fr_1fr] lg:items-start">
-      <SectionHeading
-        eyebrow="Experience"
-        title="From enterprise manufacturing and pensions to hospitality and full-stack platform work."
-        description="The thread across roles is consistent: take ownership of critical modules, improve the engineering shape of the system, and help the team ship with more confidence."
-      />
-      <div class="space-y-5">
-        {experiences.map((experience) => <ExperienceCard {...experience} />)}
-      </div>
-    </div>
-  </section>
+		<div class="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+			<figure class="surface-card-strong overflow-hidden">
+				<Image
+					src={featuredProject.data.gallery[0].src}
+					alt={featuredProject.data.gallery[0].alt}
+					format="webp"
+					quality={84}
+					widths={[720, 1200, 1600]}
+					sizes="(max-width: 1024px) 100vw, 60vw"
+					class="h-full w-full object-cover"
+					loading="lazy"
+				/>
+				<figcaption class="border-t border-slate-900/8 px-5 py-4 text-sm leading-6 text-slate-600 sm:px-6">
+					{featuredProject.data.gallery[0].caption}
+				</figcaption>
+			</figure>
 
-  <section id="skills" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
-    <SectionHeading
-      eyebrow="Technical Skills"
-      title="A stack built around enterprise delivery, cloud-native systems, and modern AI integration."
-      description="Breadth matters, but the real value is applying the right combination of frontend, backend, cloud, and architecture practices to the actual product constraint in front of the team."
-    />
+			<div class="grid gap-4">
+				{featuredProject.data.gallery.slice(1).map((item) => (
+					<figure class="surface-card-strong overflow-hidden">
+						<Image
+							src={item.src}
+							alt={item.alt}
+							format="webp"
+							quality={84}
+							widths={[480, 768, 1200]}
+							sizes="(max-width: 1024px) 100vw, 32vw"
+							class="h-56 w-full object-cover"
+							loading="lazy"
+						/>
+						{item.caption && (
+							<figcaption class="border-t border-slate-900/8 px-5 py-4 text-sm leading-6 text-slate-600">
+								{item.caption}
+							</figcaption>
+						)}
+					</figure>
+				))}
+			</div>
+		</div>
+	</section>
 
-    <div class="mt-10 grid gap-5 lg:grid-cols-2">
-      {skillGroups.map((group) => (
-        <article class="surface-card-strong p-6">
-          <h3 class="text-2xl font-semibold text-slate-900">{group.title}</h3>
-          <p class="mt-3 text-sm leading-7 text-slate-600">{group.description}</p>
-          <div class="mt-5 flex flex-wrap gap-2">
-            {group.items.map((item) => <Badge variant="secondary">{item}</Badge>)}
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
+	<section class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
+		<div class="grid gap-6 lg:grid-cols-[0.94fr_1.06fr] lg:items-start">
+			<div class="surface-card-strong p-8 sm:p-10">
+				<p class="eyebrow">Operating Model</p>
+				<h2 class="mt-4 max-w-[14ch] text-[clamp(2.7rem,4vw,4.2rem)] font-semibold leading-[1.02] text-slate-900">
+					I help teams ship complex product surfaces without losing clarity in the system.
+				</h2>
+				<p class="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+					The strongest leverage comes from combining product-minded frontend work, reliable backend integration, and architectural judgment that keeps delivery moving without letting the codebase become opaque.
+				</p>
 
-  <section id="testimonials" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
-    <div class="grid gap-8 lg:grid-cols-[0.82fr_1fr] lg:items-start">
-      <SectionHeading
-        eyebrow="Testimonials"
-        title="Feedback from engineers who worked with Rohan directly."
-        description="These recommendations reflect day-to-day collaboration quality, delivery consistency, and the technical trust built inside real teams."
-      />
+				<div class="mt-8 grid gap-4 sm:grid-cols-2">
+					{deliveryPrinciples.map((principle) => (
+						<article class="rounded-[20px] border border-slate-900/8 bg-white/82 p-5">
+							<h3 class="text-lg font-semibold text-slate-900">{principle.title}</h3>
+							<p class="mt-2 text-sm leading-7 text-slate-600">{principle.description}</p>
+						</article>
+					))}
+				</div>
+			</div>
 
-      <div class="grid gap-5 md:grid-cols-2">
-        {testimonials.map((testimonial) => <TestimonialCard {...testimonial} />)}
-      </div>
-    </div>
-  </section>
+			<div class="grid content-start gap-4 sm:grid-cols-2">
+				{focusAreas.map((item) => (
+					<article class="surface-card h-fit p-5">
+						<div class="space-y-3">
+							<Badge variant="outline" icon={item.icon}>Focus Area</Badge>
+							<p class="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-400">
+								{item.note}
+							</p>
+						</div>
+						<h3 class="mt-4 text-[1.8rem] font-semibold leading-[1.15] text-slate-900">{item.title}</h3>
+						<p class="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
 
-  <section id="contact" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
-    <div class="surface-card-strong grid gap-8 p-8 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end">
-      <div>
-        <SectionHeading
-          eyebrow="Let's Build"
-          title="Need someone who can handle the module, the architecture, and the review quality bar?"
-          description="The landing page stays static and fast. The dedicated contact page keeps the outreach path clear, direct, and easy to act on."
-        />
+	<section id="experience" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
+		<div class="grid gap-10 lg:grid-cols-[0.8fr_1fr] lg:items-start">
+			<SectionHeading
+				eyebrow="Experience"
+				title="Enterprise product work across manufacturing, pensions, hospitality, and full-stack platform delivery."
+				description="The recurring thread is ownership: take responsibility for critical modules, improve the engineering shape of the system, and help the team ship with more confidence."
+			/>
+			<div class="space-y-5">
+				{experiences.map((experience) => <ExperienceCard {...experience} />)}
+			</div>
+		</div>
+	</section>
 
-        <div class="mt-8 grid gap-4 sm:grid-cols-2">
-          {engagementPaths.map((path) => (
-            <article class="rounded-[20px] border border-slate-900/8 bg-white/80 p-5">
-              <h3 class="text-lg font-semibold text-slate-900">{path.title}</h3>
-              <p class="mt-2 text-sm leading-7 text-slate-600">{path.description}</p>
-            </article>
-          ))}
-        </div>
+	<section id="testimonials" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
+		<div class="grid gap-8 lg:grid-cols-[0.82fr_1fr] lg:items-start">
+			<SectionHeading
+				eyebrow="Testimonials"
+				title="Feedback from engineers who worked with Rohan directly."
+				description="Recommendations matter when they reflect day-to-day collaboration quality, technical trust, and delivery consistency inside real teams."
+			/>
 
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href={`mailto:${site.email}`} class="primary-button">Email {site.author}</a>
-          <a href={withBasePath("/contact")} class="secondary-button">Open contact page</a>
-        </div>
-      </div>
+			<div class="grid gap-5 md:grid-cols-2">
+				{testimonials.map((testimonial) => <TestimonialCard {...testimonial} />)}
+			</div>
+		</div>
+	</section>
 
-      <div class="grid gap-4 lg:max-w-sm">
-        <div class="rounded-[22px] border border-slate-900/8 bg-white/88 p-6 shadow-panel">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-500">Fast Path</p>
-          <p class="mt-3 text-2xl font-semibold text-slate-900">Direct conversation without slowing the homepage down.</p>
-          <p class="mt-3 text-sm leading-7 text-slate-600">
-            For detailed project briefs, use the dedicated contact page and send the context directly by email.
-          </p>
-        </div>
+	<section id="contact" class="section-shell deferred-section py-16 sm:py-20 lg:py-24">
+		<div class="surface-card-strong grid gap-8 p-8 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end">
+			<div>
+				<SectionHeading
+					eyebrow="Let's Build"
+					title="Need a senior engineer who can handle the module, the architecture, and the quality bar?"
+					description="The fastest path is a short, concrete project brief. Start with the product context, the current constraint, and the part of the system that needs senior ownership."
+				/>
 
-        <div class="rounded-[22px] border border-slate-900/8 bg-slate-900 p-6 text-white shadow-panel">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/70">Response Routes</p>
-          <div class="mt-4 grid gap-3">
-            <a href={`mailto:${site.email}`} class="secondary-button justify-start border-white/15 bg-white/10 px-4 py-3 text-white hover:bg-white/16">Email directly</a>
-            <a href={site.social.linkedin} target="_blank" rel="noreferrer" class="secondary-button justify-start border-white/15 bg-white/10 px-4 py-3 text-white hover:bg-white/16">LinkedIn message</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+				<div class="mt-8 flex flex-wrap gap-3">
+					<a href={`mailto:${site.email}`} class="primary-button">Email {site.author}</a>
+					<a href={withBasePath("/contact")} class="secondary-button">Open contact page</a>
+					<a href={featuredUrl} class="secondary-button">Share the case study</a>
+				</div>
+			</div>
+
+			<div class="grid gap-4 lg:max-w-sm">
+				<div class="rounded-[22px] border border-slate-900/8 bg-white/88 p-6 shadow-panel">
+					<p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-slate-500">
+						Best fit
+					</p>
+					<p class="mt-3 text-2xl font-semibold text-slate-900">
+						Complex product surfaces that need calm, end-to-end engineering ownership.
+					</p>
+					<p class="mt-3 text-sm leading-7 text-slate-600">
+						Frontend platform work, secure integrations, architecture reviews, and AI-assisted feature design are the strongest match.
+					</p>
+				</div>
+
+				<div class="rounded-[22px] border border-slate-900/8 bg-slate-900 p-6 text-white shadow-panel">
+					<p class="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/70">
+						Response Routes
+					</p>
+					<div class="mt-4 grid gap-3">
+						<a
+							href={`mailto:${site.email}`}
+							class="secondary-button justify-start border-white/15 bg-white/10 px-4 py-3 text-white hover:bg-white/16"
+						>
+							Email directly
+						</a>
+						<a
+							href={site.social.linkedin}
+							target="_blank"
+							rel="noreferrer"
+							class="secondary-button justify-start border-white/15 bg-white/10 px-4 py-3 text-white hover:bg-white/16"
+						>
+							LinkedIn message
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 </BaseLayout>
