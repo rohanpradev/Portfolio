@@ -55,12 +55,11 @@ const Tag = isLinked ? "a" : "article";
 			quality={84}
 			widths={[480, 768, 1200]}
 			sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 42vw"
-			class="h-72 w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+			class="h-72 w-full scale-[1.08] object-cover object-center transition duration-700 group-hover:scale-[1.12]"
 			loading="lazy"
 		/>
 		<div class="absolute left-5 top-5 z-20 flex flex-wrap gap-2">
 			<Badge variant="accent" icon="sparkles">Featured Project</Badge>
-			{company && <Badge variant="outline">{company}</Badge>}
 		</div>
 		{duration && (
 			<div class="absolute bottom-5 left-5 z-20">
@@ -72,6 +71,7 @@ const Tag = isLinked ? "a" : "article";
 	<div class="flex flex-1 flex-col gap-5 p-6 sm:p-7">
 		<div>
 			<h3 class="text-2xl font-semibold text-slate-900 sm:text-[2rem]">{title}</h3>
+			{company && <p class="mt-2 text-sm font-medium text-slate-500">{company}</p>}
 			<p class="mt-3 text-sm leading-7 text-slate-600 sm:text-base">{description}</p>
 		</div>
 

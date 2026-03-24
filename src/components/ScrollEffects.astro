@@ -1,0 +1,103 @@
+<script is:inline>
+	(() => {
+		const parallaxNodes = Array.from(document.querySelectorAll("[data-parallax]"));
+		const revealNodes = Array.from(document.querySelectorAll("[data-reveal]"));
+
+		if (!parallaxNodes.length && !revealNodes.length) {
+			return;
+		}
+
+		const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+		const showRevealNodes = () => {
+			revealNodes.forEach((node) => node.classList.add("is-visible"));
+		};
+		const revealNodesInView = (observer) => {
+			const viewportHeight = window.innerHeight;
+
+			for (const node of revealNodes) {
+				const rect = node.getBoundingClientRect();
+
+				if (rect.top > viewportHeight * 0.92) {
+					continue;
+				}
+
+				node.classList.add("is-visible");
+				observer?.unobserve(node);
+			}
+		};
+
+		const updateParallax = () => {
+			const viewportCenter = window.innerHeight / 2;
+
+			for (const node of parallaxNodes) {
+				const speed = Number(node.dataset.parallax ?? 0);
+
+				if (!Number.isFinite(speed)) {
+					continue;
+				}
+
+				const rect = node.getBoundingClientRect();
+				const elementCenter = rect.top + rect.height / 2;
+				const offset = (viewportCenter - elementCenter) * speed;
+
+				node.style.setProperty("--parallax-y", `${offset.toFixed(2)}px`);
+			}
+		};
+
+		let requestFrame = false;
+		const requestParallaxUpdate = () => {
+			if (requestFrame || reducedMotionQuery.matches || !parallaxNodes.length) {
+				return;
+			}
+
+			requestFrame = true;
+			window.requestAnimationFrame(() => {
+				updateParallax();
+				requestFrame = false;
+			});
+		};
+
+		if (revealNodes.length) {
+			if (reducedMotionQuery.matches || !("IntersectionObserver" in window)) {
+				showRevealNodes();
+			} else {
+				document.documentElement.classList.add("motion-safe");
+				const revealObserver = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (!entry.isIntersecting) {
+								continue;
+							}
+
+							entry.target.classList.add("is-visible");
+							revealObserver.unobserve(entry.target);
+						}
+					},
+					{
+						threshold: 0.16,
+						rootMargin: "0px 0px -10% 0px",
+					},
+				);
+
+				revealNodes.forEach((node) => revealObserver.observe(node));
+				revealNodesInView(revealObserver);
+			}
+		}
+
+		if (parallaxNodes.length && !reducedMotionQuery.matches) {
+			requestParallaxUpdate();
+			window.addEventListener("scroll", requestParallaxUpdate, { passive: true });
+			window.addEventListener("resize", requestParallaxUpdate);
+		}
+
+		reducedMotionQuery.addEventListener?.("change", (event) => {
+			if (event.matches) {
+				showRevealNodes();
+				parallaxNodes.forEach((node) => node.style.removeProperty("--parallax-y"));
+				return;
+			}
+
+			requestParallaxUpdate();
+		});
+	})();
+</script>

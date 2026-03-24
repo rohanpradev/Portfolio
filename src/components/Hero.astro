@@ -4,156 +4,231 @@ import type { ImageMetadata } from "astro";
 import Badge from "./Badge.astro";
 
 interface Stat {
-  value: string;
-  label: string;
+	value: string;
+	label: string;
 }
 
 interface Highlight {
-  title: string;
-  detail: string;
+	title: string;
+	detail: string;
+}
+
+interface InsightCard {
+	label: string;
+	title: string;
+	detail: string;
 }
 
 interface SocialLink {
-  label: string;
-  href: string;
+	label: string;
+	href: string;
 }
 
 interface Props {
-  title: string;
-  subtitle: string;
-  ctaText: string;
-  ctaHref: string;
-  resumeHref: string;
-  resumeLabel?: string;
-  photo: ImageMetadata;
-  photoAlt?: string;
-  status?: string;
-  location?: string;
-  email?: string;
-  stats?: Stat[];
-  highlights?: Highlight[];
-  socialLinks?: SocialLink[];
+	title: string;
+	headline: string;
+	subtitle: string;
+	ctaText: string;
+	ctaHref: string;
+	resumeHref: string;
+	resumeLabel?: string;
+	photo: ImageMetadata;
+	photoAlt?: string;
+	status?: string;
+	location?: string;
+	email?: string;
+	stats?: Stat[];
+	highlights?: Highlight[];
+	insightCards?: InsightCard[];
+	socialLinks?: SocialLink[];
 }
 
 const {
-  title,
-  subtitle,
-  ctaText,
-  ctaHref,
-  resumeHref,
-  resumeLabel = "View Resume",
-  photo,
-  photoAlt = "Profile photo",
-  status = "Available for high-impact roles",
-  location,
-  email,
-  stats = [],
-  highlights = [],
-  socialLinks = [],
+	title,
+	headline,
+	subtitle,
+	ctaText,
+	ctaHref,
+	resumeHref,
+	resumeLabel = "View Resume",
+	photo,
+	photoAlt = "Profile photo",
+	status = "Available for high-impact roles",
+	location,
+	email,
+	stats = [],
+	highlights = [],
+	insightCards = [],
+	socialLinks = [],
 } = Astro.props as Props;
+
+const featureCards = insightCards.slice(0, 2);
 ---
 
-<section class="section-shell pt-8 sm:pt-10 lg:pt-12">
-  <div class="surface-card-strong relative overflow-hidden px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
-    <div aria-hidden="true" class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(15,118,110,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,_rgba(198,93,24,0.14),transparent_24%)]"></div>
-    <div aria-hidden="true" class="absolute right-[-8rem] top-[-8rem] h-64 w-64 rounded-full border border-white/60 bg-white/30 blur-3xl"></div>
-    <div aria-hidden="true" class="absolute bottom-[-7rem] left-[-5rem] h-56 w-56 rounded-full bg-accent/10 blur-3xl"></div>
+<section class="section-shell hero-space" aria-labelledby="hero-heading">
+	<div class="surface-card-strong relative overflow-hidden px-6 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+		<div
+			aria-hidden="true"
+			class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(15,118,110,0.2),transparent_34%),radial-gradient(circle_at_bottom_left,_rgba(198,93,24,0.14),transparent_24%)]"
+		></div>
+		<div
+			aria-hidden="true"
+			class="absolute right-[-10rem] top-[-10rem] h-72 w-72 rounded-full border border-white/60 bg-white/30 blur-3xl"
+			data-parallax="-0.14"
+		></div>
+		<div
+			aria-hidden="true"
+			class="absolute bottom-[-8rem] left-[-6rem] h-60 w-60 rounded-full bg-accent/12 blur-3xl"
+			data-parallax="0.18"
+		></div>
+		<div
+			aria-hidden="true"
+			class="absolute left-[45%] top-12 hidden h-32 w-32 rounded-full border border-white/60 bg-white/24 blur-2xl lg:block"
+			data-parallax="-0.08"
+		></div>
 
-    <div class="relative grid items-center gap-12 lg:grid-cols-[minmax(0,1.02fr)_380px] xl:grid-cols-[minmax(0,1.08fr)_420px]">
-      <div>
-        <Badge variant="outline" icon="briefcase" class="max-w-[30rem] justify-start text-left leading-6 sm:max-w-[34rem]">
-          {status}
-        </Badge>
-        <h1 class="mt-6 max-w-[11ch] text-[clamp(3.5rem,8vw,6.7rem)] font-semibold leading-[0.93] text-slate-900">
-          {title}
-        </h1>
-        <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
-          {subtitle}
-        </p>
+		<div class="relative grid items-start gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,29rem)] xl:gap-16">
+			<div class="max-w-3xl">
+				<div>
+					<Badge
+						variant="outline"
+						icon="briefcase"
+						class="max-w-[34rem] justify-start text-left leading-6"
+					>
+						{status}
+					</Badge>
+					<p class="mt-6 text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">
+						{title}
+					</p>
+					<h1
+						id="hero-heading"
+						class="mt-4 max-w-[11ch] text-[clamp(3.5rem,8vw,6.6rem)] font-semibold leading-[0.92] text-slate-900"
+					>
+						{headline}
+					</h1>
+					<p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
+						{subtitle}
+					</p>
+				</div>
 
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href={ctaHref} class="primary-button">{ctaText}</a>
-          <a href={resumeHref} class="secondary-button">{resumeLabel}</a>
-        </div>
+				<div class="mt-8 flex flex-wrap gap-3">
+					<a href={ctaHref} class="primary-button">
+						{ctaText}
+					</a>
+					<a href={resumeHref} class="secondary-button">
+						{resumeLabel}
+					</a>
+				</div>
 
-        {(location || email || socialLinks.length > 0) && (
-          <div class="mt-8 flex flex-wrap items-center gap-3 text-sm text-slate-600">
-            {location && <Badge variant="secondary" icon="map-pin">{location}</Badge>}
-            {email && <Badge href={`mailto:${email}`} variant="secondary" icon="mail">{email}</Badge>}
-            {socialLinks.map((link) => (
-              <Badge
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                variant="outline"
-                icon={link.label === "GitHub" ? "github" : "linkedin"}
-              >
-                {link.label}
-              </Badge>
-            ))}
-          </div>
-        )}
+				{(location || email || socialLinks.length > 0) && (
+					<div class="mt-8 flex flex-wrap items-center gap-3 text-sm text-slate-600">
+						{location && <Badge variant="secondary" icon="map-pin">{location}</Badge>}
+						{email && <Badge href={`mailto:${email}`} variant="secondary" icon="mail">{email}</Badge>}
+						{socialLinks.map((link) => (
+							<Badge
+								href={link.href}
+								target="_blank"
+								rel="noreferrer"
+								variant="outline"
+								icon={link.label === "GitHub" ? "github" : "linkedin"}
+							>
+								{link.label}
+							</Badge>
+						))}
+					</div>
+				)}
 
-        {stats.length > 0 && (
-          <dl class="mt-10 grid gap-4 sm:grid-cols-3">
-            {stats.map((stat) => (
-              <div class="surface-card rounded-[22px] px-5 py-4">
-                <dt class="text-sm font-medium text-slate-500">{stat.label}</dt>
-                <dd class="mt-2 text-3xl font-semibold text-slate-900">{stat.value}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
-      </div>
+				{stats.length > 0 && (
+					<dl class="mt-10 grid gap-4 sm:grid-cols-3">
+						{stats.map((stat) => (
+							<div class="surface-card rounded-[22px] px-5 py-4">
+								<dt class="text-sm font-medium text-slate-500">{stat.label}</dt>
+								<dd class="mt-2 text-3xl font-semibold text-slate-900">{stat.value}</dd>
+							</div>
+						))}
+					</dl>
+				)}
+			</div>
 
-      <div class="relative mx-auto w-full max-w-[26rem] space-y-4">
-        <div class="surface-card-strong floating-card relative overflow-hidden bg-primary shadow-float">
-          <div aria-hidden="true" class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),transparent_38%),radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_24%)]"></div>
-          <Image
-            src={photo}
-            alt={photoAlt}
-            widths={[320, 480, 720]}
-            sizes="(max-width: 1024px) min(100vw - 2rem, 26rem), 400px"
-            format="webp"
-            quality={86}
-            class="aspect-square w-full object-cover object-center"
-            loading="eager"
-            decoding="async"
-            fetchpriority="high"
-          />
-        </div>
+			<div class="mx-auto w-full max-w-[30rem]">
+				<figure class="surface-card-strong floating-card relative overflow-hidden bg-primary shadow-float">
+					<div
+						aria-hidden="true"
+						class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),transparent_38%),radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_24%)]"
+					></div>
+					<Image
+						src={photo}
+						alt={photoAlt}
+						widths={[320, 480, 720]}
+						sizes="(max-width: 1024px) min(100vw - 2rem, 30rem), 440px"
+						format="webp"
+						quality={86}
+						class="aspect-[0.92] w-full scale-[1.08] object-cover object-[center_18%]"
+						loading="eager"
+						decoding="async"
+						fetchpriority="high"
+					/>
+					<figcaption class="border-t border-slate-900/8 bg-white/90 px-5 py-4 text-sm text-slate-600">
+						<p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-500">
+							Current focus
+						</p>
+						<p class="mt-2 leading-6">
+							Scalable frontend systems, secure integrations, and useful AI-assisted product flows that remain maintainable after launch.
+						</p>
+					</figcaption>
+				</figure>
 
-        {highlights.length > 0 && (
-          <div class="surface-card p-5 text-slate-900 sm:p-6">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <p class="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-500">What I optimize for</p>
-                <p class="mt-2 text-sm leading-6 text-slate-600">Build focus: performance-first product systems.</p>
-              </div>
-              <div class="hidden border-l-2 border-accent/70 pl-3 sm:block">
-                <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Delivery lens</p>
-                <p class="mt-1 text-sm leading-6 text-slate-600">Fast, operable systems under real traffic.</p>
-              </div>
-            </div>
+				{featureCards.length > 0 && (
+					<div class="mt-4 grid gap-4 sm:grid-cols-2">
+						{featureCards.map((card) => (
+							<article class="surface-card px-5 py-4 shadow-panel">
+								<p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-500">
+									{card.label}
+								</p>
+								<p class="mt-2 text-xl font-semibold leading-tight text-slate-900">
+									{card.title}
+								</p>
+								<p class="mt-2 text-sm leading-6 text-slate-600">{card.detail}</p>
+							</article>
+						))}
+					</div>
+				)}
 
-            <ul class="mt-4 space-y-3">
-              {highlights.map((item) => (
-                <li class="flex gap-3">
-                  <span aria-hidden="true" class="mt-1 h-2.5 w-2.5 rounded-full bg-orange-400"></span>
-                  <span>
-                    <span class="block text-sm font-semibold text-slate-900">{item.title}</span>
-                    <span class="mt-1 block text-sm leading-6 text-slate-600">{item.detail}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+				{highlights.length > 0 && (
+					<div class="surface-card mt-4 p-5 text-slate-900 sm:p-6">
+						<div class="flex items-start justify-between gap-4">
+							<div>
+								<p class="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-slate-500">
+									What I optimize for
+								</p>
+								<p class="mt-2 text-sm leading-6 text-slate-600">
+									Product systems that still feel readable and fast when complexity increases.
+								</p>
+							</div>
+							<div class="hidden border-l-2 border-accent/70 pl-3 sm:block">
+								<p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
+									Delivery lens
+								</p>
+								<p class="mt-1 text-sm leading-6 text-slate-600">
+									Architecture, execution, and review quality handled together.
+								</p>
+							</div>
+						</div>
 
-            <div class="mt-5 rounded-[18px] bg-slate-900 px-4 py-4 text-sm leading-6 text-white">
-              Clear tradeoffs, calm delivery, and interfaces that still feel fast under real traffic.
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
+						<ul class="mt-4 space-y-3">
+							{highlights.map((item) => (
+								<li class="flex gap-3">
+									<span aria-hidden="true" class="mt-1 h-2.5 w-2.5 rounded-full bg-orange-400"></span>
+									<span>
+										<span class="block text-sm font-semibold text-slate-900">{item.title}</span>
+										<span class="mt-1 block text-sm leading-6 text-slate-600">{item.detail}</span>
+									</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
+			</div>
+		</div>
+	</div>
 </section>

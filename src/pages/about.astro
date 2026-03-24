@@ -3,79 +3,218 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ExperienceCard from "../components/ExperienceCard.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import Badge from "../components/Badge.astro";
-import { site } from "../data/meta";
+import { site, withBasePath } from "../data/meta";
 import { experiences } from "../data/experiences";
 import { skillGroups } from "../data/skills";
 
 const principles = [
-  {
-    title: "Own critical modules end to end",
-    description:
-      "Architecture, implementation, integration, review quality, and delivery pressure are handled as one connected responsibility.",
-  },
-  {
-    title: "Favor clarity in secure systems",
-    description:
-      "Authentication, RBAC, and API contracts should make the product safer without turning the codebase into a maze.",
-  },
-  {
-    title: "Use AI where it earns its place",
-    description:
-      "Generative AI and retrieval workflows are valuable when they improve the product and stay understandable to the engineering team.",
-  },
+	{
+		title: "Own critical modules end to end",
+		description:
+			"Architecture, implementation, integration, review quality, and delivery pressure are handled as one connected responsibility.",
+	},
+	{
+		title: "Favor clarity in secure systems",
+		description:
+			"Authentication, RBAC, and API contracts should make the product safer without turning the codebase into a maze.",
+	},
+	{
+		title: "Use AI where it earns its place",
+		description:
+			"Generative AI and retrieval workflows are valuable when they improve the product and stay understandable to the engineering team.",
+	},
+];
+
+const profileStats = [
+	{ value: "9+", label: "Years in product engineering" },
+	{ value: `${experiences.length}`, label: "Enterprise roles across delivery stages" },
+	{ value: `${skillGroups.length}`, label: "Capability groups spanning frontend, backend, cloud, and AI" },
+];
+
+const capabilityNotes = [
+	"React and TypeScript systems built for enterprise complexity rather than demo-scale apps.",
+	"Node.js services, API contracts, auth boundaries, and operational integrations that reduce friction for the UI.",
+	"Architecture reviews, mentoring, and delivery habits that raise the team bar instead of only landing one feature.",
+];
+
+const aboutPageUrl = new URL(withBasePath("/about"), site.url).toString();
+const structuredData = [
+	{
+		"@type": "AboutPage",
+		"@id": `${aboutPageUrl}#about-page`,
+		url: aboutPageUrl,
+		name: `About ${site.name}`,
+		description: "Background, working style, and technical strengths for M Rohan Pradev.",
+		mainEntity: {
+			"@id": `${site.homeUrl}#person`,
+		},
+		about: {
+			"@id": `${site.homeUrl}#person`,
+		},
+	},
 ];
 ---
 
-<BaseLayout title={`About | ${site.name}`} description="Background, working style, and technical strengths for M Rohan Pradev.">
-  <section class="section-shell pt-8 sm:pt-10">
-    <div class="surface-card-strong p-8 sm:p-10 lg:p-12">
-      <SectionHeading
-        eyebrow="About"
-        title="Senior full-stack engineering for enterprise applications, cloud-native services, and AI-powered workflows."
-        description="The core profile is a React, TypeScript, and Node.js engineer with deep ownership across frontend systems, secure integrations, architecture reviews, and team enablement. The goal is always the same: ship robust software without letting the codebase decay under delivery pressure."
-      />
+<BaseLayout
+	title={`About | ${site.name}`}
+	description="Background, working style, and technical strengths for M Rohan Pradev."
+	structuredData={structuredData}
+>
+	<section
+		id="about-overview"
+		aria-labelledby="about-heading"
+		class="section-shell intro-space"
+	>
+		<div class="surface-card-strong overflow-hidden p-8 sm:p-10 lg:p-12">
+			<div class="grid gap-8 xl:grid-cols-[0.92fr_1.08fr] xl:items-start">
+				<div data-reveal>
+					<SectionHeading
+						id="about-heading"
+						eyebrow="About"
+						title="Senior full-stack engineering for product systems that cannot afford drift."
+						description="The core profile is a React, TypeScript, and Node.js engineer with deep ownership across frontend systems, secure integrations, architecture reviews, and team enablement. The goal is consistent: ship robust software without letting the codebase decay under delivery pressure."
+					/>
 
-      <div class="mt-10 grid gap-4 lg:grid-cols-3">
-        {principles.map((principle) => (
-          <article class="rounded-[20px] border border-slate-900/8 bg-white/80 p-6">
-            <h2 class="text-2xl font-semibold text-slate-900">{principle.title}</h2>
-            <p class="mt-3 text-sm leading-7 text-slate-600">{principle.description}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
+					<div class="mt-8 flex flex-wrap gap-3">
+						<a href={withBasePath("/projects")} class="primary-button">View flagship work</a>
+						<a href={withBasePath("/contact")} class="secondary-button">Start a conversation</a>
+					</div>
+				</div>
 
-  <section class="section-shell py-16 sm:py-20 lg:py-24">
-    <div class="grid gap-10 lg:grid-cols-[0.8fr_1fr] lg:items-start">
-      <SectionHeading
-        eyebrow="Timeline"
-        title="Experience across enterprise domains, reusable platforms, and production-grade integrations."
-        description="From hotel operations and pension workflows to manufacturing systems, the strongest value has been bringing structure, speed, and confidence to complex delivery environments."
-      />
-      <div class="space-y-5">
-        {experiences.map((experience) => <ExperienceCard {...experience} />)}
-      </div>
-    </div>
-  </section>
+				<div class="grid gap-4">
+					<div class="grid gap-4 sm:grid-cols-3">
+						{profileStats.map((item, index) => (
+							<div
+								class="surface-card p-5"
+								data-reveal
+								style={`--reveal-delay: ${index * 80}ms;`}
+							>
+								<p class="text-3xl font-semibold text-slate-900">{item.value}</p>
+								<p class="mt-2 text-sm leading-6 text-slate-600">{item.label}</p>
+							</div>
+						))}
+					</div>
 
-  <section class="section-shell pb-16 sm:pb-20 lg:pb-24">
-    <SectionHeading
-      eyebrow="Core Strengths"
-      title="Breadth across the stack, with strongest leverage in frontend systems and product architecture."
-      description="The technical range is useful because it allows better tradeoffs between UI quality, backend integration, cloud constraints, and delivery timelines."
-    />
+					<div class="rounded-[24px] bg-slate-900 px-6 py-6 text-white" data-reveal style="--reveal-delay: 180ms;">
+						<p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/68">
+							Operating lens
+						</p>
+						<p class="mt-3 text-base leading-7 text-white/84">
+							The strongest leverage comes from connecting product clarity, system boundaries, and delivery rigor so the team can keep shipping without accumulating avoidable chaos.
+						</p>
+					</div>
 
-    <div class="mt-10 grid gap-5 lg:grid-cols-2">
-      {skillGroups.map((group) => (
-        <article class="surface-card-strong p-6">
-          <h2 class="text-2xl font-semibold text-slate-900">{group.title}</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">{group.description}</p>
-          <div class="mt-5 flex flex-wrap gap-2">
-            {group.items.map((item) => <Badge variant="secondary">{item}</Badge>)}
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
+					<ul class="grid gap-3" data-reveal style="--reveal-delay: 240ms;">
+						{capabilityNotes.map((item) => (
+							<li class="rounded-[20px] border border-slate-900/8 bg-white/84 px-5 py-4 text-sm leading-7 text-slate-600">
+								{item}
+							</li>
+						))}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="principles"
+		aria-labelledby="principles-heading"
+		class="section-shell"
+	>
+		<div class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+			<div data-reveal>
+				<SectionHeading
+					id="principles-heading"
+					eyebrow="Working Principles"
+					title="The engineering habits that hold up when the project gets harder."
+					description="These principles are practical rather than aspirational. They are the patterns that keep enterprise work legible when requirements, integrations, and delivery pressure increase."
+				/>
+			</div>
+
+			<div class="grid gap-4 md:grid-cols-3">
+				{principles.map((principle, index) => (
+					<article
+						class="surface-card-strong h-full p-6"
+						data-reveal
+						style={`--reveal-delay: ${index * 80}ms;`}
+					>
+						<h2 class="text-2xl font-semibold text-slate-900">{principle.title}</h2>
+						<p class="mt-3 text-sm leading-7 text-slate-600">{principle.description}</p>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="timeline"
+		aria-labelledby="timeline-heading"
+		class="section-shell"
+	>
+		<div class="grid gap-10 lg:grid-cols-[0.8fr_1fr] lg:items-start">
+			<div data-reveal>
+				<SectionHeading
+					id="timeline-heading"
+					eyebrow="Timeline"
+					title="Experience across enterprise domains, reusable platforms, and production-grade integrations."
+					description="From hotel operations and pension workflows to manufacturing systems, the strongest value has been bringing structure, speed, and confidence to complex delivery environments."
+				/>
+			</div>
+			<div class="space-y-5">
+				{experiences.map((experience, index) => (
+					<div data-reveal style={`--reveal-delay: ${index * 90}ms;`}>
+						<ExperienceCard {...experience} />
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="strengths"
+		aria-labelledby="strengths-heading"
+		class="section-shell"
+	>
+		<div data-reveal>
+			<SectionHeading
+				id="strengths-heading"
+				eyebrow="Core Strengths"
+				title="Breadth across the stack, with strongest leverage in frontend systems and product architecture."
+				description="The technical range is useful because it allows better tradeoffs between UI quality, backend integration, cloud constraints, and delivery timelines."
+			/>
+		</div>
+
+		<div class="mt-10 grid gap-5 lg:grid-cols-2">
+			{skillGroups.map((group, index) => (
+				<article
+					class="surface-card-strong p-6"
+					data-reveal
+					style={`--reveal-delay: ${index * 70}ms;`}
+				>
+					<h2 class="text-2xl font-semibold text-slate-900">{group.title}</h2>
+					<p class="mt-3 text-sm leading-7 text-slate-600">{group.description}</p>
+					<div class="mt-5 flex flex-wrap gap-2">
+						{group.items.map((item) => <Badge variant="secondary">{item}</Badge>)}
+					</div>
+				</article>
+			))}
+		</div>
+
+		<div class="mt-10 surface-card-strong grid gap-6 p-8 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end" data-reveal>
+			<div>
+				<p class="eyebrow">Best next step</p>
+				<h2 class="mt-4 max-w-[14ch] text-[clamp(2.2rem,4vw,3.5rem)] font-semibold leading-[1.02] text-slate-900">
+					If the team needs senior product engineering without added noise, start with the problem statement.
+				</h2>
+				<p class="mt-4 max-w-2xl text-base leading-8 text-slate-600">
+					The fastest first conversation is a clear brief: what the product does, what is under pressure, and which part of the system needs senior ownership.
+				</p>
+			</div>
+
+			<div class="flex flex-col gap-3">
+				<a href={`mailto:${site.email}`} class="primary-button">Email directly</a>
+				<a href={withBasePath("/contact")} class="secondary-button">Open contact page</a>
+			</div>
+		</div>
+	</section>
 </BaseLayout>

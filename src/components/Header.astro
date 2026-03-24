@@ -1,57 +1,175 @@
 ---
 import { site, withBasePath } from "../data/meta";
+
+function normalizePath(value: string) {
+	return value.replace(/\/$/, "") || "/";
+}
+
+const pathnameWithoutBase =
+	site.basePath && Astro.url.pathname.startsWith(site.basePath)
+		? Astro.url.pathname.slice(site.basePath.length) || "/"
+		: Astro.url.pathname;
+const currentPath = normalizePath(pathnameWithoutBase);
+const navItems = site.nav.map((item) => ({
+	...item,
+	isActive: normalizePath(new URL(item.href, site.url).pathname.replace(site.basePath, "")) === currentPath,
+}));
 ---
 
 <header class="sticky top-0 z-[60] pt-4 sm:pt-5">
-  <div class="section-shell">
-    <div class="surface-card-strong relative overflow-visible flex items-center justify-between px-4 py-3 sm:px-6">
-      <a href={withBasePath("/")} class="flex items-center gap-3 text-slate-900">
-        <img
-          src={withBasePath("/brand-mark.svg")}
-          alt="M Rohan Pradev logo"
-          width="44"
-          height="44"
-          class="h-11 w-11 rounded-xl shadow-panel"
-          decoding="async"
-        />
-        <span>
-          <span class="block text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Portfolio</span>
-          <span class="block text-base font-semibold">{site.author}</span>
-        </span>
-      </a>
+	<div class="section-shell">
+		<div class="surface-card-strong relative flex items-center justify-between gap-4 px-4 py-3 sm:px-6">
+			<a href={withBasePath("/")} class="flex items-center gap-3 text-slate-900">
+				<img
+					src={withBasePath("/brand-mark.svg")}
+					alt="M Rohan Pradev logo"
+					width="44"
+					height="44"
+					class="h-11 w-11 rounded-xl shadow-panel"
+					decoding="async"
+				/>
+				<span>
+					<span class="block text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+						Portfolio
+					</span>
+					<span class="block text-base font-semibold">{site.author}</span>
+				</span>
+			</a>
 
-      <nav class="hidden items-center gap-5 text-sm font-medium text-slate-600 lg:flex">
-        {site.nav.map((item) => (
-          <a href={item.href} class="transition hover:text-slate-900">{item.label}</a>
-        ))}
-      </nav>
+			<nav aria-label="Primary" class="hidden items-center gap-2 text-sm font-medium text-slate-600 lg:flex">
+				{navItems.map((item) => (
+					<a
+						href={item.href}
+						aria-current={item.isActive ? "page" : undefined}
+						class:list={[
+							"rounded-full px-4 py-2 transition",
+							item.isActive
+								? "bg-slate-900 text-white shadow-panel"
+								: "hover:bg-white/80 hover:text-slate-900",
+						]}
+					>
+						{item.label}
+					</a>
+				))}
+			</nav>
 
-      <div class="hidden items-center gap-3 lg:flex">
-        <a href={`mailto:${site.email}`} class="secondary-button px-4 py-2.5">{site.email}</a>
-        <a href={withBasePath("/contact")} class="primary-button px-4 py-2.5">Start a project</a>
-      </div>
+			<div class="hidden items-center gap-3 lg:flex">
+				<a href={`mailto:${site.email}`} class="secondary-button px-4 py-2.5">
+					{site.email}
+				</a>
+				<a href={withBasePath("/contact")} class="primary-button px-4 py-2.5">
+					Start a project
+				</a>
+			</div>
 
-      <details class="relative z-[70] lg:hidden">
-        <summary class="grid h-11 w-11 cursor-pointer place-items-center rounded-xl border border-slate-900/10 bg-white/80 text-slate-900 transition hover:bg-white">
-          <span class="sr-only">Open menu</span>
-          <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-            <path d="M4 7h16" />
-            <path d="M4 12h16" />
-            <path d="M4 17h16" />
-          </svg>
-        </summary>
-        <div class="surface-card-strong absolute right-0 top-[calc(100%+0.85rem)] z-[80] w-[min(20rem,calc(100vw-2rem))] p-4 shadow-float">
-          <nav class="grid gap-2 text-sm font-medium text-slate-700">
-            {site.nav.map((item) => (
-              <a href={item.href} class="rounded-xl px-4 py-3 transition hover:bg-slate-900/5">{item.label}</a>
-            ))}
-          </nav>
-          <div class="mt-4 grid gap-2">
-            <a href={withBasePath("/resume")} class="secondary-button w-full px-4 py-3">Resume</a>
-            <a href={withBasePath("/contact")} class="primary-button w-full px-4 py-3">Contact</a>
-          </div>
-        </div>
-      </details>
-    </div>
-  </div>
+			<div class="relative lg:hidden">
+				<button
+					type="button"
+					class="grid h-11 w-11 place-items-center rounded-xl border border-slate-900/10 bg-white/80 text-slate-900 transition hover:bg-white"
+					data-nav-toggle
+					aria-expanded="false"
+					aria-controls="mobile-navigation"
+					aria-label="Open menu"
+				>
+					<svg
+						aria-hidden="true"
+						class="h-5 w-5"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.8"
+						stroke-linecap="round"
+					>
+						<path d="M4 7h16" />
+						<path d="M4 12h16" />
+						<path d="M4 17h16" />
+					</svg>
+				</button>
+
+				<div
+					id="mobile-navigation"
+					class="surface-card-strong absolute right-0 top-[calc(100%+0.85rem)] z-[80] w-[min(20rem,calc(100vw-2rem))] p-4 shadow-float"
+					data-nav-panel
+					hidden
+				>
+					<nav aria-label="Mobile" class="grid gap-2 text-sm font-medium text-slate-700">
+						{navItems.map((item) => (
+							<a
+								href={item.href}
+								aria-current={item.isActive ? "page" : undefined}
+								class:list={[
+									"rounded-xl px-4 py-3 transition",
+									item.isActive
+										? "bg-slate-900 text-white"
+										: "hover:bg-slate-900/5",
+								]}
+							>
+								{item.label}
+							</a>
+						))}
+					</nav>
+					<div class="mt-4 grid gap-2">
+						<a href={withBasePath("/resume")} class="secondary-button w-full px-4 py-3">
+							Resume
+						</a>
+						<a href={withBasePath("/contact")} class="primary-button w-full px-4 py-3">
+							Contact
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script is:inline>
+		(() => {
+			const header = document.currentScript?.closest("header");
+
+			if (!header) {
+				return;
+			}
+
+			const toggle = header.querySelector("[data-nav-toggle]");
+			const panel = header.querySelector("[data-nav-panel]");
+			const panelLinks = panel?.querySelectorAll("a") ?? [];
+
+			if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) {
+				return;
+			}
+
+			const setOpen = (open) => {
+				toggle.setAttribute("aria-expanded", String(open));
+				toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+				panel.hidden = !open;
+			};
+
+			setOpen(false);
+
+			toggle.addEventListener("click", () => {
+				setOpen(toggle.getAttribute("aria-expanded") !== "true");
+			});
+
+			panelLinks.forEach((link) => {
+				link.addEventListener("click", () => setOpen(false));
+			});
+
+			document.addEventListener("click", (event) => {
+				if (!header.contains(event.target)) {
+					setOpen(false);
+				}
+			});
+
+			document.addEventListener("keydown", (event) => {
+				if (event.key === "Escape") {
+					setOpen(false);
+				}
+			});
+
+			window.addEventListener("resize", () => {
+				if (window.innerWidth >= 1024) {
+					setOpen(false);
+				}
+			});
+		})();
+	</script>
 </header>

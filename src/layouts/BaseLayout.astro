@@ -2,6 +2,7 @@
 import type { ImageMetadata } from "astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import ScrollEffects from "../components/ScrollEffects.astro";
 import { site, withBasePath } from "../data/meta";
 import "../styles/globals.css";
 
@@ -166,10 +167,18 @@ const robots = noindex
 		<meta name="author" content={site.author} />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="theme-color" content="#10213a" />
+		<meta name="referrer" content="strict-origin-when-cross-origin" />
 		<meta name="robots" content={robots} />
 		<meta name="googlebot" content={robots} />
 		<link rel="canonical" href={canonical} />
 		<link rel="alternate" hreflang="en-IN" href={canonical} />
+		<link rel="alternate" hreflang="x-default" href={canonical} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap"
+		/>
 		<link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
 		<link rel="shortcut icon" href={withBasePath("/favicon.svg")} />
 		<link rel="apple-touch-icon" href={withBasePath("/apple-touch-icon.png")} />
@@ -186,6 +195,7 @@ const robots = noindex
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
 		<meta property="og:image" content={socialImage} />
+		<meta property="og:image:secure_url" content={socialImage} />
 		<meta property="og:image:alt" content={imageAlt} />
 		<meta property="og:image:width" content={String(imageWidth)} />
 		<meta property="og:image:height" content={String(imageHeight)} />
@@ -211,9 +221,10 @@ const robots = noindex
 			Skip to content
 		</a>
 		<Header />
-		<main id="main-content" class="pb-12 sm:pb-16">
+		<main id="main-content" class="page-stack pb-12 sm:pb-16">
 			<slot />
 		</main>
 		<Footer />
+		<ScrollEffects />
 	</body>
 </html>

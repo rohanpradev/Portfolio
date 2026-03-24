@@ -3,41 +3,106 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import { site } from "../data/meta";
+import { site, withBasePath } from "../data/meta";
 
 const projects = (await getCollection("projects")).sort(
 	(a, b) => a.data.order - b.data.order,
 );
+
+const projectPageUrl = new URL(withBasePath("/projects"), site.url).toString();
+const structuredData = [
+	{
+		"@type": "CollectionPage",
+		"@id": `${projectPageUrl}#collection-page`,
+		url: projectPageUrl,
+		name: `Projects | ${site.name}`,
+		description:
+			"Selected project summaries from M Rohan Pradev covering enterprise product delivery, frontend architecture, backend orchestration, and AI-assisted workflows.",
+		mainEntity: {
+			"@type": "ItemList",
+			itemListElement: projects.map((project, index) => ({
+				"@type": "ListItem",
+				position: index + 1,
+				url: new URL(withBasePath(`/projects/${project.id}`), site.url).toString(),
+				name: project.data.title,
+			})),
+		},
+	},
+];
 ---
 
 <BaseLayout
 	title={`Projects | ${site.name}`}
 	description="Selected project summaries from M Rohan Pradev covering enterprise product delivery, frontend architecture, backend orchestration, and AI-assisted workflows."
+	structuredData={structuredData}
 >
-	<section class="section-shell pt-8 sm:pt-10">
-		<div class="surface-card-strong p-8 sm:p-10 lg:p-12">
-			<SectionHeading
-				eyebrow="Projects"
-				title="Project summaries focused on the work that actually proves engineering depth."
-				description="This page keeps the strongest project visible without exposing the full detailed walkthrough publicly right now."
-			/>
+	<section id="projects-intro" aria-labelledby="projects-heading" class="section-shell intro-space">
+		<div class="surface-card-strong grid gap-8 p-8 sm:p-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+			<div data-reveal>
+				<SectionHeading
+					id="projects-heading"
+					eyebrow="Projects"
+					title="Project summaries focused on the work that actually proves engineering depth."
+					description="This page keeps the strongest project work visible without padding the portfolio with weak examples. Each entry is here to show delivery quality, system thinking, and practical product impact."
+				/>
+
+				<div class="mt-8 flex flex-wrap gap-3">
+					<a href={withBasePath("/contact")} class="primary-button">Discuss similar work</a>
+					<a href={withBasePath("/about")} class="secondary-button">View background</a>
+				</div>
+			</div>
+
+			<div class="grid gap-4 sm:grid-cols-3">
+				<div class="surface-card p-5" data-reveal>
+					<p class="text-3xl font-semibold text-slate-900">{projects.length}</p>
+					<p class="mt-2 text-sm leading-6 text-slate-600">Curated case studies and project summaries</p>
+				</div>
+				<div class="surface-card p-5" data-reveal style="--reveal-delay: 80ms;">
+					<p class="text-3xl font-semibold text-slate-900">Enterprise</p>
+					<p class="mt-2 text-sm leading-6 text-slate-600">Work shaped around real constraints, not toy examples</p>
+				</div>
+				<div class="surface-card p-5" data-reveal style="--reveal-delay: 160ms;">
+					<p class="text-3xl font-semibold text-slate-900">UI to AI</p>
+					<p class="mt-2 text-sm leading-6 text-slate-600">Frontend architecture, integrations, caching, and applied AI</p>
+				</div>
+			</div>
 		</div>
 	</section>
 
-	<section class="section-shell py-16 sm:py-20 lg:py-24">
+	<section class="section-shell">
 		<div class="grid gap-6">
-			{projects.map((project) => (
-				<ProjectCard
-					title={project.data.title}
-					description={project.data.description}
-					tech={project.data.tech}
-					image={project.data.cover}
-					alt={project.data.coverAlt}
-					company={project.data.company}
-					duration={project.data.duration}
-					outcomes={project.data.outcomes}
-				/>
+			{projects.map((project, index) => (
+				<div data-reveal style={`--reveal-delay: ${index * 90}ms;`}>
+					<ProjectCard
+						title={project.data.title}
+						description={project.data.description}
+						tech={project.data.tech}
+						image={project.data.cover}
+						alt={project.data.coverAlt}
+						href={withBasePath(`/projects/${project.id}`)}
+						company={project.data.company}
+						duration={project.data.duration}
+						outcomes={project.data.outcomes}
+					/>
+				</div>
 			))}
+		</div>
+
+		<div class="mt-10 surface-card-strong grid gap-6 p-8 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end" data-reveal>
+			<div>
+				<p class="eyebrow">Need a private walkthrough?</p>
+				<h2 class="mt-4 max-w-[14ch] text-[clamp(2.2rem,4vw,3.4rem)] font-semibold leading-[1.02] text-slate-900">
+					If the public summary is enough to establish fit, the next step is a project conversation.
+				</h2>
+				<p class="mt-4 max-w-2xl text-base leading-8 text-slate-600">
+					The strongest details are easiest to discuss in context: team shape, stack, delivery pressure, and the part of the system that needs senior ownership.
+				</p>
+			</div>
+
+			<div class="flex flex-col gap-3">
+				<a href={withBasePath("/contact")} class="primary-button">Open contact page</a>
+				<a href={`mailto:${site.email}`} class="secondary-button">Email directly</a>
+			</div>
 		</div>
 	</section>
 </BaseLayout>
