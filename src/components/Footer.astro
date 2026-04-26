@@ -35,7 +35,6 @@ import { site, withBasePath } from "../data/meta";
     <div class="flex flex-col gap-3 px-2 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
       <p>&copy; {new Date().getFullYear()} {site.author}. All rights reserved.</p>
       <nav aria-label="Footer" class="flex flex-wrap gap-4">
-        <a href={withBasePath("/resume")} class="font-medium text-slate-700 hover:text-slate-900">Resume</a>
         <a href={withBasePath("/about")} class="font-medium text-slate-700 hover:text-slate-900">About</a>
         <a href={withBasePath("/contact")} class="font-medium text-slate-700 hover:text-slate-900">Contact</a>
       </nav>

@@ -167,10 +167,34 @@ const robots = noindex
 		<meta name="description" content={description} />
 		<meta name="author" content={site.author} />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="theme-color" content="#130d18" />
+		<meta name="theme-color" content="#0b1220" data-theme-color />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 		<meta name="robots" content={robots} />
 		<meta name="googlebot" content={robots} />
+		<script is:inline>
+			(() => {
+				const storageKey = "theme-preference";
+				const root = document.documentElement;
+				const getPreferredTheme = () => {
+					try {
+						const savedTheme = window.localStorage.getItem(storageKey);
+
+						if (savedTheme === "light" || savedTheme === "dark") {
+							return savedTheme;
+						}
+					} catch {}
+
+					return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+				};
+
+				const theme = getPreferredTheme();
+				root.dataset.theme = theme;
+				root.style.colorScheme = theme;
+				document
+					.querySelector("[data-theme-color]")
+					?.setAttribute("content", theme === "light" ? "#f3f7fb" : "#0b1220");
+			})();
+		</script>
 		<link rel="canonical" href={canonical} />
 		<link rel="alternate" hreflang="en-IN" href={canonical} />
 		<link rel="alternate" hreflang="x-default" href={canonical} />
@@ -222,5 +246,86 @@ const robots = noindex
 		</main>
 		<Footer />
 		<ScrollEffects />
+		<script is:inline>
+			(() => {
+				const storageKey = "theme-preference";
+				const root = document.documentElement;
+				const metaTheme = document.querySelector("[data-theme-color]");
+				const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
+
+				const themeColors = {
+					light: "#f3f7fb",
+					dark: "#0b1220",
+				};
+
+				const getStoredTheme = () => {
+					try {
+						const savedTheme = window.localStorage.getItem(storageKey);
+						return savedTheme === "light" || savedTheme === "dark" ? savedTheme : null;
+					} catch {
+						return null;
+					}
+				};
+
+				const getPreferredTheme = () => getStoredTheme() ?? (mediaQuery.matches ? "light" : "dark");
+
+				const updateToggleButtons = (theme) => {
+					document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+						if (!(button instanceof HTMLButtonElement)) {
+							return;
+						}
+
+						const nextTheme = theme === "dark" ? "light" : "dark";
+						const label = nextTheme === "light" ? "Switch to light theme" : "Switch to dark theme";
+						button.setAttribute("aria-label", label);
+						button.setAttribute("title", label);
+						button.dataset.themeValue = nextTheme;
+
+						const textNode = button.querySelector("[data-theme-text]");
+
+						if (textNode) {
+							textNode.textContent = nextTheme === "light" ? "Light mode" : "Dark mode";
+						}
+					});
+				};
+
+				const applyTheme = (theme) => {
+					root.dataset.theme = theme;
+					root.style.colorScheme = theme;
+					metaTheme?.setAttribute("content", themeColors[theme]);
+					updateToggleButtons(theme);
+				};
+
+				applyTheme(getPreferredTheme());
+
+				document.addEventListener("click", (event) => {
+					const button = event.target instanceof Element
+						? event.target.closest("[data-theme-toggle]")
+						: null;
+
+					if (!(button instanceof HTMLButtonElement)) {
+						return;
+					}
+
+					const nextTheme = button.dataset.themeValue === "light" ? "light" : "dark";
+
+					try {
+						window.localStorage.setItem(storageKey, nextTheme);
+					} catch {}
+
+					applyTheme(nextTheme);
+				});
+
+				const syncWithSystem = () => {
+					if (getStoredTheme() !== null) {
+						return;
+					}
+
+					applyTheme(getPreferredTheme());
+				};
+
+				mediaQuery.addEventListener?.("change", syncWithSystem);
+			})();
+		</script>
 	</body>
 </html>

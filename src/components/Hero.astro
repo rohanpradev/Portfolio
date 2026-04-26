@@ -30,8 +30,6 @@ interface Props {
 	subtitle: string;
 	ctaText: string;
 	ctaHref: string;
-	resumeHref: string;
-	resumeLabel?: string;
 	photo: ImageMetadata;
 	photoAlt?: string;
 	status?: string;
@@ -49,8 +47,6 @@ const {
 	subtitle,
 	ctaText,
 	ctaHref,
-	resumeHref,
-	resumeLabel = "View Resume",
 	photo,
 	photoAlt = "Profile photo",
 	status = "Available for high-impact roles",
@@ -118,9 +114,6 @@ const featureCards = insightCards.slice(0, 2);
 					<a href={ctaHref} class="primary-button">
 						{ctaText}
 					</a>
-					<a href={resumeHref} class="secondary-button">
-						{resumeLabel}
-					</a>
 				</div>
 
 				{(location || email || socialLinks.length > 0) && (
@@ -149,11 +142,7 @@ const featureCards = insightCards.slice(0, 2);
 					<dl class="mt-10 grid gap-4 md:grid-cols-3">
 						{stats.map((stat, index) => (
 							<div
-								class:list={[
-									"hero-stat-card",
-									index === 1 && "md:-translate-y-4",
-									index === 2 && "md:translate-y-3",
-								]}
+								class="hero-stat-card"
 								data-reveal
 								style={`--reveal-delay: ${160 + index * 70}ms;`}
 							>

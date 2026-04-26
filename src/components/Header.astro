@@ -58,6 +58,31 @@ const navItems = site.nav.map((item) => ({
 
 			<div class="hidden items-center gap-3 lg:flex">
 				<div class="signal-chip">Open to senior product roles</div>
+				<button
+					type="button"
+					class="secondary-button h-11 px-4 py-2.5"
+					data-theme-toggle
+					aria-label="Switch theme"
+					title="Switch theme"
+				>
+					<span aria-hidden="true" class="theme-toggle-icon">
+						<svg class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+							<circle cx="12" cy="12" r="4" />
+							<path d="M12 2.5v2.5" />
+							<path d="M12 19v2.5" />
+							<path d="m4.93 4.93 1.77 1.77" />
+							<path d="m17.3 17.3 1.77 1.77" />
+							<path d="M2.5 12H5" />
+							<path d="M19 12h2.5" />
+							<path d="m4.93 19.07 1.77-1.77" />
+							<path d="m17.3 6.7 1.77-1.77" />
+						</svg>
+						<svg class="theme-icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+						</svg>
+					</span>
+					<span class="hidden xl:inline" data-theme-text>Light mode</span>
+				</button>
 				<a href={withBasePath("/contact")} class="primary-button px-4 py-2.5">
 					Start a project
 				</a>
@@ -110,6 +135,31 @@ const navItems = site.nav.map((item) => ({
 						))}
 					</nav>
 					<div class="mt-4 grid gap-2">
+						<button
+							type="button"
+							class="secondary-button w-full px-4 py-3"
+							data-theme-toggle
+							aria-label="Switch theme"
+							title="Switch theme"
+						>
+							<span aria-hidden="true" class="theme-toggle-icon">
+								<svg class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+									<circle cx="12" cy="12" r="4" />
+									<path d="M12 2.5v2.5" />
+									<path d="M12 19v2.5" />
+									<path d="m4.93 4.93 1.77 1.77" />
+									<path d="m17.3 17.3 1.77 1.77" />
+									<path d="M2.5 12H5" />
+									<path d="M19 12h2.5" />
+									<path d="m4.93 19.07 1.77-1.77" />
+									<path d="m17.3 6.7 1.77-1.77" />
+								</svg>
+								<svg class="theme-icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+									<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+								</svg>
+							</span>
+							<span data-theme-text>Light mode</span>
+						</button>
 						<a href={withBasePath("/resume")} class="secondary-button w-full px-4 py-3">
 							Resume
 						</a>
