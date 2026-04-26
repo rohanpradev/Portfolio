@@ -6,6 +6,7 @@ const { name, role, feedback, avatar, date, context } = Astro.props as Testimoni
 ---
 
 <blockquote class="surface-card-strong flex h-full flex-col gap-5 p-6 sm:p-7">
+  <div aria-hidden="true" class="text-5xl leading-none text-signal/70">"</div>
   <div class="flex items-start gap-4">
     <Image
       src={avatar}
@@ -26,7 +27,7 @@ const { name, role, feedback, avatar, date, context } = Astro.props as Testimoni
   </div>
 
   <p class="text-base leading-8 text-slate-700">
-    "{feedback}"
+    {feedback}
   </p>
 
   <footer class="mt-auto border-t border-slate-900/8 pt-4 text-sm text-slate-500">

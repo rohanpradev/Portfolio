@@ -18,7 +18,7 @@ const navItems = site.nav.map((item) => ({
 
 <header class="sticky top-0 z-[60] pt-4 sm:pt-5">
 	<div class="section-shell">
-		<div class="surface-card-strong relative flex items-center justify-between gap-4 px-4 py-3 sm:px-6">
+		<div class="nav-shell relative flex items-center justify-between gap-4 rounded-[28px] px-4 py-3 backdrop-blur sm:px-6">
 			<a href={withBasePath("/")} class="flex items-center gap-3 text-slate-900">
 				<img
 					src={withBasePath("/brand-mark.svg")}
@@ -29,20 +29,23 @@ const navItems = site.nav.map((item) => ({
 					decoding="async"
 				/>
 				<span>
-					<span class="block text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+					<span class="block text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-slate-500">
 						Portfolio
 					</span>
 					<span class="block text-base font-semibold">{site.author}</span>
 				</span>
 			</a>
 
-			<nav aria-label="Primary" class="hidden items-center gap-2 text-sm font-medium text-slate-600 lg:flex">
+			<nav
+				aria-label="Primary"
+				class="hidden items-center gap-2 rounded-full border border-white/15 bg-white/10 px-2 py-2 text-sm font-medium text-slate-600 lg:flex"
+			>
 				{navItems.map((item) => (
 					<a
 						href={item.href}
 						aria-current={item.isActive ? "page" : undefined}
 						class:list={[
-							"rounded-full px-4 py-2 transition",
+							"nav-pill",
 							item.isActive
 								? "bg-slate-900 text-white shadow-panel"
 								: "hover:bg-white/80 hover:text-slate-900",
@@ -54,9 +57,7 @@ const navItems = site.nav.map((item) => ({
 			</nav>
 
 			<div class="hidden items-center gap-3 lg:flex">
-				<a href={`mailto:${site.email}`} class="secondary-button px-4 py-2.5">
-					{site.email}
-				</a>
+				<div class="signal-chip">Open to senior product roles</div>
 				<a href={withBasePath("/contact")} class="primary-button px-4 py-2.5">
 					Start a project
 				</a>
@@ -65,7 +66,7 @@ const navItems = site.nav.map((item) => ({
 			<div class="relative lg:hidden">
 				<button
 					type="button"
-					class="grid h-11 w-11 place-items-center rounded-xl border border-slate-900/10 bg-white/80 text-slate-900 transition hover:bg-white"
+					class="grid h-11 w-11 place-items-center rounded-xl border border-white/15 bg-white/10 text-slate-900 transition hover:bg-white/80"
 					data-nav-toggle
 					aria-expanded="false"
 					aria-controls="mobile-navigation"
@@ -98,7 +99,7 @@ const navItems = site.nav.map((item) => ({
 								href={item.href}
 								aria-current={item.isActive ? "page" : undefined}
 								class:list={[
-									"rounded-xl px-4 py-3 transition",
+									"rounded-2xl px-4 py-3 transition",
 									item.isActive
 										? "bg-slate-900 text-white"
 										: "hover:bg-slate-900/5",

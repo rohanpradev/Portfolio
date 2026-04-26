@@ -18,6 +18,7 @@ interface Props {
 	company?: string;
 	duration?: string;
 	outcomes?: Outcome[];
+	featured?: boolean;
 }
 
 const {
@@ -30,6 +31,7 @@ const {
 	company,
 	duration,
 	outcomes = [],
+	featured = false,
 } = Astro.props as Props;
 
 const isLinked = Boolean(href);
@@ -59,7 +61,10 @@ const Tag = isLinked ? "a" : "article";
 			loading="lazy"
 		/>
 		<div class="absolute left-5 top-5 z-20 flex flex-wrap gap-2">
-			<Badge variant="accent" icon="sparkles">Featured Project</Badge>
+			<Badge variant="accent" icon="sparkles">
+				{featured ? "Featured case study" : "Case study"}
+			</Badge>
+			{company && <Badge variant="dark">{company}</Badge>}
 		</div>
 		{duration && (
 			<div class="absolute bottom-5 left-5 z-20">
