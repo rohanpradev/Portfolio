@@ -54,7 +54,6 @@ const basePath = resolveBasePath();
 export default defineConfig({
 	site: siteUrl,
 	...(basePath ? { base: basePath } : {}),
-	devToolbar: { placement: "bottom-left" },
 	prefetch: {
 		prefetchAll: true,
 		defaultStrategy: "hover",
@@ -82,12 +81,21 @@ export default defineConfig({
 	fonts: [
 		{
 			provider: fontProviders.fontsource(),
-			name: "Roboto",
-			cssVariable: "--font-roboto",
-			weights: [400, 500, 700, 900],
+			name: "Geist Sans",
+			cssVariable: "--font-geist-sans",
+			weights: [400, 500, 600, 700, 800, 900],
 			styles: ["normal"],
 			subsets: ["latin"],
-			fallbacks: ["system-ui", "sans-serif"],
+			fallbacks: ["Inter", "system-ui", "sans-serif"],
+		},
+		{
+			provider: fontProviders.fontsource(),
+			name: "Geist Mono",
+			cssVariable: "--font-geist-mono",
+			weights: [400, 500, 700],
+			styles: ["normal"],
+			subsets: ["latin"],
+			fallbacks: ["monospace"],
 		},
 	],
 	integrations: [sitemap()],

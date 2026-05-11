@@ -2,8 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import { site, withBasePath } from "../data/meta";
+import { PUBLIC_RESUME_URL } from "astro:env/client";
 
-const configuredResumeUrl = import.meta.env.PUBLIC_RESUME_URL?.trim() ?? "";
+const configuredResumeUrl = PUBLIC_RESUME_URL?.trim() ?? "";
 const resumeUrl = configuredResumeUrl.startsWith("/")
 	? withBasePath(configuredResumeUrl)
 	: configuredResumeUrl;

@@ -41,86 +41,88 @@ const Tag = isLinked ? "a" : "article";
 <Tag
 	{...(isLinked ? { href } : {})}
 	class:list={[
-		"surface-card-strong flex h-full flex-col overflow-hidden transition duration-300",
-		isLinked && "group hover:-translate-y-1.5",
+		"surface-card-strong group flex h-full flex-col overflow-hidden transition-all duration-500",
+		isLinked && "hover:-translate-y-2 hover:border-accent/30 hover:shadow-float",
 	]}
 >
-	<div class="relative overflow-hidden">
-		<div
-			aria-hidden="true"
-			class="absolute inset-0 z-10 bg-[linear-gradient(180deg,rgba(15,23,42,0.08),rgba(15,23,42,0.56))]"
-		></div>
+	<div class="relative aspect-video overflow-hidden">
 		<Image
 			src={image}
 			alt={alt}
 			format="webp"
-			quality={84}
+			quality={90}
 			widths={[480, 768, 1200]}
 			sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 42vw"
-			class="h-72 w-full scale-[1.08] object-cover object-center transition duration-700 group-hover:scale-[1.12]"
+			class="h-full w-full object-cover object-center transition duration-700 group-hover:scale-110"
 			loading="lazy"
 		/>
-		<div class="absolute left-5 top-5 z-20 flex flex-wrap gap-2">
-			<Badge variant="accent" icon="sparkles">
-				{featured ? "Featured case study" : "Case study"}
-			</Badge>
-			{company && <Badge variant="dark">{company}</Badge>}
+		<div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+
+		<div class="absolute left-6 top-6 flex flex-wrap gap-2">
+			{featured && (
+				<Badge variant="accent" icon="sparkles" class="shadow-panel backdrop-blur-md">
+					Featured
+				</Badge>
+			)}
+			{company && (
+				<Badge variant="secondary" class="bg-white/90 text-slate-900 shadow-panel backdrop-blur-md">
+					{company}
+				</Badge>
+			)}
 		</div>
+
 		{duration && (
-			<div class="absolute bottom-5 left-5 z-20">
-				<Badge variant="dark">{duration}</Badge>
+			<div class="absolute bottom-6 left-6">
+				<Badge variant="outline" class="border-white/20 bg-black/40 text-white backdrop-blur-md">
+					{duration}
+				</Badge>
 			</div>
 		)}
 	</div>
 
-	<div class="flex flex-1 flex-col gap-5 p-6 sm:p-7">
-		<div>
-			<h3 class="text-2xl font-semibold text-slate-900 sm:text-[2rem]">{title}</h3>
-			{company && <p class="mt-2 text-sm font-medium text-slate-500">{company}</p>}
-			<p class="mt-3 text-sm leading-7 text-slate-600 sm:text-base">{description}</p>
+	<div class="flex flex-1 flex-col p-8 sm:p-10">
+		<div class="mb-6">
+			<h3 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+				{title}
+			</h3>
+			<p class="mt-4 text-lg leading-relaxed text-slate-500 line-clamp-3">
+				{description}
+			</p>
 		</div>
 
 		{outcomes.length > 0 && (
-			<dl class="grid gap-3 sm:grid-cols-3">
+			<dl class="mb-8 grid gap-4 sm:grid-cols-3">
 				{outcomes.map((outcome) => (
-					<div class="rounded-[18px] border border-slate-900/8 bg-slate-900 px-4 py-4 text-white">
-						<dt class="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/66">
+					<div class="rounded-2xl border border-line bg-surface-tint p-4 transition-colors group-hover:bg-accent/5">
+						<dt class="text-[0.6rem] font-bold uppercase tracking-widest text-slate-400">
 							{outcome.label}
 						</dt>
-						<dd class="mt-2 text-base font-semibold">{outcome.value}</dd>
+						<dd class="mt-1 text-base font-bold text-slate-900">{outcome.value}</dd>
 					</div>
 				))}
 			</dl>
 		)}
 
-		<div class="flex flex-wrap gap-2">
-			{tech.map((item) => <Badge variant="secondary">{item}</Badge>)}
-		</div>
-
-		<div class="mt-auto text-sm font-semibold text-slate-900">
-			{isLinked ? (
-				<div class="inline-flex items-center gap-3">
-					<span>Open project details</span>
-					<span
-						aria-hidden="true"
-						class="grid h-8 w-8 place-items-center rounded-full border border-slate-900/10 bg-white/90 transition duration-300 group-hover:translate-x-0.5"
-					>
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.8"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="h-4 w-4"
-						>
-							<path d="M7 17 17 7" />
-							<path d="M8 7h9v9" />
-						</svg>
+		<div class="mt-auto flex items-center justify-between gap-4">
+			<div class="flex flex-wrap gap-1.5">
+				{tech.slice(0, 3).map((item) => (
+					<span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400 bg-slate-900/5 px-2 py-1 rounded-md">
+						{item}
 					</span>
+				))}
+				{tech.length > 3 && (
+					<span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400 bg-slate-900/5 px-2 py-1 rounded-md">
+						+{tech.length - 3}
+					</span>
+				)}
+			</div>
+
+			{isLinked && (
+				<div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white transition-transform group-hover:scale-110">
+					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+					</svg>
 				</div>
-			) : (
-				<span>Detailed walkthrough available on request.</span>
 			)}
 		</div>
 	</div>

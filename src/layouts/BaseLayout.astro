@@ -198,7 +198,8 @@ const robots = noindex
 		<link rel="canonical" href={canonical} />
 		<link rel="alternate" hreflang="en-IN" href={canonical} />
 		<link rel="alternate" hreflang="x-default" href={canonical} />
-		<Font cssVariable="--font-roboto" preload />
+		<Font cssVariable="--font-geist-sans" preload />
+		<Font cssVariable="--font-geist-mono" preload />
 		<link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
 		<link rel="shortcut icon" href={withBasePath("/favicon.svg")} />
 		<link rel="apple-touch-icon" href={withBasePath("/apple-touch-icon.png")} />
@@ -233,7 +234,7 @@ const robots = noindex
 
 		<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 	</head>
-	<body class="selection:bg-primary selection:text-white">
+	<body>
 		<a
 			href="#main-content"
 			class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm"
