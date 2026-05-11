@@ -15,7 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
 
       - name: Resolve deployment environment
         shell: bash
@@ -69,8 +77,19 @@ jobs:
           echo "Resolved PUBLIC_SITE_URL=$SITE_URL"
           echo "Resolved PUBLIC_BASE_PATH=${BASE_PATH:-<empty>}"
 
-      - name: Install, build, and upload your site
-        uses: withastro/action@v5
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check Astro project
+        run: bun run check
+
+      - name: Build site
+        run: bun run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./dist
 
   deploy:
     needs: build
@@ -81,4 +100,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

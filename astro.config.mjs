@@ -1,6 +1,6 @@
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, envField } from "astro/config";
+import { defineConfig, envField, fontProviders } from "astro/config";
 
 function stripOuterQuotes(value) {
 	if (!value) {
@@ -54,7 +54,10 @@ const basePath = resolveBasePath();
 export default defineConfig({
 	site: siteUrl,
 	...(basePath ? { base: basePath } : {}),
-	devToolbar: { placement: "bottom-left" },
+	prefetch: {
+		prefetchAll: true,
+		defaultStrategy: "hover",
+	},
 	env: {
 		schema: {
 			PUBLIC_SITE_URL: envField.string({
@@ -75,6 +78,26 @@ export default defineConfig({
 			}),
 		},
 	},
+	fonts: [
+		{
+			provider: fontProviders.fontsource(),
+			name: "Geist Sans",
+			cssVariable: "--font-geist-sans",
+			weights: [400, 500, 600, 700, 800, 900],
+			styles: ["normal"],
+			subsets: ["latin"],
+			fallbacks: ["Inter", "system-ui", "sans-serif"],
+		},
+		{
+			provider: fontProviders.fontsource(),
+			name: "Geist Mono",
+			cssVariable: "--font-geist-mono",
+			weights: [400, 500, 700],
+			styles: ["normal"],
+			subsets: ["latin"],
+			fallbacks: ["monospace"],
+		},
+	],
 	integrations: [sitemap()],
 	vite: {
 		plugins: [tailwindcss()],

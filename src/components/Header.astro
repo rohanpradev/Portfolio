@@ -1,57 +1,233 @@
 ---
 import { site, withBasePath } from "../data/meta";
+
+function normalizePath(value: string) {
+	return value.replace(/\/$/, "") || "/";
+}
+
+const pathnameWithoutBase =
+	site.basePath && Astro.url.pathname.startsWith(site.basePath)
+		? Astro.url.pathname.slice(site.basePath.length) || "/"
+		: Astro.url.pathname;
+const currentPath = normalizePath(pathnameWithoutBase);
+const navItems = site.nav.map((item) => ({
+	...item,
+	isActive: normalizePath(new URL(item.href, site.url).pathname.replace(site.basePath, "")) === currentPath,
+}));
 ---
 
-<header class="sticky top-0 z-[60] pt-4 sm:pt-5">
-  <div class="section-shell">
-    <div class="surface-card-strong relative overflow-visible flex items-center justify-between px-4 py-3 sm:px-6">
-      <a href={withBasePath("/")} class="flex items-center gap-3 text-slate-900">
-        <img
-          src={withBasePath("/brand-mark.svg")}
-          alt="M Rohan Pradev logo"
-          width="44"
-          height="44"
-          class="h-11 w-11 rounded-xl shadow-panel"
-          decoding="async"
-        />
-        <span>
-          <span class="block text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">Portfolio</span>
-          <span class="block text-base font-semibold">{site.author}</span>
-        </span>
-      </a>
+<header class="fixed inset-x-0 top-0 z-[60] flex justify-center pt-4 transition-all duration-300" id="main-header">
+	<div class="section-shell flex w-full justify-center">
+		<div class="nav-shell flex min-h-[4rem] w-full items-center justify-between gap-4 rounded-[24px] px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+			<div class="relative flex w-full items-center justify-between gap-3">
+				<a href={withBasePath("/")} class="flex items-center gap-3 text-slate-900">
+					<img
+						src={withBasePath("/brand-mark.svg")}
+						alt="M Rohan Pradev"
+						width="36"
+						height="36"
+						class="h-9 w-9 rounded-xl shadow-panel"
+						decoding="async"
+						loading="eager"
+					/>
+					<span class="hidden sm:block">
+						<span class="block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-slate-500">
+							Portfolio
+						</span>
+						<span class="block text-sm font-semibold text-slate-900">{site.author}</span>
+					</span>
+				</a>
 
-      <nav class="hidden items-center gap-5 text-sm font-medium text-slate-600 lg:flex">
-        {site.nav.map((item) => (
-          <a href={item.href} class="transition hover:text-slate-900">{item.label}</a>
-        ))}
-      </nav>
+				<nav
+					aria-label="Primary"
+					class="hidden items-center gap-1 text-sm font-medium text-slate-600 lg:flex"
+				>
+					{navItems.map((item) => (
+						<a
+							href={item.href}
+							aria-current={item.isActive ? "page" : undefined}
+							class:list={[
+								"nav-pill px-4",
+								item.isActive
+									? "bg-slate-900 text-white shadow-panel"
+									: "text-slate-600 hover:bg-slate-900/5 hover:text-slate-900",
+							]}
+						>
+							{item.label}
+						</a>
+					))}
+				</nav>
 
-      <div class="hidden items-center gap-3 lg:flex">
-        <a href={`mailto:${site.email}`} class="secondary-button px-4 py-2.5">{site.email}</a>
-        <a href={withBasePath("/contact")} class="primary-button px-4 py-2.5">Start a project</a>
-      </div>
+				<div class="hidden items-center gap-3 lg:flex">
+					<button
+						type="button"
+						class="secondary-button h-10 min-h-10 border-none bg-transparent px-3 py-2 shadow-none"
+						data-theme-toggle
+						aria-label="Switch theme"
+						title="Switch theme"
+					>
+						<span aria-hidden="true" class="theme-toggle-icon">
+							<svg class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+								<circle cx="12" cy="12" r="4" />
+								<path d="M12 2.5v2.5" />
+								<path d="M12 19v2.5" />
+								<path d="m4.93 4.93 1.77 1.77" />
+								<path d="m17.3 17.3 1.77 1.77" />
+								<path d="M2.5 12H5" />
+								<path d="M19 12h2.5" />
+								<path d="m4.93 19.07 1.77-1.77" />
+								<path d="m17.3 6.7 1.77-1.77" />
+							</svg>
+							<svg class="theme-icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+							</svg>
+						</span>
+					</button>
+					<a href={withBasePath("/contact")} class="primary-button h-10 min-h-10 px-6 py-2">
+						Contact
+					</a>
+				</div>
 
-      <details class="relative z-[70] lg:hidden">
-        <summary class="grid h-11 w-11 cursor-pointer place-items-center rounded-xl border border-slate-900/10 bg-white/80 text-slate-900 transition hover:bg-white">
-          <span class="sr-only">Open menu</span>
-          <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-            <path d="M4 7h16" />
-            <path d="M4 12h16" />
-            <path d="M4 17h16" />
-          </svg>
-        </summary>
-        <div class="surface-card-strong absolute right-0 top-[calc(100%+0.85rem)] z-[80] w-[min(20rem,calc(100vw-2rem))] p-4 shadow-float">
-          <nav class="grid gap-2 text-sm font-medium text-slate-700">
-            {site.nav.map((item) => (
-              <a href={item.href} class="rounded-xl px-4 py-3 transition hover:bg-slate-900/5">{item.label}</a>
-            ))}
-          </nav>
-          <div class="mt-4 grid gap-2">
-            <a href={withBasePath("/resume")} class="secondary-button w-full px-4 py-3">Resume</a>
-            <a href={withBasePath("/contact")} class="primary-button w-full px-4 py-3">Contact</a>
-          </div>
-        </div>
-      </details>
-    </div>
-  </div>
+				<div class="relative flex items-center gap-2 lg:hidden">
+					<button
+						type="button"
+						class="secondary-button h-10 w-10 border-none bg-transparent p-0 shadow-none"
+						data-theme-toggle
+						aria-label="Switch theme"
+						title="Switch theme"
+					>
+						<span aria-hidden="true" class="theme-toggle-icon">
+							<svg class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+								<circle cx="12" cy="12" r="4" />
+								<path d="M12 2.5v2.5" />
+								<path d="M12 19v2.5" />
+								<path d="m4.93 4.93 1.77 1.77" />
+								<path d="m17.3 17.3 1.77 1.77" />
+								<path d="M2.5 12H5" />
+								<path d="M19 12h2.5" />
+								<path d="m4.93 19.07 1.77-1.77" />
+								<path d="m17.3 6.7 1.77-1.77" />
+							</svg>
+							<svg class="theme-icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+							</svg>
+						</span>
+					</button>
+					<button
+						type="button"
+						class="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-white shadow-panel transition"
+						data-nav-toggle
+						aria-expanded="false"
+						aria-controls="mobile-navigation"
+						aria-label="Open menu"
+					>
+						<svg
+							aria-hidden="true"
+							class="h-5 w-5"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							stroke-linecap="round"
+						>
+							<path d="M4 7h16" />
+							<path d="M4 12h16" />
+							<path d="M4 17h16" />
+						</svg>
+					</button>
+
+					<div
+						id="mobile-navigation"
+						class="surface-card-strong absolute right-0 top-[calc(100%+0.85rem)] z-[80] w-[min(18rem,calc(100vw-2rem))] p-4 shadow-float"
+						data-nav-panel
+						hidden
+					>
+						<nav aria-label="Mobile" class="grid gap-2 text-sm font-medium">
+							{navItems.map((item) => (
+								<a
+									href={item.href}
+									aria-current={item.isActive ? "page" : undefined}
+									class:list={[
+										"rounded-xl px-4 py-3 transition",
+										item.isActive
+											? "bg-slate-900 text-white"
+											: "text-slate-600 hover:bg-slate-900/5 hover:text-slate-900",
+									]}
+								>
+									{item.label}
+								</a>
+							))}
+						</nav>
+						<div class="mt-4">
+							<a href={withBasePath("/contact")} class="primary-button w-full px-4 py-3">
+								Contact
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script is:inline>
+		(() => {
+			const header = document.currentScript?.closest("header");
+
+			if (!header) {
+				return;
+			}
+
+			const toggle = header.querySelector("[data-nav-toggle]");
+			const panel = header.querySelector("[data-nav-panel]");
+			const panelLinks = panel?.querySelectorAll("a") ?? [];
+
+			if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) {
+				return;
+			}
+
+			const setOpen = (open) => {
+				toggle.setAttribute("aria-expanded", String(open));
+				toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+				panel.hidden = !open;
+			};
+
+			setOpen(false);
+
+			toggle.addEventListener("click", () => {
+				setOpen(toggle.getAttribute("aria-expanded") !== "true");
+			});
+
+			panelLinks.forEach((link) => {
+				link.addEventListener("click", () => setOpen(false));
+			});
+
+			document.addEventListener("click", (event) => {
+				if (!header.contains(event.target)) {
+					setOpen(false);
+				}
+			});
+
+			document.addEventListener("keydown", (event) => {
+				if (event.key === "Escape") {
+					setOpen(false);
+				}
+			});
+
+			window.addEventListener("scroll", () => {
+				if (window.scrollY > 20) {
+					header.classList.add("pt-2");
+					header.querySelector(".nav-shell").classList.add("shadow-float");
+				} else {
+					header.classList.remove("pt-2");
+					header.querySelector(".nav-shell").classList.remove("shadow-float");
+				}
+			});
+
+			window.addEventListener("resize", () => {
+				if (window.innerWidth >= 1024) {
+					setOpen(false);
+				}
+			});
+		})();
+	</script>
 </header>

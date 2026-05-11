@@ -1,4 +1,5 @@
 import profilePhoto from "../assets/profile/my-photo.jpeg";
+import { PUBLIC_SITE_URL } from "astro:env/client";
 
 function stripOuterQuotes(value: string | undefined) {
 	if (!value) {
@@ -9,7 +10,7 @@ function stripOuterQuotes(value: string | undefined) {
 }
 
 function resolveSiteUrl() {
-	const raw = stripOuterQuotes(import.meta.env.PUBLIC_SITE_URL);
+	const raw = stripOuterQuotes(PUBLIC_SITE_URL);
 
 	if (!raw) {
 		return "https://yourusername.github.io";
