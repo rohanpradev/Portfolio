@@ -1,4 +1,4 @@
-import profilePhoto from "../assets/profile/my-photo.jpeg";
+import profilePhoto from "../assets/profile/profile-photo.png";
 import { PUBLIC_SITE_URL } from "astro:env/client";
 
 function stripOuterQuotes(value: string | undefined) {
