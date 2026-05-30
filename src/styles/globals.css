@@ -70,6 +70,7 @@
   --bg-contrast-text: #f8fafc;
   --bg-contrast-subtle: rgba(248, 250, 252, 0.7);
   --bg-contrast-muted: rgba(248, 250, 252, 0.8);
+  --section-pad: clamp(1rem, 4vw, 3rem);
 }
 
 html[data-theme="light"] {
@@ -232,15 +233,17 @@ summary::-webkit-details-marker {
 
 @layer components {
   .section-shell {
-    @apply mx-auto max-w-[85rem] px-4 sm:px-8 lg:px-12;
+    width: 100%;
+    padding-inline: var(--section-pad);
+    @apply mx-auto max-w-[85rem];
   }
 
   .page-stack {
-    @apply flex flex-col gap-8 sm:gap-12 lg:gap-16;
+    @apply flex flex-col gap-10 sm:gap-12 lg:gap-16;
   }
 
   .intro-space {
-    @apply pt-32 sm:pt-40 lg:pt-48;
+    @apply pt-28 sm:pt-40 lg:pt-48;
   }
 
   .hero-space {
@@ -267,13 +270,13 @@ summary::-webkit-details-marker {
 
   .surface-card {
     box-shadow: var(--shadow-panel);
-    @apply rounded-[28px];
+    @apply rounded-[22px] sm:rounded-[28px];
   }
 
   .surface-card-strong {
     background: var(--surface-strong);
     box-shadow: var(--shadow-float);
-    @apply rounded-[32px];
+    @apply rounded-[24px] sm:rounded-[32px];
   }
 
   .surface-card::before,
@@ -303,17 +306,17 @@ summary::-webkit-details-marker {
     background: var(--eyebrow-bg);
     border: 1px solid var(--eyebrow-border);
     color: var(--eyebrow-ink);
-    @apply inline-flex max-w-fit items-center rounded-full px-5 py-2 text-[0.7rem] font-bold uppercase leading-6 tracking-[0.2em];
+    @apply inline-flex max-w-full items-center rounded-full px-3 py-1.5 text-[0.65rem] font-bold uppercase leading-6 tracking-[0.14em] sm:max-w-fit sm:px-5 sm:py-2 sm:text-[0.7rem] sm:tracking-[0.2em];
   }
 
   .section-title {
     color: var(--text-900);
-    @apply max-w-[15ch] text-[clamp(3rem,6vw,5.5rem)] font-black leading-[0.9] tracking-tighter;
+    @apply max-w-[15ch] text-[clamp(2.35rem,11vw,5.5rem)] font-black leading-[0.95] tracking-tighter sm:leading-[0.9];
   }
 
   .section-copy {
     color: var(--text-600);
-    @apply max-w-2xl text-lg leading-relaxed sm:text-xl;
+    @apply max-w-2xl text-base leading-relaxed sm:text-xl;
   }
 
   .primary-button {
@@ -321,16 +324,18 @@ summary::-webkit-details-marker {
     border: 1px solid transparent;
     box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.4);
     color: var(--primary-ink);
-    min-height: 3.5rem;
-    @apply inline-flex items-center justify-center gap-3 rounded-2xl px-8 py-4 text-sm font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:scale-95;
+    min-height: 3.25rem;
+    text-align: center;
+    @apply inline-flex items-center justify-center gap-3 rounded-xl px-5 py-3 text-sm font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:scale-95 sm:min-h-14 sm:rounded-2xl sm:px-8 sm:py-4;
   }
 
   .secondary-button {
     background: var(--secondary-fill);
     border: 1px solid var(--secondary-border);
     color: var(--secondary-ink);
-    min-height: 3.5rem;
-    @apply inline-flex items-center justify-center gap-3 rounded-2xl px-8 py-4 text-sm font-bold transition-all duration-300 hover:-translate-y-1 active:scale-95;
+    min-height: 3.25rem;
+    text-align: center;
+    @apply inline-flex items-center justify-center gap-3 rounded-xl px-5 py-3 text-sm font-bold transition-all duration-300 hover:-translate-y-1 active:scale-95 sm:min-h-14 sm:rounded-2xl sm:px-8 sm:py-4;
   }
 
   .pill-tag {
@@ -342,7 +347,8 @@ summary::-webkit-details-marker {
 
   .badge {
     min-height: 2.25rem;
-    @apply inline-flex flex-wrap items-center gap-2 rounded-full border px-4 py-2 text-[0.7rem] font-bold uppercase tracking-widest transition-all;
+    text-wrap: balance;
+    @apply inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border px-3 py-2 text-[0.66rem] font-bold uppercase tracking-[0.12em] transition-all sm:gap-2 sm:px-4 sm:text-[0.7rem] sm:tracking-widest;
   }
 
   .badge-secondary {
@@ -395,69 +401,55 @@ summary::-webkit-details-marker {
   .hero-stat-card {
     background: var(--surface-tint);
     border: 1px solid var(--line);
-    @apply rounded-[24px] px-6 py-8;
+    @apply rounded-[20px] px-5 py-6 sm:rounded-[24px] sm:px-6 sm:py-8;
   }
 
   .theme-toggle-icon {
     @apply relative inline-flex h-5 w-5 items-center justify-center;
   }
+
+  .spotlight-card {
+    background: var(--surface-tint);
+    border: 1px solid var(--line);
+    @apply rounded-[20px];
+  }
 }
 
 @media (max-width: 639px) {
-  header .section-shell {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .section-shell {
-    max-width: none;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  main .section-shell > :not(.bleed-mobile) {
-    border-left-width: 0;
-    border-right-width: 0;
-    border-radius: 0;
-  }
-
-  main .section-shell > :not(.bleed-mobile).surface-card::before,
-  main .section-shell > :not(.bleed-mobile).surface-card-strong::before {
-    left: 1rem;
-    right: 1rem;
-  }
-
-  main .section-shell > :not(.bleed-mobile) > .surface-card,
-  main .section-shell > :not(.bleed-mobile) > .surface-card-strong {
-    border-radius: 20px;
-  }
-
   .hero-space {
-    padding-top: 5.5rem;
-    padding-bottom: 1rem;
+    padding-top: 6rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .intro-space {
+    padding-top: 6.75rem;
   }
 
   .page-stack {
-    gap: 1rem;
-    padding-bottom: 0;
+    gap: 2.5rem;
+    padding-bottom: 1rem;
   }
 
   main .gap-16,
   main .gap-20 {
-    gap: 2rem;
+    gap: 2.75rem;
   }
 
   main .mt-16,
   main .mt-24 {
+    margin-top: 2.75rem;
+  }
+
+  main .mt-12 {
     margin-top: 2rem;
   }
 
   main .space-y-10 > :not([hidden]) ~ :not([hidden]) {
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
   }
 
   main .p-12 {
-    padding: 2rem;
+    padding: 1.75rem;
   }
 
   main .p-10 {
@@ -465,12 +457,57 @@ summary::-webkit-details-marker {
   }
 
   main .p-8 {
-    padding: 1.25rem;
+    padding: 1.35rem;
+  }
+
+  main .px-10,
+  main .px-12 {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  main .rounded-\[40px\],
+  main .rounded-\[32px\] {
+    border-radius: 1.5rem;
+  }
+
+  main .rounded-\[28px\],
+  main .rounded-\[24px\] {
+    border-radius: 1.25rem;
   }
 
   .hero-stat-card {
-    min-height: 7rem;
+    min-height: auto;
     padding: 1rem;
+  }
+
+  .surface-card::before,
+  .surface-card-strong::before {
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .section-title,
+  .section-copy {
+    max-width: none;
+  }
+}
+
+@media (max-width: 479px) {
+  main .primary-button,
+  main .secondary-button {
+    width: 100%;
+  }
+
+  main .flex-wrap > .primary-button,
+  main .flex-wrap > .secondary-button {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 359px) {
+  :root {
+    --section-pad: 0.875rem;
   }
 }
 

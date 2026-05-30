@@ -5,8 +5,8 @@ import type { Testimonial } from "../data/testimonials";
 const { name, role, feedback, avatar, date, context } = Astro.props as Testimonial;
 ---
 
-<blockquote class="surface-card-strong flex h-full flex-col gap-5 p-6 sm:p-7">
-  <div aria-hidden="true" class="text-5xl leading-none text-signal/70">"</div>
+<blockquote class="surface-card-strong flex h-full flex-col gap-5 p-5 sm:p-7">
+  <div aria-hidden="true" class="text-4xl leading-none text-signal/70 sm:text-5xl">"</div>
   <div class="flex items-start gap-4">
     <Image
       src={avatar}
@@ -15,12 +15,12 @@ const { name, role, feedback, avatar, date, context } = Astro.props as Testimoni
       sizes="56px"
       width="56"
       height="56"
-      class="h-14 w-14 rounded-2xl object-cover ring-1 ring-slate-900/8"
+      class="h-12 w-12 shrink-0 rounded-2xl object-cover ring-1 ring-slate-900/8 sm:h-14 sm:w-14"
       loading="lazy"
     />
 
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-slate-900">{name}</p>
+      <p class="text-base font-semibold text-slate-900 sm:text-lg">{name}</p>
       <p class="mt-1 text-sm leading-6 text-slate-600">{role}</p>
       <p class="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{date}</p>
     </div>
