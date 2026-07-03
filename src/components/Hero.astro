@@ -45,6 +45,9 @@ const {
 } = Astro.props as Props;
 
 const focusCards = insightCards.slice(0, 2);
+const titleWords = title.trim().split(/\s+/);
+const titleLead = titleWords.slice(0, -1).join(" ");
+const titleTail = titleWords.slice(-1).join(" ");
 ---
 
 <section class="section-shell hero-space" aria-labelledby="hero-heading">
@@ -62,8 +65,8 @@ const focusCards = insightCards.slice(0, 2);
 					id="hero-heading"
 					class="text-[clamp(3rem,17vw,7rem)] font-black leading-[0.9] tracking-tighter text-slate-900 sm:leading-[0.85]"
 				>
-					<span class="block text-slate-900">{title.split(' ').slice(0, -1).join(' ')}</span>
-					<span class="text-gradient block">{title.split(' ').slice(-1)}</span>
+					<span class="block text-slate-900">{titleLead}</span>{" "}
+					<span class="text-gradient block">{titleTail}</span>
 				</h1>
 				<p class="mt-7 text-xl font-semibold leading-relaxed text-slate-700 sm:mt-10 sm:text-2xl lg:max-w-3xl">
 					{headline}
@@ -76,7 +79,7 @@ const focusCards = insightCards.slice(0, 2);
 			<div class="mt-9 flex flex-wrap gap-3 sm:mt-12 sm:gap-5" data-reveal style="--reveal-delay: 100ms;">
 				<a href={ctaHref} class="primary-button group px-10">
 					{ctaText}
-					<svg class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+					<svg aria-hidden="true" focusable="false" class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
 					</svg>
 				</a>
@@ -87,14 +90,14 @@ const focusCards = insightCards.slice(0, 2);
 				)}
 			</div>
 
-			<div class="mt-10 grid gap-3 sm:mt-16 sm:grid-cols-3 sm:gap-6 lg:max-w-3xl" data-reveal style="--reveal-delay: 200ms;">
+			<dl class="mt-10 grid gap-3 sm:mt-16 sm:grid-cols-3 sm:gap-6 lg:max-w-3xl" data-reveal style="--reveal-delay: 200ms;">
 				{stats.map((stat) => (
 					<div class="hero-stat-card">
 						<dt class="text-[0.65rem] font-bold uppercase leading-relaxed tracking-[0.16em] text-slate-500 sm:tracking-[0.2em]">{stat.label}</dt>
 						<dd class="mt-2 text-3xl font-black text-slate-900 sm:mt-3 sm:text-4xl">{stat.value}</dd>
 					</div>
 				))}
-			</div>
+			</dl>
 		</div>
 
 		<div class="relative mx-auto w-full max-w-[360px] md:max-w-[440px] lg:mx-0 lg:max-w-[340px] xl:max-w-[420px]">
@@ -126,7 +129,7 @@ const focusCards = insightCards.slice(0, 2);
 					{focusCards.map((card, index) => (
 						<div class="surface-card p-5 transition-all sm:p-6">
 							<p class="text-[0.6rem] font-black uppercase tracking-[0.25em] text-accent">0{index + 1} / {card.label}</p>
-							<h3 class="mt-3 text-lg font-bold tracking-tight text-slate-900">{card.title}</h3>
+							<p class="mt-3 text-lg font-bold tracking-tight text-slate-900">{card.title}</p>
 							<p class="mt-2 text-sm leading-relaxed text-slate-500">{card.detail}</p>
 						</div>
 					))}

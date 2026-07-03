@@ -1,9 +1,9 @@
 ---
 import { experiences } from "../data/experiences";
-import CognizantLogo from "../assets/logos/cognizant.svg";
-import EricssonLogo from "../assets/logos/ericsson.svg";
-import MindtreeLogo from "../assets/logos/mindtree.svg";
-import TechmLogo from "../assets/logos/techm.svg";
+import CognizantLogoUrl from "../assets/logos/cognizant.svg?url";
+import EricssonLogoUrl from "../assets/logos/ericsson.svg?url";
+import MindtreeLogoUrl from "../assets/logos/mindtree.svg?url";
+import TechmLogoUrl from "../assets/logos/techm.svg?url";
 
 const companies = experiences.map((experience) => ({
   name: experience.company,
@@ -11,10 +11,10 @@ const companies = experiences.map((experience) => ({
 }));
 
 const logos = {
-  cognizant: CognizantLogo,
-  ericsson: EricssonLogo,
-  mindtree: MindtreeLogo,
-  techm: TechmLogo,
+  cognizant: CognizantLogoUrl,
+  ericsson: EricssonLogoUrl,
+  mindtree: MindtreeLogoUrl,
+  techm: TechmLogoUrl,
 } as const;
 ---
 
@@ -31,11 +31,19 @@ const logos = {
 
         <div class="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-4 lg:max-w-3xl">
           {companies.map((company) => {
-            const Logo = logos[company.logo];
+            const logoSrc = logos[company.logo];
 
             return (
               <div class="company-logo-shell grid min-h-[4.75rem] place-items-center rounded-[20px] border border-slate-900/8 bg-white/88 px-3 py-4 sm:min-h-[5.75rem] sm:rounded-[24px] sm:px-4">
-                <Logo class="max-h-8 w-full sm:max-h-9" aria-label={`${company.name} logo`} />
+                <img
+                  src={logoSrc}
+                  alt={`${company.name} logo`}
+                  width="160"
+                  height="48"
+                  class="max-h-8 w-full object-contain sm:max-h-9"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
             );
           })}

@@ -47,14 +47,15 @@
   --signal-border: rgba(129, 140, 248, 0.2);
   --signal-ink: #a5b4fc;
   --nav-bg: rgba(3, 7, 18, 0.8);
+  --mobile-menu-bg: #0f172a;
   --selection-bg: rgba(56, 189, 248, 0.3);
   --selection-fg: #ffffff;
   --focus-offset-color: #030712;
   --text-900: #f8fafc;
   --text-700: #e2e8f0;
   --text-600: #cbd5e1;
-  --text-500: #94a3b8;
-  --text-400: #64748b;
+  --text-500: #cbd5e1;
+  --text-400: #94a3b8;
   --text-accent: #38bdf8;
   --text-primary: #818cf8;
   --border-soft: rgba(248, 250, 252, 0.08);
@@ -102,6 +103,7 @@ html[data-theme="light"] {
   --signal-border: rgba(79, 70, 229, 0.2);
   --signal-ink: #4338ca;
   --nav-bg: rgba(255, 255, 255, 0.85);
+  --mobile-menu-bg: #ffffff;
   --selection-bg: rgba(79, 70, 229, 0.15);
   --selection-fg: #0f172a;
   --focus-offset-color: #f8fafc;
@@ -109,7 +111,7 @@ html[data-theme="light"] {
   --text-700: #334155;
   --text-600: #475569;
   --text-500: #64748b;
-  --text-400: #94a3b8;
+  --text-400: #64748b;
   --text-accent: #2563eb;
   --text-primary: #4f46e5;
   --border-soft: rgba(15, 23, 42, 0.08);
@@ -396,6 +398,12 @@ summary::-webkit-details-marker {
   .nav-pill {
     min-height: 2.75rem;
     @apply rounded-xl px-5 py-2.5 text-sm font-bold transition-all;
+  }
+
+  .mobile-nav-panel {
+    background: var(--mobile-menu-bg);
+    border-color: var(--line-strong);
+    backdrop-filter: blur(18px);
   }
 
   .hero-stat-card {

@@ -1,27 +1,35 @@
 ---
 import type { Experience } from "../data/experiences";
 import Badge from "./Badge.astro";
-import CognizantLogo from "../assets/logos/cognizant.svg";
-import EricssonLogo from "../assets/logos/ericsson.svg";
-import MindtreeLogo from "../assets/logos/mindtree.svg";
-import TechmLogo from "../assets/logos/techm.svg";
+import CognizantLogoUrl from "../assets/logos/cognizant.svg?url";
+import EricssonLogoUrl from "../assets/logos/ericsson.svg?url";
+import MindtreeLogoUrl from "../assets/logos/mindtree.svg?url";
+import TechmLogoUrl from "../assets/logos/techm.svg?url";
 
 const { company, role, logo, start, end, stack, points } = Astro.props as Experience;
 
 const logos = {
-  cognizant: CognizantLogo,
-  ericsson: EricssonLogo,
-  mindtree: MindtreeLogo,
-  techm: TechmLogo,
+  cognizant: CognizantLogoUrl,
+  ericsson: EricssonLogoUrl,
+  mindtree: MindtreeLogoUrl,
+  techm: TechmLogoUrl,
 } as const;
 
-const Logo = logos[logo];
+const logoSrc = logos[logo];
 ---
 
 <article class="surface-card-strong p-5 sm:p-7">
   <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
     <div class="company-logo-shell grid h-16 w-16 shrink-0 place-items-center rounded-[18px] border border-slate-900/8 bg-white/90 p-3 shadow-panel sm:h-20 sm:w-20 sm:rounded-[20px]">
-      <Logo class="max-h-10 w-full [filter:saturate(0.95)_contrast(1.02)]" aria-label={`${company} logo`} />
+      <img
+        src={logoSrc}
+        alt={`${company} logo`}
+        width="160"
+        height="48"
+        class="max-h-10 w-full object-contain [filter:saturate(0.95)_contrast(1.02)]"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
 
     <div class="min-w-0 flex-1">

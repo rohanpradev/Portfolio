@@ -20,7 +20,7 @@ const navItems = site.nav.map((item) => ({
 	<div class="section-shell flex w-full justify-center">
 		<div class="nav-shell flex min-h-[4rem] w-full items-center justify-between gap-4 rounded-[24px] px-4 backdrop-blur-xl sm:px-6 lg:px-8">
 			<div class="relative flex w-full items-center justify-between gap-3">
-				<a href={withBasePath("/")} class="flex items-center gap-3 text-slate-900">
+				<a href={withBasePath("/")} aria-label={`${site.author} home`} class="flex items-center gap-3 text-slate-900">
 					<img
 						src={withBasePath("/brand-mark.svg")}
 						alt="M Rohan Pradev"
@@ -67,7 +67,7 @@ const navItems = site.nav.map((item) => ({
 						title="Switch theme"
 					>
 						<span aria-hidden="true" class="theme-toggle-icon">
-							<svg class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+							<svg aria-hidden="true" focusable="false" class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
 								<circle cx="12" cy="12" r="4" />
 								<path d="M12 2.5v2.5" />
 								<path d="M12 19v2.5" />
@@ -78,7 +78,7 @@ const navItems = site.nav.map((item) => ({
 								<path d="m4.93 19.07 1.77-1.77" />
 								<path d="m17.3 6.7 1.77-1.77" />
 							</svg>
-							<svg class="theme-icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+							<svg aria-hidden="true" focusable="false" class="theme-icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 								<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
 							</svg>
 						</span>
@@ -97,7 +97,7 @@ const navItems = site.nav.map((item) => ({
 						title="Switch theme"
 					>
 						<span aria-hidden="true" class="theme-toggle-icon">
-							<svg class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+							<svg aria-hidden="true" focusable="false" class="theme-icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
 								<circle cx="12" cy="12" r="4" />
 								<path d="M12 2.5v2.5" />
 								<path d="M12 19v2.5" />
@@ -108,7 +108,7 @@ const navItems = site.nav.map((item) => ({
 								<path d="m4.93 19.07 1.77-1.77" />
 								<path d="m17.3 6.7 1.77-1.77" />
 							</svg>
-							<svg class="theme-icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+							<svg aria-hidden="true" focusable="false" class="theme-icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 								<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
 							</svg>
 						</span>
@@ -123,6 +123,7 @@ const navItems = site.nav.map((item) => ({
 					>
 						<svg
 							aria-hidden="true"
+							focusable="false"
 							class="h-5 w-5"
 							viewBox="0 0 24 24"
 							fill="none"
@@ -138,7 +139,7 @@ const navItems = site.nav.map((item) => ({
 
 					<div
 						id="mobile-navigation"
-						class="surface-card-strong absolute right-0 top-[calc(100%+0.85rem)] z-[80] w-[min(18rem,calc(100vw-2rem))] p-4 shadow-float"
+						class="mobile-nav-panel surface-card-strong absolute right-0 top-[calc(100%+0.85rem)] z-[80] w-[min(18rem,calc(100vw-2rem))] p-4 shadow-float"
 						data-nav-panel
 						hidden
 					>

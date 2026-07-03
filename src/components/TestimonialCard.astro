@@ -10,7 +10,7 @@ const { name, role, feedback, avatar, date, context } = Astro.props as Testimoni
   <div class="flex items-start gap-4">
     <Image
       src={avatar}
-      alt=""
+      alt={`${name} profile photo`}
       widths={[56, 112]}
       sizes="56px"
       width="56"
