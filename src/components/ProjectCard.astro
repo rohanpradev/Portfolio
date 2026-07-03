@@ -19,6 +19,7 @@ interface Props {
 	duration?: string;
 	outcomes?: Outcome[];
 	featured?: boolean;
+	headingLevel?: "h2" | "h3";
 }
 
 const {
@@ -32,6 +33,7 @@ const {
 	duration,
 	outcomes = [],
 	featured = false,
+	headingLevel = "h3",
 } = Astro.props as Props;
 
 const isLinked = Boolean(href);
@@ -58,7 +60,7 @@ const Tag = isLinked ? "a" : "article";
 		/>
 		<div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
 
-		<div class="absolute left-6 top-6 flex flex-wrap gap-2">
+		<div class="absolute left-3 right-3 top-3 flex flex-wrap gap-2 sm:left-6 sm:right-auto sm:top-6">
 			{featured && (
 				<Badge variant="accent" icon="sparkles" class="shadow-panel backdrop-blur-md">
 					Featured
@@ -72,7 +74,7 @@ const Tag = isLinked ? "a" : "article";
 		</div>
 
 		{duration && (
-			<div class="absolute bottom-6 left-6">
+			<div class="absolute bottom-3 left-3 sm:bottom-6 sm:left-6">
 				<Badge variant="outline" class="border-white/20 bg-black/40 text-white backdrop-blur-md">
 					{duration}
 				</Badge>
@@ -80,21 +82,27 @@ const Tag = isLinked ? "a" : "article";
 		)}
 	</div>
 
-	<div class="flex flex-1 flex-col p-8 sm:p-10">
+	<div class="flex flex-1 flex-col p-6 sm:p-10">
 		<div class="mb-6">
-			<h3 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-				{title}
-			</h3>
-			<p class="mt-4 text-lg leading-relaxed text-slate-500 line-clamp-3">
+			{headingLevel === "h2" ? (
+				<h2 class="text-2xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+					{title}
+				</h2>
+			) : (
+				<h3 class="text-2xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+					{title}
+				</h3>
+			)}
+			<p class="mt-3 line-clamp-4 text-base leading-8 text-slate-500 sm:mt-4 sm:line-clamp-3 sm:text-lg sm:leading-relaxed">
 				{description}
 			</p>
 		</div>
 
 		{outcomes.length > 0 && (
-			<dl class="mb-8 grid gap-4 sm:grid-cols-3">
+			<dl class="mb-7 grid gap-3 sm:mb-8 sm:grid-cols-3 sm:gap-4">
 				{outcomes.map((outcome) => (
-					<div class="rounded-2xl border border-line bg-surface-tint p-4 transition-colors group-hover:bg-accent/5">
-						<dt class="text-[0.6rem] font-bold uppercase tracking-widest text-slate-400">
+					<div class="rounded-xl border border-line bg-surface-tint p-4 transition-colors group-hover:bg-accent/5 sm:rounded-2xl">
+						<dt class="text-[0.6rem] font-bold uppercase leading-relaxed tracking-widest text-slate-400">
 							{outcome.label}
 						</dt>
 						<dd class="mt-1 text-base font-bold text-slate-900">{outcome.value}</dd>
@@ -103,7 +111,7 @@ const Tag = isLinked ? "a" : "article";
 			</dl>
 		)}
 
-		<div class="mt-auto flex items-center justify-between gap-4">
+		<div class="mt-auto flex items-end justify-between gap-4">
 			<div class="flex flex-wrap gap-1.5">
 				{tech.slice(0, 3).map((item) => (
 					<span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400 bg-slate-900/5 px-2 py-1 rounded-md">
@@ -118,8 +126,8 @@ const Tag = isLinked ? "a" : "article";
 			</div>
 
 			{isLinked && (
-				<div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white transition-transform group-hover:scale-110">
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+				<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white transition-transform group-hover:scale-110">
+					<svg aria-hidden="true" focusable="false" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
 					</svg>
 				</div>
