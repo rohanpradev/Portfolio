@@ -14,11 +14,13 @@ const navItems = site.nav.map((item) => ({
 	...item,
 	isActive: normalizePath(new URL(item.href, site.url).pathname.replace(site.basePath, "")) === currentPath,
 }));
+const primaryNavItems = navItems.filter((item) => item.label !== "Contact");
+const contactItem = navItems.find((item) => item.label === "Contact");
 ---
 
 <header class="fixed inset-x-0 top-0 z-[60] flex justify-center pt-4 transition-all duration-300" id="main-header">
 	<div class="section-shell flex w-full justify-center">
-		<div class="nav-shell flex min-h-[4rem] w-full items-center justify-between gap-4 rounded-[24px] px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+		<div class="nav-shell flex min-h-[4rem] w-full items-center justify-between gap-4 px-4 backdrop-blur-xl sm:px-5 lg:px-6">
 			<div class="relative flex w-full items-center justify-between gap-3">
 				<a href={withBasePath("/")} aria-label={`${site.author} home`} class="flex items-center gap-3 text-slate-900">
 					<img
@@ -32,7 +34,7 @@ const navItems = site.nav.map((item) => ({
 					/>
 					<span class="hidden sm:block">
 						<span class="block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-slate-500">
-							Portfolio
+							Lead engineer
 						</span>
 						<span class="block text-sm font-semibold text-slate-900">{site.author}</span>
 					</span>
@@ -42,7 +44,7 @@ const navItems = site.nav.map((item) => ({
 					aria-label="Primary"
 					class="hidden items-center gap-1 text-sm font-medium text-slate-600 lg:flex"
 				>
-					{navItems.map((item) => (
+					{primaryNavItems.map((item) => (
 						<a
 							href={item.href}
 							aria-current={item.isActive ? "page" : undefined}
@@ -83,8 +85,8 @@ const navItems = site.nav.map((item) => ({
 							</svg>
 						</span>
 					</button>
-					<a href={withBasePath("/contact")} class="primary-button h-10 min-h-10 px-6 py-2">
-						Contact
+					<a href={withBasePath("/contact")} aria-current={contactItem?.isActive ? "page" : undefined} class="primary-button h-10 min-h-10 px-5 py-2">
+						Let's talk
 					</a>
 				</div>
 
@@ -144,7 +146,7 @@ const navItems = site.nav.map((item) => ({
 						hidden
 					>
 						<nav aria-label="Mobile" class="grid gap-2 text-sm font-medium">
-							{navItems.map((item) => (
+							{primaryNavItems.map((item) => (
 								<a
 									href={item.href}
 									aria-current={item.isActive ? "page" : undefined}
@@ -161,7 +163,7 @@ const navItems = site.nav.map((item) => ({
 						</nav>
 						<div class="mt-4">
 							<a href={withBasePath("/contact")} class="primary-button w-full px-4 py-3">
-								Contact
+								Let's talk
 							</a>
 						</div>
 					</div>
@@ -170,9 +172,9 @@ const navItems = site.nav.map((item) => ({
 		</div>
 	</div>
 
-	<script is:inline>
+	<script>
 		(() => {
-			const header = document.currentScript?.closest("header");
+			const header = document.querySelector<HTMLElement>("#main-header");
 
 			if (!header) {
 				return;
@@ -180,13 +182,18 @@ const navItems = site.nav.map((item) => ({
 
 			const toggle = header.querySelector("[data-nav-toggle]");
 			const panel = header.querySelector("[data-nav-panel]");
+			const navShell = header.querySelector(".nav-shell");
 			const panelLinks = panel?.querySelectorAll("a") ?? [];
 
-			if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) {
+			if (
+				!(toggle instanceof HTMLButtonElement) ||
+				!(panel instanceof HTMLElement) ||
+				!(navShell instanceof HTMLElement)
+			) {
 				return;
 			}
 
-			const setOpen = (open) => {
+			const setOpen = (open: boolean) => {
 				toggle.setAttribute("aria-expanded", String(open));
 				toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
 				panel.hidden = !open;
@@ -195,7 +202,12 @@ const navItems = site.nav.map((item) => ({
 			setOpen(false);
 
 			toggle.addEventListener("click", () => {
-				setOpen(toggle.getAttribute("aria-expanded") !== "true");
+				const open = toggle.getAttribute("aria-expanded") !== "true";
+				setOpen(open);
+
+				if (open) {
+					panel.querySelector("a")?.focus();
+				}
 			});
 
 			panelLinks.forEach((link) => {
@@ -203,26 +215,50 @@ const navItems = site.nav.map((item) => ({
 			});
 
 			document.addEventListener("click", (event) => {
-				if (!header.contains(event.target)) {
+				if (!(event.target instanceof Node) || !header.contains(event.target)) {
 					setOpen(false);
 				}
 			});
 
 			document.addEventListener("keydown", (event) => {
-				if (event.key === "Escape") {
+				if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
 					setOpen(false);
+					toggle.focus();
 				}
 			});
 
-			window.addEventListener("scroll", () => {
-				if (window.scrollY > 20) {
+			let isScrolled = false;
+			let scrollFrame = 0;
+			const updateHeader = () => {
+				const nextScrolled = window.scrollY > 20;
+
+				if (nextScrolled === isScrolled) {
+					return;
+				}
+
+				isScrolled = nextScrolled;
+
+				if (isScrolled) {
 					header.classList.add("pt-2");
-					header.querySelector(".nav-shell").classList.add("shadow-float");
+					navShell.classList.add("shadow-float");
 				} else {
 					header.classList.remove("pt-2");
-					header.querySelector(".nav-shell").classList.remove("shadow-float");
+					navShell.classList.remove("shadow-float");
 				}
-			});
+			};
+			const requestHeaderUpdate = () => {
+				if (scrollFrame) {
+					return;
+				}
+
+				scrollFrame = window.requestAnimationFrame(() => {
+					scrollFrame = 0;
+					updateHeader();
+				});
+			};
+
+			window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
+			updateHeader();
 
 			window.addEventListener("resize", () => {
 				if (window.innerWidth >= 1024) {

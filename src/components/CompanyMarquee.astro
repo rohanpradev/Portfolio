@@ -3,6 +3,7 @@ import { experiences } from "../data/experiences";
 import CognizantLogoUrl from "../assets/logos/cognizant.svg?url";
 import EricssonLogoUrl from "../assets/logos/ericsson.svg?url";
 import MindtreeLogoUrl from "../assets/logos/mindtree.svg?url";
+import OptumLogoUrl from "../assets/logos/optum.svg?url";
 import TechmLogoUrl from "../assets/logos/techm.svg?url";
 
 const companies = experiences.map((experience) => ({
@@ -14,13 +15,14 @@ const logos = {
   cognizant: CognizantLogoUrl,
   ericsson: EricssonLogoUrl,
   mindtree: MindtreeLogoUrl,
+  optum: OptumLogoUrl,
   techm: TechmLogoUrl,
 } as const;
 ---
 
-<section class="py-2 sm:py-10">
+<section>
   <div class="section-shell">
-    <div class="surface-card-strong px-5 py-5 sm:px-6">
+    <div class="company-proof-strip">
       <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div class="max-w-xl">
           <p class="eyebrow">Trusted In Delivery</p>
@@ -29,12 +31,12 @@ const logos = {
           </p>
         </div>
 
-        <div class="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-4 lg:max-w-3xl">
+        <div class="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-3 lg:max-w-3xl lg:grid-cols-5">
           {companies.map((company) => {
             const logoSrc = logos[company.logo];
 
             return (
-              <div class="company-logo-shell grid min-h-[4.75rem] place-items-center rounded-[20px] border border-slate-900/8 bg-white/88 px-3 py-4 sm:min-h-[5.75rem] sm:rounded-[24px] sm:px-4">
+              <div class="company-logo-shell grid min-h-[4.75rem] place-items-center px-3 py-4 sm:min-h-[5rem] sm:px-4">
                 <img
                   src={logoSrc}
                   alt={`${company.name} logo`}

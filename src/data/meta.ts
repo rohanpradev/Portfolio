@@ -1,4 +1,4 @@
-import profilePhoto from "../assets/profile/profile-photo.png";
+import profilePhoto from "../assets/profile/profile-photo.webp";
 import { PUBLIC_SITE_URL } from "astro:env/client";
 
 function stripOuterQuotes(value: string | undefined) {
@@ -13,7 +13,7 @@ function resolveSiteUrl() {
 	const raw = stripOuterQuotes(PUBLIC_SITE_URL);
 
 	if (!raw) {
-		return "https://yourusername.github.io";
+		return "https://rohanpradev.github.io";
 	}
 
 	const candidate = /^[a-z]+:\/\//i.test(raw) ? raw : `https://${raw}`;
@@ -21,7 +21,7 @@ function resolveSiteUrl() {
 	try {
 		return new URL(candidate).toString().replace(/\/$/, "");
 	} catch {
-		return "https://yourusername.github.io";
+		return "https://rohanpradev.github.io";
 	}
 }
 
@@ -47,20 +47,20 @@ const homeUrl = new URL(withBasePath("/"), siteUrl).toString();
 
 export const site = {
 	name: "M Rohan Pradev",
-	title: "M Rohan Pradev | Senior Full-Stack Engineer",
+	title: "M Rohan Pradev | Lead Full-Stack Engineer",
 	description:
-		"Senior full-stack engineer in Bengaluru building fast, secure, and maintainable product systems with React, TypeScript, Node.js, Redis, Azure, and AI-assisted workflows.",
+		"Lead full-stack engineer in Bengaluru building fast, secure, and maintainable product systems with agentic AI, Python, React, TypeScript, and Node.js.",
 	shortDescription:
 		"Portfolio focused on enterprise product engineering, frontend architecture, and AI-enabled workflow design.",
 	url: siteUrl,
 	author: "M Rohan Pradev",
-	role: "Senior Full-Stack Engineer",
+	role: "Lead Full-Stack Engineer",
 	headline:
-		"Senior full-stack engineer for enterprise web platforms, secure integrations, and AI-assisted product experiences.",
+		"Lead full-stack engineer for agentic AI, enterprise web platforms, secure integrations, and AI-assisted product experiences.",
 	location: "Bengaluru, Karnataka, India",
 	email: "rohanpradev@hotmail.com",
 	availability:
-		"Open to senior full-stack, frontend architecture, and AI product roles.",
+		"Open to lead full-stack, frontend architecture, and AI product roles.",
 	basePath,
 	homeUrl,
 	ogImage: withBasePath("/og-cover.png"),

@@ -43,65 +43,64 @@ const Tag = isLinked ? "a" : "article";
 <Tag
 	{...(isLinked ? { href } : {})}
 	class:list={[
-		"surface-card-strong group flex h-full flex-col overflow-hidden transition-all duration-500",
-		isLinked && "hover:-translate-y-2 hover:border-accent/30 hover:shadow-float",
+		"surface-card-strong project-card group flex h-full flex-col overflow-hidden lg:grid lg:grid-cols-[1.12fr_0.88fr]",
+		isLinked && "hover:border-accent/30",
 	]}
 >
-	<div class="relative aspect-video overflow-hidden">
-		<Image
-			src={image}
-			alt={alt}
-			format="webp"
-			quality={90}
-			widths={[480, 768, 1200]}
-			sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 42vw"
-			class="h-full w-full object-cover object-center transition duration-700 group-hover:scale-110"
-			loading="lazy"
-		/>
-		<div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+	<div class="project-media">
+		<div class="project-image-frame">
+			<Image
+				src={image}
+				alt={alt}
+				format="webp"
+				quality={82}
+				widths={[480, 768, 1200]}
+				sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 42vw"
+				class="block h-auto w-full transition duration-500 group-hover:scale-[1.015]"
+				loading="lazy"
+			/>
+			<div class="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent"></div>
 
-		<div class="absolute left-3 right-3 top-3 flex flex-wrap gap-2 sm:left-6 sm:right-auto sm:top-6">
-			{featured && (
-				<Badge variant="accent" icon="sparkles" class="shadow-panel backdrop-blur-md">
-					Featured
-				</Badge>
-			)}
-			{company && (
-				<Badge variant="secondary" class="bg-white/90 text-slate-900 shadow-panel backdrop-blur-md">
-					{company}
-				</Badge>
-			)}
+			<div class="absolute left-3 right-3 top-3 flex flex-wrap gap-2 sm:left-5 sm:right-auto sm:top-5">
+				{featured && (
+					<Badge variant="accent" icon="sparkles" class="shadow-panel">
+						Featured
+					</Badge>
+				)}
+				{company && (
+					<Badge variant="secondary" class="bg-white/90 text-slate-900 shadow-panel">
+						{company}
+					</Badge>
+				)}
+			</div>
 		</div>
 
-		{duration && (
-			<div class="absolute bottom-3 left-3 sm:bottom-6 sm:left-6">
-				<Badge variant="outline" class="border-white/20 bg-black/40 text-white backdrop-blur-md">
-					{duration}
-				</Badge>
-			</div>
-		)}
+		<div class="project-media-rail">
+			<span>{duration ?? "Selected case study"}</span>
+			<span aria-hidden="true">Product systems / delivery</span>
+		</div>
 	</div>
 
-	<div class="flex flex-1 flex-col p-6 sm:p-10">
-		<div class="mb-6">
+	<div class="flex flex-1 flex-col p-6 sm:p-8 lg:px-8 lg:py-6">
+		<div class="mb-4">
 			{headingLevel === "h2" ? (
-				<h2 class="text-2xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+				<h2 class="text-2xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-[2rem]">
 					{title}
 				</h2>
 			) : (
-				<h3 class="text-2xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+				<h3 class="text-2xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-[2rem]">
 					{title}
 				</h3>
 			)}
-			<p class="mt-3 line-clamp-4 text-base leading-8 text-slate-500 sm:mt-4 sm:line-clamp-3 sm:text-lg sm:leading-relaxed">
+			<p class="mt-3 line-clamp-3 text-base leading-7 text-slate-500 sm:line-clamp-2">
 				{description}
 			</p>
 		</div>
 
 		{outcomes.length > 0 && (
-			<dl class="mb-7 grid gap-3 sm:mb-8 sm:grid-cols-3 sm:gap-4">
+			<dl class="project-outcomes mb-5 grid grid-cols-3">
 				{outcomes.map((outcome) => (
-					<div class="rounded-xl border border-line bg-surface-tint p-4 transition-colors group-hover:bg-accent/5 sm:rounded-2xl">
+					<div>
 						<dt class="text-[0.6rem] font-bold uppercase leading-relaxed tracking-widest text-slate-400">
 							{outcome.label}
 						</dt>

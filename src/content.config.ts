@@ -15,7 +15,7 @@ const projects = defineCollection({
 			seoDescription: z.string().optional(),
 			order: z.number().default(0),
 			featured: z.boolean().default(false),
-			company: z.string(),
+			company: z.string().optional(),
 			role: z.string(),
 			duration: z.string(),
 			engagement: z.string(),

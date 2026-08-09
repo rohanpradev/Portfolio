@@ -1,47 +1,62 @@
 ---
+import Icon from "./Icon.astro";
 import { site, withBasePath } from "../data/meta";
 ---
 
-<footer class="section-shell footer-space border-t border-line pb-12 pt-16">
-  <div class="grid gap-12 lg:grid-cols-2">
-    <div>
-      <a href={withBasePath("/")} class="flex items-center gap-3">
-        <img
-          src={withBasePath("/brand-mark.svg")}
-          alt=""
-          width="32"
-          height="32"
-          class="h-8 w-8"
-          loading="lazy"
-          decoding="async"
-        />
-        <span class="text-xl font-bold tracking-tight text-slate-900">{site.author}</span>
-      </a>
-      <p class="mt-6 max-w-sm text-base leading-relaxed text-slate-500">
-        Senior full-stack engineer specialized in high-context product surfaces and AI-enabled systems.
-      </p>
-    </div>
-    <div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
-      <div>
-        <h3 class="text-xs font-bold uppercase tracking-widest text-slate-900">Navigation</h3>
-        <ul class="mt-4 space-y-3">
-          {site.nav.map(item => (
-            <li><a href={item.href} class="text-sm font-medium text-slate-500 hover:text-accent">{item.label}</a></li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h3 class="text-xs font-bold uppercase tracking-widest text-slate-900">Contact</h3>
-        <ul class="mt-4 space-y-3 text-sm font-medium text-slate-500">
-          <li><a href={`mailto:${site.email}`} class="hover:text-accent">Email</a></li>
-          <li><a href={site.social.linkedin} class="hover:text-accent">LinkedIn</a></li>
-          <li><a href={site.social.github} class="hover:text-accent">GitHub</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="mt-16 border-t border-line pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-widest">
-    <p>&copy; {new Date().getFullYear()} {site.author}</p>
-    <p>Built with Astro & Tailwind</p>
-  </div>
+<footer class="section-shell footer-space pb-10 sm:pb-12">
+	<div class="border-t border-line pt-10 sm:pt-12">
+		<div class="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20">
+			<div>
+				<a href={withBasePath("/")} class="inline-flex items-center gap-3" aria-label={`${site.author} home`}>
+					<img
+						src={withBasePath("/brand-mark.svg")}
+						alt=""
+						width="36"
+						height="36"
+						class="h-9 w-9 rounded-xl"
+						loading="lazy"
+						decoding="async"
+					/>
+					<span class="text-base font-semibold tracking-tight text-slate-900">{site.author}</span>
+				</a>
+				<p class="mt-5 max-w-md text-base leading-7 text-slate-500">
+					Lead full-stack engineer building clear enterprise interfaces, dependable integrations, and production-ready agentic AI workflows.
+				</p>
+				<a href={`mailto:${site.email}`} class="text-link mt-6">
+					<Icon name="mail" class="h-4 w-4" />
+					{site.email}
+				</a>
+			</div>
+
+			<div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+				<nav aria-label="Footer navigation">
+					<h2 class="micro-label text-slate-700">Navigate</h2>
+					<ul class="mt-4 space-y-3">
+						{site.nav.map((item) => (
+							<li><a href={item.href} class="text-sm font-medium text-slate-500 hover:text-accent">{item.label}</a></li>
+						))}
+						<li><a href={withBasePath("/resume")} class="text-sm font-medium text-slate-500 hover:text-accent">Résumé</a></li>
+					</ul>
+				</nav>
+
+				<div>
+					<h2 class="micro-label text-slate-700">Connect</h2>
+					<ul class="mt-4 space-y-3">
+						<li><a href={site.social.linkedin} target="_blank" rel="noreferrer" class="text-sm font-medium text-slate-500 hover:text-accent">LinkedIn</a></li>
+						<li><a href={site.social.github} target="_blank" rel="noreferrer" class="text-sm font-medium text-slate-500 hover:text-accent">GitHub</a></li>
+					</ul>
+				</div>
+
+				<div class="col-span-2 sm:col-span-1">
+					<h2 class="micro-label text-slate-700">Location</h2>
+					<p class="mt-4 text-sm leading-6 text-slate-500">{site.location}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs font-semibold text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+			<p>&copy; {new Date().getFullYear()} {site.author}</p>
+			<p>Built with Astro. No client framework shipped.</p>
+		</div>
+	</div>
 </footer>

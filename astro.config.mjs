@@ -1,6 +1,6 @@
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, envField, fontProviders } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 function stripOuterQuotes(value) {
 	if (!value) {
@@ -14,7 +14,7 @@ function resolveSiteUrl() {
 	const repoOwner = stripOuterQuotes(process.env.GITHUB_REPOSITORY_OWNER);
 	const fallback = repoOwner
 		? `https://${repoOwner}.github.io`
-		: "https://yourusername.github.io";
+		: "https://rohanpradev.github.io";
 	const raw = stripOuterQuotes(process.env.PUBLIC_SITE_URL);
 
 	if (!raw) {
@@ -78,26 +78,6 @@ export default defineConfig({
 			}),
 		},
 	},
-	fonts: [
-		{
-			provider: fontProviders.fontsource(),
-			name: "Geist Sans",
-			cssVariable: "--font-geist-sans",
-			weights: [400, 500, 600, 700, 800, 900],
-			styles: ["normal"],
-			subsets: ["latin"],
-			fallbacks: ["Inter", "system-ui", "sans-serif"],
-		},
-		{
-			provider: fontProviders.fontsource(),
-			name: "Geist Mono",
-			cssVariable: "--font-geist-mono",
-			weights: [400, 500, 700],
-			styles: ["normal"],
-			subsets: ["latin"],
-			fallbacks: ["monospace"],
-		},
-	],
 	integrations: [sitemap()],
 	vite: {
 		plugins: [tailwindcss()],

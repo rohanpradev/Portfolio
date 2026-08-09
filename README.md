@@ -1,10 +1,10 @@
 # M Rohan Pradev Portfolio
 
-Astro 6 portfolio site for M Rohan Pradev, tuned for static deployment on GitHub Pages.
+Astro 7 portfolio site for M Rohan Pradev, tuned for static deployment on GitHub Pages.
 
 ## Stack
 
-- Astro 6
+- Astro 7
 - Tailwind CSS 4
 - Astro image optimization
 - GitHub Pages via GitHub Actions

@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { getImage, Image } from "astro:assets";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Badge from "../../components/Badge.astro";
@@ -22,6 +22,12 @@ const { project } = Astro.props as Props;
 const { Content, headings } = await render(project);
 const projectHref = withBasePath(`/projects/${project.id}`);
 const projectUrl = new URL(projectHref, site.url).toString();
+const projectSocialImage = await getImage({
+	src: project.data.cover,
+	width: Math.min(project.data.cover.width, 1200),
+	format: "webp",
+	quality: 82,
+});
 const formattedDate = project.data.updatedDate.toLocaleDateString("en-IN", {
 	year: "numeric",
 	month: "long",
@@ -34,7 +40,7 @@ const structuredData = [
 		"@id": `${projectUrl}#article`,
 		headline: project.data.seoTitle ?? project.data.title,
 		description: project.data.seoDescription ?? project.data.description,
-		image: [new URL(project.data.cover.src, site.url).toString()],
+		image: [new URL(projectSocialImage.src, site.url).toString()],
 		datePublished: project.data.publishedDate.toISOString(),
 		dateModified: project.data.updatedDate.toISOString(),
 		author: {
@@ -75,7 +81,7 @@ const structuredData = [
 					</div>
 
 					<div class="mt-6 flex flex-wrap gap-2" data-reveal style="--reveal-delay: 70ms;">
-						<Badge variant="outline">{project.data.company}</Badge>
+						{project.data.company && <Badge variant="outline">{project.data.company}</Badge>}
 						<Badge variant="outline">{project.data.duration}</Badge>
 						<Badge variant="outline">{project.data.role}</Badge>
 					</div>
@@ -130,7 +136,7 @@ const structuredData = [
 							widths={[720, 1200, 1600]}
 							sizes="(max-width: 1024px) 100vw, 55vw"
 							class="w-full scale-[1.05] object-cover object-center"
-							loading="eager"
+							priority
 						/>
 						{project.data.gallery[0].caption && (
 							<figcaption class="border-t border-slate-900/8 px-5 py-4 text-sm leading-6 text-slate-600">

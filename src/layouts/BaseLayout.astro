@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro";
-import { Font } from "astro:assets";
+import { getImage } from "astro:assets";
+import geistFontUrl from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ScrollEffects from "../components/ScrollEffects.astro";
@@ -37,9 +38,25 @@ const canonical = new URL(Astro.url.pathname, site.url).toString();
 const websiteId = `${site.homeUrl}#website`;
 const personId = `${site.homeUrl}#person`;
 const pageId = `${canonical}#webpage`;
-const resolvedImage = typeof image === "string" ? image : image.src;
-const imageWidth = typeof image === "string" ? site.ogImageWidth : image.width;
-const imageHeight = typeof image === "string" ? site.ogImageHeight : image.height;
+const optimizedSocialImage =
+	typeof image === "string"
+		? null
+		: await getImage({
+				src: image,
+				width: Math.min(image.width, 1200),
+				format: "webp",
+				quality: 82,
+			});
+const resolvedImage =
+	typeof image === "string" ? image : optimizedSocialImage!.src;
+const imageWidth =
+	typeof image === "string"
+		? site.ogImageWidth
+		: optimizedSocialImage!.attributes.width;
+const imageHeight =
+	typeof image === "string"
+		? site.ogImageHeight
+		: optimizedSocialImage!.attributes.height;
 const imageType =
 	resolvedImage.endsWith(".png")
 		? "image/png"
@@ -54,7 +71,13 @@ const socialImage = resolvedImage.startsWith("http")
 	? resolvedImage
 	: new URL(resolvedImage, site.url).toString();
 const sameAs = [site.social.github, site.social.linkedin].filter(Boolean);
-const profileImage = new URL(site.profilePhoto.src, site.url).toString();
+const optimizedProfileImage = await getImage({
+	src: site.profilePhoto,
+	width: Math.min(site.profilePhoto.width, 800),
+	format: "webp",
+	quality: 82,
+});
+const profileImage = new URL(optimizedProfileImage.src, site.url).toString();
 const pathnameWithoutBase =
 	site.basePath && Astro.url.pathname.startsWith(site.basePath)
 		? Astro.url.pathname.slice(site.basePath.length) || "/"
@@ -167,7 +190,7 @@ const robots = noindex
 		<meta name="description" content={description} />
 		<meta name="author" content={site.author} />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="theme-color" content="#0b1220" data-theme-color />
+		<meta name="theme-color" content="#070908" data-theme-color />
 		<meta name="referrer" content="strict-origin-when-cross-origin" />
 		<meta name="robots" content={robots} />
 		<meta name="googlebot" content={robots} />
@@ -192,14 +215,19 @@ const robots = noindex
 				root.style.colorScheme = theme;
 				document
 					.querySelector("[data-theme-color]")
-					?.setAttribute("content", theme === "light" ? "#f3f7fb" : "#0b1220");
+					?.setAttribute("content", theme === "light" ? "#f5f6f1" : "#070908");
 			})();
 		</script>
 		<link rel="canonical" href={canonical} />
 		<link rel="alternate" hreflang="en-IN" href={canonical} />
 		<link rel="alternate" hreflang="x-default" href={canonical} />
-		<Font cssVariable="--font-geist-sans" preload />
-		<Font cssVariable="--font-geist-mono" preload />
+		<link
+			rel="preload"
+			href={geistFontUrl}
+			as="font"
+			type="font/woff2"
+			crossorigin="anonymous"
+		/>
 		<link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
 		<link rel="shortcut icon" href={withBasePath("/favicon.svg")} />
 		<link rel="apple-touch-icon" href={withBasePath("/apple-touch-icon.png")} />
@@ -247,7 +275,7 @@ const robots = noindex
 		</main>
 		<Footer />
 		<ScrollEffects />
-		<script is:inline>
+		<script>
 			(() => {
 				const storageKey = "theme-preference";
 				const root = document.documentElement;
@@ -255,8 +283,8 @@ const robots = noindex
 				const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
 
 				const themeColors = {
-					light: "#f3f7fb",
-					dark: "#0b1220",
+					light: "#f5f6f1",
+					dark: "#070908",
 				};
 
 				const getStoredTheme = () => {
@@ -270,7 +298,7 @@ const robots = noindex
 
 				const getPreferredTheme = () => getStoredTheme() ?? (mediaQuery.matches ? "light" : "dark");
 
-				const updateToggleButtons = (theme) => {
+				const updateToggleButtons = (theme: "light" | "dark") => {
 					document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
 						if (!(button instanceof HTMLButtonElement)) {
 							return;
@@ -290,7 +318,7 @@ const robots = noindex
 					});
 				};
 
-				const applyTheme = (theme) => {
+				const applyTheme = (theme: "light" | "dark") => {
 					root.dataset.theme = theme;
 					root.style.colorScheme = theme;
 					metaTheme?.setAttribute("content", themeColors[theme]);

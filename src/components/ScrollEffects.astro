@@ -1,7 +1,7 @@
-<script is:inline>
+<script>
 	(() => {
-		const parallaxNodes = Array.from(document.querySelectorAll("[data-parallax]"));
-		const revealNodes = Array.from(document.querySelectorAll("[data-reveal]"));
+		const parallaxNodes = Array.from(document.querySelectorAll<HTMLElement>("[data-parallax]"));
+		const revealNodes = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
 
 		if (!parallaxNodes.length && !revealNodes.length) {
 			return;
@@ -11,21 +11,6 @@
 		const showRevealNodes = () => {
 			revealNodes.forEach((node) => node.classList.add("is-visible"));
 		};
-		const revealNodesInView = (observer) => {
-			const viewportHeight = window.innerHeight;
-
-			for (const node of revealNodes) {
-				const rect = node.getBoundingClientRect();
-
-				if (rect.top > viewportHeight * 0.92) {
-					continue;
-				}
-
-				node.classList.add("is-visible");
-				observer?.unobserve(node);
-			}
-		};
-
 		const updateParallax = () => {
 			const viewportCenter = window.innerHeight / 2;
 
@@ -80,7 +65,6 @@
 				);
 
 				revealNodes.forEach((node) => revealObserver.observe(node));
-				revealNodesInView(revealObserver);
 			}
 		}
 
