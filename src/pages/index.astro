@@ -1,330 +1,223 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import myPhoto from "../assets/profile/profile-photo.webp";
 import Hero from "../components/Hero.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import TestimonialCard from "../components/TestimonialCard.astro";
 import CompanyMarquee from "../components/CompanyMarquee.astro";
-import SectionHeading from "../components/SectionHeading.astro";
-import Icon from "../components/Icon.astro";
+import AgentWorkflow from "../components/AgentWorkflow.astro";
+import CopyEmail from "../components/CopyEmail.astro";
 import { site, withBasePath } from "../data/meta";
 import { experiences } from "../data/experiences";
 import { testimonials } from "../data/testimonials";
-
-const projectEntries = (await getCollection("projects")).sort(
-	(a, b) => a.data.order - b.data.order,
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
 );
-const featuredProject =
-	projectEntries.find((project) => project.data.featured) ?? projectEntries[0];
-
-if (!featuredProject) {
-	throw new Error("Expected at least one featured project.");
-}
-
-const featuredProjectHref = withBasePath(`/projects/${featuredProject.id}`);
-
-const heroStats = [
-	{ value: "9+ years", label: "Enterprise product delivery" },
-	{ value: "UI → AI", label: "Frontend, services, and agents" },
-	{ value: "5 teams", label: "Cross-industry engineering" },
-];
-
-const heroInsightCards = [
-	{
-		label: "Engineering focus",
-		title: "Make complex software feel clear.",
-		detail:
-			"High-context interfaces, dependable service boundaries, and useful AI workflows built for production pressure.",
-	},
-];
-
-const focusAreas = [
-	{
-		icon: "layers",
-		title: "Product-grade frontend systems",
-		note: "React · TypeScript · Design systems",
-		description:
-			"Clear information architecture and resilient component patterns for data-heavy enterprise workflows.",
-	},
-	{
-		icon: "check",
-		title: "Secure service integration",
-		note: "Node.js · APIs · Auth · Redis",
-		description:
-			"Predictable contracts and backend orchestration that keep product surfaces fast, safe, and maintainable.",
-	},
-	{
-		icon: "briefcase",
-		title: "Delivery leadership",
-		note: "Architecture · Reviews · Mentoring",
-		description:
-			"Senior ownership from ambiguous product pressure through implementation, review, and release quality.",
-	},
-	{
-		icon: "sparkles",
-		title: "Applied agentic AI",
-		note: "Python · OpenAI · Retrieval workflows",
-		description:
-			"AI capabilities placed where they remove real friction, with transparent boundaries teams can operate.",
-	},
-] as const;
-
-const deliveryPhases = [
-	{
-		step: "01",
-		title: "Find the real pressure",
-		description:
-			"Align user friction, business risk, and system constraints before committing to an implementation shape.",
-	},
-	{
-		step: "02",
-		title: "Shape stable boundaries",
-		description:
-			"Clarify data flow, contracts, component responsibility, and failure modes while change is still inexpensive.",
-	},
-	{
-		step: "03",
-		title: "Ship with evidence",
-		description:
-			"Validate accessibility, performance, maintainability, and product clarity—not only whether the happy path runs.",
-	},
-];
-
-const faqItems = [
-	{
-		question: "What kind of role is the strongest fit?",
-		answer:
-			"Lead full-stack, frontend architecture, and AI product roles where a complex surface needs senior ownership across UI, service boundaries, and delivery quality.",
-	},
-	{
-		question: "Where do you usually create leverage first?",
-		answer:
-			"The first gains usually come from simplifying the interface, removing repeated integration logic, and making the contracts that shape the frontend explicit.",
-	},
-	{
-		question: "What should a first message include?",
-		answer:
-			"Share the product context, current constraint, stack, and the part of the system that needs senior attention. That is enough for a concrete first response.",
-	},
-];
-
-const structuredData = [
-	{
-		"@type": "FAQPage",
-		mainEntity: faqItems.map((item) => ({
-			"@type": "Question",
-			name: item.question,
-			acceptedAnswer: {
-				"@type": "Answer",
-				text: item.answer,
-			},
-		})),
-	},
+const capabilities = [
+  {
+    number: "01",
+    title: "Interfaces with intent.",
+    text: "Accessible, responsive React and TypeScript experiences that make complex workflows feel straightforward.",
+    tags: "Frontend architecture / Design systems / Performance",
+  },
+  {
+    number: "02",
+    title: "Systems that hold up.",
+    text: "Node.js services, secure integrations, and thoughtful data boundaries built to support the product as it grows.",
+    tags: "APIs / Redis / Cloud integration",
+  },
+  {
+    number: "03",
+    title: "Agents with a purpose.",
+    text: "Strands agents with AgentCore Runtime and Memory, connected to AWS Batch workloads and results in S3.",
+    tags: "Strands / AgentCore / AWS Batch / S3",
+  },
 ];
 ---
 
-<BaseLayout
-	description="Portfolio of M Rohan Pradev, a lead full-stack engineer building accessible enterprise interfaces, secure integrations, and production-ready agentic AI workflows."
-	structuredData={structuredData}
->
-	<Hero
-		title="M Rohan Pradev"
-		headline="Engineering complex product systems that feel clear."
-		subtitle="I lead full-stack delivery across enterprise interfaces, service integrations, and agentic AI—with a strong bias for accessibility, performance, and maintainable architecture."
-		ctaText="Explore flagship work"
-		ctaHref={featuredProjectHref}
-		photo={myPhoto}
-		photoAlt="Portrait of M Rohan Pradev"
-		status={site.availability}
-		location={site.location}
-		email={site.email}
-		stats={heroStats}
-		insightCards={heroInsightCards}
-	/>
-
-	<CompanyMarquee />
-
-	<section id="work" class="section-shell" aria-labelledby="work-heading" data-section-index="01">
-		<div class="section-intro-row" data-reveal>
-			<SectionHeading
-				id="work-heading"
-				eyebrow="Selected work"
-				title="Proof, not a project gallery."
-				description="One detailed case study showing how interface clarity, workflow logic, and system design come together in real delivery."
-			/>
-			<a href={withBasePath("/projects")} class="text-link">
-				View all projects
-				<svg aria-hidden="true" focusable="false" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-				</svg>
-			</a>
-		</div>
-
-		<div class="mt-8 sm:mt-10" data-reveal style="--reveal-delay: 80ms;">
-			<ProjectCard
-				title={featuredProject.data.title}
-				description={featuredProject.data.description}
-				tech={featuredProject.data.tech}
-				image={featuredProject.data.cover}
-				alt={featuredProject.data.coverAlt}
-				href={featuredProjectHref}
-				company={featuredProject.data.company}
-				duration={featuredProject.data.duration}
-				outcomes={featuredProject.data.outcomes}
-				featured={featuredProject.data.featured}
-				headingLevel="h3"
-			/>
-		</div>
-	</section>
-
-	<section id="capabilities" class="section-shell" aria-labelledby="capabilities-heading">
-		<div class="section-intro-row" data-reveal>
-			<SectionHeading
-				id="capabilities-heading"
-				eyebrow="Capabilities"
-				title="Senior ownership across the stack."
-				description="The strongest work happens where product clarity, frontend craft, service design, and delivery discipline meet."
-			/>
-		</div>
-
-		<div class="capability-grid mt-8 sm:mt-10">
-			{focusAreas.map((area, index) => (
-				<article class="capability-card" data-reveal style={`--reveal-delay: ${index * 60}ms;`}>
-					<div class="capability-icon">
-						<Icon name={area.icon} class="h-5 w-5" />
-					</div>
-					<p class="micro-label mt-8">{area.note}</p>
-					<h3 class="mt-3 text-2xl font-semibold leading-tight text-slate-900">{area.title}</h3>
-					<p class="mt-4 text-base leading-7 text-slate-500">{area.description}</p>
-				</article>
-			))}
-		</div>
-	</section>
-
-	<section id="approach" class="section-shell" aria-labelledby="approach-heading">
-		<div class="process-shell">
-			<div data-reveal>
-				<SectionHeading
-					id="approach-heading"
-					eyebrow="How I work"
-					title="Clarity before velocity. Evidence before polish."
-					description="A compact delivery loop for complex product work."
-				/>
-			</div>
-
-			<ol class="process-list">
-				{deliveryPhases.map((phase, index) => (
-					<li data-reveal style={`--reveal-delay: ${index * 70}ms;`}>
-						<span class="process-number" aria-hidden="true">{phase.step}</span>
-						<div>
-							<h3 class="text-xl font-semibold text-slate-900 sm:text-2xl">{phase.title}</h3>
-							<p class="mt-2 max-w-2xl text-base leading-7 text-slate-500">{phase.description}</p>
-						</div>
-					</li>
-				))}
-			</ol>
-		</div>
-	</section>
-
-	<section id="experience" class="section-shell" aria-labelledby="experience-heading">
-		<div class="section-intro-row" data-reveal>
-			<SectionHeading
-				id="experience-heading"
-				eyebrow="Experience"
-				title="Built in enterprise environments."
-				description="Nine years across AI product work, manufacturing systems, pensions, hospitality, and enterprise platforms."
-			/>
-			<a href={withBasePath("/resume")} class="text-link">
-				Full résumé
-				<svg aria-hidden="true" focusable="false" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-				</svg>
-			</a>
-		</div>
-
-		<ol class="experience-list mt-8 sm:mt-10">
-			{experiences.slice(0, 3).map((experience, index) => (
-				<li data-reveal style={`--reveal-delay: ${index * 70}ms;`}>
-					<p class="experience-index" aria-hidden="true">0{index + 1}</p>
-					<div class="min-w-0">
-						<p class="micro-label">{experience.company}</p>
-						<h3 class="mt-2 text-xl font-semibold text-slate-900 sm:text-2xl">{experience.role}</h3>
-						<p class="mt-3 text-sm leading-6 text-slate-500">{experience.stack.join(" · ")}</p>
-					</div>
-					<p class="experience-date">{experience.start} — {experience.end}</p>
-				</li>
-			))}
-		</ol>
-	</section>
-
-	<section id="testimonials" class="section-shell" aria-labelledby="testimonials-heading">
-		<div class="section-intro-row" data-reveal>
-			<SectionHeading
-				id="testimonials-heading"
-				eyebrow="Peer signal"
-				title="Trusted when the work gets real."
-				description="Feedback from engineers who have worked alongside me."
-			/>
-		</div>
-
-		<div class="mt-8 grid gap-5 sm:mt-10 lg:grid-cols-2">
-			{testimonials.map((testimonial, index) => (
-				<div data-reveal style={`--reveal-delay: ${index * 80}ms;`} class="h-full">
-					<TestimonialCard {...testimonial} />
-				</div>
-			))}
-		</div>
-	</section>
-
-	<section id="faq" class="section-shell" aria-labelledby="faq-heading">
-		<div class="faq-layout">
-			<div data-reveal>
-				<SectionHeading
-					id="faq-heading"
-					eyebrow="Hiring FAQ"
-					title="A few useful answers."
-					description="The short version before we start a conversation."
-				/>
-			</div>
-
-			<div class="faq-list" data-reveal style="--reveal-delay: 80ms;">
-				{faqItems.map((item) => (
-					<details>
-						<summary>
-							<span>{item.question}</span>
-							<span class="faq-icon" aria-hidden="true"></span>
-						</summary>
-						<p>{item.answer}</p>
-					</details>
-				))}
-			</div>
-		</div>
-	</section>
-
-	<section id="contact" class="section-shell" aria-labelledby="contact-heading">
-		<div class="contact-panel" data-reveal>
-			<div>
-				<p class="micro-label text-accent">Available for the right team</p>
-				<h2 id="contact-heading" class="mt-5 max-w-[18ch] text-[clamp(2.4rem,6vw,4.75rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-slate-900">
-					Need senior ownership across UI, services, and AI?
-				</h2>
-			</div>
-			<div class="contact-actions">
-				<p class="max-w-md text-base leading-7 text-slate-500">
-					Share the product context and the constraint. I usually respond within one business day.
-				</p>
-				<div class="mt-7 flex flex-wrap gap-3">
-					<a href={`mailto:${site.email}`} class="primary-button">
-						<Icon name="mail" class="h-4 w-4" />
-						Email {site.author}
-					</a>
-					<a href={site.social.linkedin} target="_blank" rel="noreferrer" class="secondary-button">
-						<Icon name="linkedin" class="h-4 w-4" />
-						LinkedIn
-					</a>
-				</div>
-			</div>
-		</div>
-	</section>
+<BaseLayout description="M Rohan Pradev — lead full-stack engineer at Optum. Explore enterprise interfaces and AWS reagent optimization with Strands Agents, AgentCore, AWS Batch, and S3.">
+  <Hero />
+  <CompanyMarquee />
+  <section id="work" class="section-shell" aria-labelledby="work-heading">
+    <div class="section-intro-row" data-reveal>
+      <div>
+        <p class="micro-label">01 / Selected work</p>
+        <h2 id="work-heading" class="editorial-title mt-4">
+          Built to make
+          <br />
+          <span class="serif-text">a difference.</span>
+        </h2>
+      </div>
+      <p class="section-aside">
+        A closer look at the interfaces, systems, and agent workflows I’ve
+        helped bring to life.
+      </p>
+    </div>
+    <div class="work-list">
+      {projects.map((project, index) => (
+        <div data-reveal>
+          <ProjectCard
+            title={project.data.title}
+            description={project.data.description}
+            tech={project.data.tech}
+            image={project.data.cover}
+            alt={project.data.coverAlt}
+            href={withBasePath(`/projects/${project.id}`)}
+            company={project.data.company}
+            duration={project.data.duration}
+            outcomes={project.data.outcomes}
+            featured={project.data.featured}
+            headingLevel="h3"
+            index={index + 1}
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+  <section id="ai" class="section-shell" aria-labelledby="ai-heading">
+    <div class="ai-feature" data-reveal>
+      <div class="ai-feature-copy">
+        <p class="micro-label">Inside the work / Optum</p>
+        <h2 id="ai-heading" class="editorial-title mt-5">
+          From a request
+          <br />
+          to <span class="serif-text">a result.</span>
+        </h2>
+        <p class="mt-6">
+          I implemented a reagent optimization agent using Strands with
+          AgentCore Runtime and Memory. The agent runs optimization through AWS
+          Batch and stores results in Amazon S3.
+        </p>
+        <a
+          class="text-link mt-5"
+          href={withBasePath("/projects/reagent-optimization-agent")}
+        >
+          Explore the architecture <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <AgentWorkflow />
+    </div>
+  </section>
+  <section
+    id="capabilities"
+    class="section-shell"
+    aria-labelledby="capabilities-heading"
+  >
+    <div class="section-intro-row" data-reveal>
+      <div>
+        <p class="micro-label">02 / What I bring</p>
+        <h2 id="capabilities-heading" class="editorial-title mt-4">
+          Craft meets
+          <br />
+          <span class="serif-text">systems thinking.</span>
+        </h2>
+      </div>
+      <p class="section-aside">
+        From the first interaction to the service behind it, I care about how
+        all the pieces work together.
+      </p>
+    </div>
+    <div class="capability-list">
+      {capabilities.map((item) => (
+        <article class="capability-row" data-reveal>
+          <span class="micro-label">{item.number}</span>
+          <h3>{item.title}</h3>
+          <div>
+            <p>{item.text}</p>
+            <p class="micro-label mt-4">{item.tags}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+  <section
+    id="experience"
+    class="section-shell"
+    aria-labelledby="experience-heading"
+  >
+    <div class="section-intro-row" data-reveal>
+      <div>
+        <p class="micro-label">03 / The journey</p>
+        <h2 id="experience-heading" class="editorial-title mt-4">
+          Built on
+          <br />
+          <span class="serif-text">real experience.</span>
+        </h2>
+      </div>
+      <a href={withBasePath("/about")} class="text-link">
+        The full story <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <ol class="experience-list">
+      {experiences.map((experience, index) => (
+        <li data-reveal>
+          <span class="experience-index">0{index + 1}</span>
+          <div>
+            <p class="micro-label">{experience.company}</p>
+            <h3 class="mt-2 text-xl font-medium text-slate-900">
+              {experience.role}
+            </h3>
+            <p class="mt-3 text-sm leading-6 text-slate-500">
+              {experience.stack.join(" · ")}
+            </p>
+          </div>
+          <p class="experience-date">
+            {experience.start} — {experience.end}
+          </p>
+        </li>
+      ))}
+    </ol>
+  </section>
+  <section
+    id="testimonials"
+    class="section-shell"
+    aria-labelledby="testimonials-heading"
+  >
+    <div class="section-intro-row" data-reveal>
+      <div>
+        <p class="micro-label">04 / In good company</p>
+        <h2 id="testimonials-heading" class="editorial-title mt-4">
+          Better work.
+          <br />
+          <span class="serif-text">Together.</span>
+        </h2>
+      </div>
+      <p class="section-aside">
+        A few words from the engineers I’ve worked alongside.
+      </p>
+    </div>
+    <div class="mt-10 grid gap-5 lg:grid-cols-2">
+      {testimonials.map((testimonial) => (
+        <div data-reveal>
+          <TestimonialCard {...testimonial} />
+        </div>
+      ))}
+    </div>
+  </section>
+  <section id="contact" class="section-shell" aria-labelledby="contact-heading">
+    <div class="contact-panel" data-reveal>
+      <p class="micro-label">Have something in mind?</p>
+      <div class="contact-heading-row">
+        <h2 id="contact-heading">
+          Let’s build
+          <br />
+          <span class="serif-text">something great.</span>
+        </h2>
+        <a
+          class="contact-circle"
+          href={withBasePath("/contact")}
+          aria-label="Start a conversation"
+        >
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <div class="contact-bottom">
+        <a href={`mailto:${site.email}`} class="contact-email">
+          {site.email}
+        </a>
+        <CopyEmail />
+        <p>Based in Bengaluru. Open to the right team.</p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

@@ -15,8 +15,10 @@ export const experiences: Experience[] = [
 		logo: "optum",
 		start: "Mar 2026",
 		end: "Present",
-		stack: ["Agentic AI", "Python", "Node.js", "React", "TypeScript"],
+		stack: ["Strands Agents", "AgentCore", "AWS Batch", "Amazon S3", "Python", "React"],
 		points: [
+			"Implemented a Strands agent with Amazon Bedrock AgentCore Runtime and Memory for a reagent optimization project at Optum.",
+			"Connected the agent to AWS Batch to run reagent optimization jobs and store their results in Amazon S3.",
 			"Leading full-stack delivery for agentic AI capabilities, connecting Python-based AI services with Node.js APIs and modern frontend experiences.",
 			"Building end-to-end product features across React and TypeScript interfaces, Node.js backend services, and Python agent workflows.",
 			"Shaping maintainable service boundaries and integration patterns for production-focused AI and full-stack engineering.",

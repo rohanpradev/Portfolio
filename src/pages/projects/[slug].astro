@@ -2,245 +2,288 @@
 import { getImage, Image } from "astro:assets";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Badge from "../../components/Badge.astro";
 import { site, withBasePath } from "../../data/meta";
-
 export async function getStaticPaths() {
-	const projects = await getCollection("projects");
-
-	return projects.map((project) => ({
-		params: { slug: project.id },
-		props: { project },
-	}));
+  return (await getCollection("projects")).map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
 }
-
 interface Props {
-	project: CollectionEntry<"projects">;
+  project: CollectionEntry<"projects">;
 }
-
-const { project } = Astro.props as Props;
+const { project } = Astro.props;
 const { Content, headings } = await render(project);
-const projectHref = withBasePath(`/projects/${project.id}`);
-const projectUrl = new URL(projectHref, site.url).toString();
-const projectSocialImage = await getImage({
-	src: project.data.cover,
-	width: Math.min(project.data.cover.width, 1200),
-	format: "webp",
-	quality: 82,
+const projectUrl = new URL(
+  withBasePath(`/projects/${project.id}`),
+  site.url,
+).toString();
+const socialImage = await getImage({
+  src: project.data.cover,
+  width: 1200,
+  format: "webp",
+  quality: 82,
 });
-const formattedDate = project.data.updatedDate.toLocaleDateString("en-IN", {
-	year: "numeric",
-	month: "long",
-	day: "numeric",
-});
-const tableOfContents = headings.filter((heading) => heading.depth === 2);
+const toc = headings.filter((heading) => heading.depth === 2);
 const structuredData = [
-	{
-		"@type": "Article",
-		"@id": `${projectUrl}#article`,
-		headline: project.data.seoTitle ?? project.data.title,
-		description: project.data.seoDescription ?? project.data.description,
-		image: [new URL(projectSocialImage.src, site.url).toString()],
-		datePublished: project.data.publishedDate.toISOString(),
-		dateModified: project.data.updatedDate.toISOString(),
-		author: {
-			"@id": `${site.homeUrl}#person`,
-		},
-		publisher: {
-			"@id": `${site.homeUrl}#website`,
-		},
-		mainEntityOfPage: projectUrl,
-		about: project.data.tech,
-		keywords: project.data.tech.join(", "),
-		articleSection: "Case Study",
-		inLanguage: "en-IN",
-		isAccessibleForFree: true,
-	},
+  {
+    "@type": "Article",
+    headline: project.data.title,
+    description: project.data.description,
+    image: new URL(socialImage.src, site.url).toString(),
+    datePublished: project.data.publishedDate.toISOString(),
+    dateModified: project.data.updatedDate.toISOString(),
+    author: { "@id": `${site.homeUrl}#person` },
+    mainEntityOfPage: projectUrl,
+  },
 ];
 ---
 
 <BaseLayout
-	title={project.data.seoTitle ?? `${project.data.title} | ${site.name}`}
-	description={project.data.seoDescription ?? project.data.description}
-	image={project.data.cover}
-	imageAlt={project.data.coverAlt}
-	structuredData={structuredData}
-	publishedTime={project.data.publishedDate.toISOString()}
-	modifiedTime={project.data.updatedDate.toISOString()}
-	openGraphType="article"
+  title={project.data.seoTitle ?? `${project.data.title} | ${site.name}`}
+  description={project.data.seoDescription ?? project.data.description}
+  image={project.data.cover}
+  imageAlt={project.data.coverAlt}
+  structuredData={structuredData}
+  publishedTime={project.data.publishedDate.toISOString()}
+  modifiedTime={project.data.updatedDate.toISOString()}
+  openGraphType="article"
 >
-	<article class="section-shell intro-space">
-		<header class="surface-card-strong overflow-hidden p-8 sm:p-10 lg:p-12">
-			<div class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-				<div>
-					<div class="flex flex-wrap items-center gap-3" data-reveal>
-						<a href={withBasePath("/projects")} class="secondary-button px-4 py-2.5">
-							Back to projects
-						</a>
-						<Badge variant="accent" icon="sparkles">Case study</Badge>
-					</div>
-
-					<div class="mt-6 flex flex-wrap gap-2" data-reveal style="--reveal-delay: 70ms;">
-						{project.data.company && <Badge variant="outline">{project.data.company}</Badge>}
-						<Badge variant="outline">{project.data.duration}</Badge>
-						<Badge variant="outline">{project.data.role}</Badge>
-					</div>
-
-					<h1
-						class="mt-6 max-w-full break-words text-[clamp(2rem,9vw,3rem)] font-semibold leading-[1.02] text-slate-900 sm:max-w-[12ch] sm:text-[clamp(3rem,6vw,5.2rem)] sm:leading-[0.96]"
-						data-reveal
-						style="--reveal-delay: 120ms;"
-					>
-						{project.data.title}
-					</h1>
-					<p
-						class="mt-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg"
-						data-reveal
-						style="--reveal-delay: 180ms;"
-					>
-						{project.data.description}
-					</p>
-
-					<div class="mt-8 grid gap-4 sm:grid-cols-3">
-						{project.data.outcomes.map((outcome, index) => (
-							<div
-								class="rounded-[20px] border border-slate-900/8 bg-slate-900 px-5 py-5 text-white"
-								data-reveal
-								style={`--reveal-delay: ${220 + index * 70}ms;`}
-							>
-								<p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/70">
-									{outcome.label}
-								</p>
-								<p class="mt-3 text-lg font-semibold">{outcome.value}</p>
-							</div>
-						))}
-					</div>
-
-					<div class="mt-8 flex flex-wrap gap-2" data-reveal style="--reveal-delay: 320ms;">
-						{project.data.tech.map((item) => <Badge variant="secondary">{item}</Badge>)}
-					</div>
-
-					<div class="mt-8 flex flex-wrap gap-3" data-reveal style="--reveal-delay: 380ms;">
-						<a href={`mailto:${site.email}`} class="primary-button">Discuss similar work</a>
-						<a href={withBasePath("/contact")} class="secondary-button">Contact page</a>
-					</div>
-				</div>
-
-				<div class="grid gap-4">
-					<figure class="overflow-hidden rounded-[26px] border border-slate-900/8 bg-white/92 shadow-panel" data-reveal>
-						<Image
-							src={project.data.gallery[0].src}
-							alt={project.data.gallery[0].alt}
-							format="webp"
-							quality={84}
-							widths={[720, 1200, 1600]}
-							sizes="(max-width: 1024px) 100vw, 55vw"
-							class="w-full scale-[1.05] object-cover object-center"
-							priority
-						/>
-						{project.data.gallery[0].caption && (
-							<figcaption class="border-t border-slate-900/8 px-5 py-4 text-sm leading-6 text-slate-600">
-								{project.data.gallery[0].caption}
-							</figcaption>
-						)}
-					</figure>
-
-					<div class="grid gap-4 sm:grid-cols-2" data-parallax="0.06">
-						{project.data.gallery.slice(1).map((item, index) => (
-							<figure
-								class="overflow-hidden rounded-[24px] border border-slate-900/8 bg-white/90 shadow-panel"
-								data-reveal
-								style={`--reveal-delay: ${index * 90}ms;`}
-							>
-								<Image
-									src={item.src}
-									alt={item.alt}
-									format="webp"
-									quality={84}
-									widths={[480, 768, 1200]}
-									sizes="(max-width: 768px) 100vw, 28vw"
-									class="h-56 w-full scale-[1.06] object-cover object-center"
-									loading="lazy"
-								/>
-								{item.caption && (
-									<figcaption class="border-t border-slate-900/8 px-4 py-4 text-sm leading-6 text-slate-600">
-										{item.caption}
-									</figcaption>
-								)}
-							</figure>
-						))}
-					</div>
-				</div>
-			</div>
-		</header>
-	</article>
-
-	<section class="section-shell">
-		<div class="grid gap-8 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start">
-			<div class="surface-card-strong p-8 sm:p-10" data-reveal>
-				<div class="flex flex-wrap items-center gap-3 text-sm text-slate-500">
-					<span>Role: {project.data.role}</span>
-					<span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-slate-300"></span>
-					<span>Updated: {formattedDate}</span>
-				</div>
-
-				<div class="case-study-prose mt-8">
-					<Content />
-				</div>
-			</div>
-
-			<aside class="grid gap-4 xl:sticky xl:top-28">
-				<div class="surface-card p-5" data-reveal>
-					<p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
-						Engagement
-					</p>
-					<p class="mt-3 text-sm leading-7 text-slate-600">{project.data.engagement}</p>
-				</div>
-
-				{tableOfContents.length > 0 && (
-					<nav class="surface-card p-5" aria-label="On this page" data-reveal style="--reveal-delay: 90ms;">
-						<p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
-							On this page
-						</p>
-						<ul class="mt-4 space-y-3 text-sm text-slate-700">
-							{tableOfContents.map((heading) => (
-								<li>
-									<a href={`#${heading.slug}`} class="transition hover:text-slate-900">
-										{heading.text}
-									</a>
-								</li>
-							))}
-						</ul>
-					</nav>
-				)}
-
-				<div class="surface-card p-5" data-reveal style="--reveal-delay: 180ms;">
-					<p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
-						Best fit
-					</p>
-					<p class="mt-3 text-sm leading-7 text-slate-600">
-						Teams that need senior ownership across frontend architecture, integration design, data flow clarity, and production-minded AI work.
-					</p>
-					<a href={`mailto:${site.email}`} class="primary-button mt-5 w-full">Start a conversation</a>
-				</div>
-			</aside>
-		</div>
-
-		<div class="mt-10 surface-card-strong grid gap-6 p-8 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end" data-reveal>
-			<div>
-				<p class="eyebrow">Need more detail?</p>
-				<h2 class="mt-4 max-w-[14ch] text-[clamp(2.2rem,4vw,3.4rem)] font-semibold leading-[1.02] text-slate-900">
-					If this case study matches the kind of pressure your team is under, the next step is a concrete brief.
-				</h2>
-				<p class="mt-4 max-w-2xl text-base leading-8 text-slate-600">
-					Share the product context, timeline, and the part of the system that needs senior ownership so the discussion can stay practical.
-				</p>
-			</div>
-
-			<div class="flex flex-col gap-3">
-				<a href={withBasePath("/contact")} class="primary-button">Open contact page</a>
-				<a href={withBasePath("/projects")} class="secondary-button">Back to projects</a>
-			</div>
-		</div>
-	</section>
+  <article class="section-shell intro-space">
+    <a href={withBasePath("/projects")} class="text-link">
+      ← All projects
+    </a>
+    <header class="case-header">
+      <p class="micro-label">
+        {project.data.company ?? "Enterprise engineering"} / Case study
+      </p>
+      <h1>{project.data.title}</h1>
+      <p class="case-description">{project.data.description}</p>
+      <dl class="case-facts">
+        <div>
+          <dt>My role</dt>
+          <dd>{project.data.role}</dd>
+        </div>
+        <div>
+          <dt>Engagement</dt>
+          <dd>{project.data.duration}</dd>
+        </div>
+        <div>
+          <dt>Focus</dt>
+          <dd>{project.data.services.slice(0, 2).join(" / ")}</dd>
+        </div>
+      </dl>
+    </header>
+    <figure class="case-cover">
+      <Image
+        fit="contain"
+        src={project.data.cover}
+        alt={project.data.coverAlt}
+        widths={[640, 960, 1280, 1600]}
+        sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1380px) 90vw, 1252px"
+        format="webp"
+        quality={85}
+        priority
+      />
+      {project.data.gallery[0]?.caption && (
+        <figcaption>{project.data.gallery[0].caption}</figcaption>
+      )}
+    </figure>
+    <div class="case-body">
+      <div class="case-study-prose">
+        <Content />
+      </div>
+      <aside>
+        <nav aria-label="On this page">
+          <p class="micro-label">In this case study</p>
+          <ol>
+            {toc.map((heading) => (
+              <li>
+                <a href={`#${heading.slug}`}>{heading.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+        <div class="case-stack">
+          <p class="micro-label">Tools & technologies</p>
+          <ul>
+            {project.data.tech.map((tech) => (
+              <li>{tech}</li>
+            ))}
+          </ul>
+        </div>
+        <a href={withBasePath("/contact")} class="text-link">
+          Discuss similar work ↗
+        </a>
+      </aside>
+    </div>
+    <div class="case-next">
+      <p class="micro-label">Have a similar challenge?</p>
+      <h2>
+        Let’s put experience
+        <br />
+        <span class="serif-text">to work.</span>
+      </h2>
+      <div class="flex flex-wrap gap-3 mt-6">
+        <a href={withBasePath("/contact")} class="primary-button">
+          Start a conversation ↗
+        </a>
+        <a href={withBasePath("/projects")} class="secondary-button">
+          More work
+        </a>
+      </div>
+    </div>
+  </article>
 </BaseLayout>
+<style>
+  .case-header {
+    margin-top: 2rem;
+  }
+  .case-header h1 {
+    font-size: clamp(2.5rem, 5.5vw, 5rem);
+    max-width: 23ch;
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 1.04;
+    margin-top: 1.5rem;
+  }
+  .case-description {
+    max-width: 49rem;
+    color: var(--text-600);
+    font-size: 1.1rem;
+    line-height: 1.85;
+    margin-top: 1.5rem;
+  }
+  .case-facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-block: 2.5rem;
+    border-block: 1px solid var(--line);
+    padding-block: 1.5rem;
+  }
+  .case-facts dt {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    color: var(--text-500);
+    letter-spacing: 0.12em;
+  }
+  .case-facts dd {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin-top: 0.65rem;
+  }
+  .case-cover {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .case-cover img {
+    width: 100%;
+    max-height: 680px;
+    object-fit: contain;
+  }
+  .case-cover figcaption {
+    border-top: 1px solid var(--line);
+    padding: 1rem 1.3rem;
+    color: var(--text-500);
+    font-size: 0.75rem;
+    line-height: 1.7;
+  }
+  .case-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: clamp(2rem, 7vw, 6rem);
+    margin-top: 4rem;
+    align-items: start;
+  }
+  .case-body aside {
+    position: sticky;
+    top: 7rem;
+    padding-top: 1rem;
+  }
+  .case-body nav ol {
+    list-style: none;
+    margin: 1rem 0 2rem;
+    padding: 0;
+  }
+  .case-body nav a {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.8rem;
+    color: var(--text-600);
+    line-height: 1.7;
+  }
+  .case-body nav a:hover {
+    color: var(--text-accent);
+  }
+  .case-stack {
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+  }
+  .case-stack ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .case-stack li {
+    font-size: 0.62rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--text-600);
+  }
+  .case-next {
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--line);
+  }
+  .case-next h2 {
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    line-height: 1.1;
+    margin-top: 1rem;
+  }
+  @media (max-width: 767px) {
+    .case-body {
+      grid-template-columns: 1fr;
+      margin-top: 2rem;
+    }
+    .case-body aside {
+      position: static;
+      grid-row: 1;
+    }
+    .case-body nav ol {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-bottom: 1rem;
+    }
+    .case-stack {
+      display: none;
+    }
+    .case-body aside > .text-link {
+      display: none;
+    }
+    .case-facts {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    .case-facts > div {
+      display: grid;
+      grid-template-columns: 6rem 1fr;
+      gap: 1rem;
+    }
+    .case-facts dd {
+      margin-top: 0;
+    }
+    .case-description {
+      font-size: 1rem;
+    }
+  }
+</style>

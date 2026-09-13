@@ -68,6 +68,10 @@ export const site = {
 	ogImageHeight: 630,
 	profilePhoto,
 	expertise: [
+		"Strands Agents",
+		"Amazon Bedrock AgentCore Runtime and Memory",
+		"AWS Batch reagent optimization",
+		"Amazon S3",
 		"React architecture",
 		"TypeScript application design",
 		"Node.js services",
@@ -82,6 +86,7 @@ export const site = {
 		{ label: "Home", href: withBasePath("/") },
 		{ label: "Projects", href: withBasePath("/projects") },
 		{ label: "About", href: withBasePath("/about") },
+		{ label: "Résumé", href: withBasePath("/resume") },
 		{ label: "Contact", href: withBasePath("/contact") },
 	],
 	social: {

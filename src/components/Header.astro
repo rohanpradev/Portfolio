@@ -12,7 +12,10 @@ const pathnameWithoutBase =
 const currentPath = normalizePath(pathnameWithoutBase);
 const navItems = site.nav.map((item) => ({
 	...item,
-	isActive: normalizePath(new URL(item.href, site.url).pathname.replace(site.basePath, "")) === currentPath,
+	isActive: (() => {
+		const path = normalizePath(new URL(item.href, site.url).pathname.replace(site.basePath, ""));
+		return currentPath === path || (path !== "/" && currentPath.startsWith(`${path}/`));
+	})(),
 }));
 const primaryNavItems = navItems.filter((item) => item.label !== "Contact");
 const contactItem = navItems.find((item) => item.label === "Contact");
@@ -32,8 +35,8 @@ const contactItem = navItems.find((item) => item.label === "Contact");
 						decoding="async"
 						loading="eager"
 					/>
-					<span class="hidden sm:block">
-						<span class="block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-slate-500">
+					<span class="block">
+						<span class="hidden sm:block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-slate-500">
 							Lead engineer
 						</span>
 						<span class="block text-sm font-semibold text-slate-900">{site.author}</span>

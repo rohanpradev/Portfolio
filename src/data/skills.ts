@@ -40,13 +40,16 @@ export const skillGroups: SkillGroup[] = [
 		title: "Cloud, Messaging, and Delivery",
 		description:
 			"Cloud-native services, containerization, and event-driven infrastructure that keep enterprise apps resilient in production.",
-		items: ["Microsoft Azure", "Docker", "Kafka", "RabbitMQ", "CI/CD"],
+		items: ["AWS Batch", "Amazon S3", "Microsoft Azure", "Docker", "Kafka", "RabbitMQ", "CI/CD"],
 	},
 	{
 		title: "Architecture, Quality, and AI",
 		description:
 			"System design, testing, and AI integration capabilities used to ship more capable products without sacrificing reliability.",
 		items: [
+			"Strands Agents",
+			"AgentCore Runtime",
+			"AgentCore Memory",
 			"Cypress",
 			"Jest",
 			"System Design",
