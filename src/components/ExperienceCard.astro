@@ -4,6 +4,7 @@ import Badge from "./Badge.astro";
 import CognizantLogoUrl from "../assets/logos/cognizant.svg?url";
 import EricssonLogoUrl from "../assets/logos/ericsson.svg?url";
 import MindtreeLogoUrl from "../assets/logos/mindtree.svg?url";
+import OptumLogoUrl from "../assets/logos/optum.svg?url";
 import TechmLogoUrl from "../assets/logos/techm.svg?url";
 
 const { company, role, logo, start, end, stack, points } = Astro.props as Experience;
@@ -12,6 +13,7 @@ const logos = {
   cognizant: CognizantLogoUrl,
   ericsson: EricssonLogoUrl,
   mindtree: MindtreeLogoUrl,
+  optum: OptumLogoUrl,
   techm: TechmLogoUrl,
 } as const;
 

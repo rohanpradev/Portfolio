@@ -1,530 +1,223 @@
 ---
-import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import myPhoto from "../assets/profile/profile-photo.png";
 import Hero from "../components/Hero.astro";
 import ProjectCard from "../components/ProjectCard.astro";
-import ExperienceCard from "../components/ExperienceCard.astro";
 import TestimonialCard from "../components/TestimonialCard.astro";
 import CompanyMarquee from "../components/CompanyMarquee.astro";
-import SectionHeading from "../components/SectionHeading.astro";
+import AgentWorkflow from "../components/AgentWorkflow.astro";
+import CopyEmail from "../components/CopyEmail.astro";
 import { site, withBasePath } from "../data/meta";
 import { experiences } from "../data/experiences";
 import { testimonials } from "../data/testimonials";
-
-const projectEntries = (await getCollection("projects")).sort(
-	(a, b) => a.data.order - b.data.order,
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
 );
-const featuredProject =
-	projectEntries.find((project) => project.data.featured) ?? projectEntries[0];
-
-if (!featuredProject) {
-	throw new Error("Expected at least one featured project.");
-}
-
-const featuredProjectHref = withBasePath(`/projects/${featuredProject.id}`);
-
-const heroStats = [
-	{ value: "9+", label: "Years in enterprise product delivery" },
-	{ value: "4 sectors", label: "Manufacturing, pensions, hospitality, and platform work" },
-	{ value: "UI to AI", label: "Frontend architecture, integrations, and applied AI workflows" },
-];
-
-const heroInsightCards = [
-	{
-		label: "Built for",
-		title: "High-context product surfaces",
-		detail:
-			"Interfaces that stay fast and legible when data, roles, and operational pressure increase.",
-	},
-];
-
-const proofSignals = [
-	{
-		label: "Manufacturing and operations",
-		title: "Interfaces that hold up under real workflow pressure.",
-		description:
-			"Dashboards, planning surfaces, and operational views where scanability and speed matter more than decoration.",
-	},
-	{
-		label: "Regulated workflow design",
-		title: "Complex form logic without form fatigue.",
-		description:
-			"Pension and beneficiary flows shaped around validation clarity, dependent state, and maintainable React patterns.",
-	},
-	{
-		label: "Platform and integration work",
-		title: "Backend decisions that protect the UI.",
-		description:
-			"Service contracts, sync jobs, caching, and auth boundaries designed so frontend code stays readable.",
-	},
-	{
-		label: "AI with engineering discipline",
-		title: "Useful assistance, not prototype theater.",
-		description:
-			"Internal assistant and retrieval patterns applied where they remove friction without turning the system opaque.",
-	},
-];
-
-const deliveryPhases = [
-	{
-		step: "01",
-		title: "Clarify the user pressure and system constraint",
-		description:
-			"Start with the workflow that is blocked, slow, confusing, or at risk. It prevents elegant code from solving the wrong problem.",
-	},
-	{
-		step: "02",
-		title: "Shape the boundaries before scaling the implementation",
-		description:
-			"Service contracts, data flow, component responsibility, and caching strategy are aligned early so the codebase stays extendable.",
-	},
-	{
-		step: "03",
-		title: "Ship with performance and review discipline",
-		description:
-			"Delivery is only complete when the interface feels fast, the tradeoffs are explainable, and the next engineer can work safely.",
-	},
-];
-
-const focusAreas = [
-	{
-		icon: "layers",
-		title: "Frontend systems for real product pressure",
-		note: "React, TypeScript, maintainable UI architecture",
-		description:
-			"Interfaces designed to stay fast, legible, and scalable as business flows and data complexity grow.",
-	},
-	{
-		icon: "check",
-		title: "Secure API and service integration",
-		note: "Node.js, auth, contracts, predictable boundaries",
-		description:
-			"Backend decisions that reduce friction for the UI and make the application safer to extend.",
-	},
-	{
-		icon: "briefcase",
-		title: "Cloud-ready delivery and operability",
-		note: "Azure-aligned services, jobs, resilience",
-		description:
-			"Operational work shaped around clarity, reliability, and systems that teams can actually maintain.",
-	},
-	{
-		icon: "sparkles",
-		title: "AI-enabled product work with engineering discipline",
-		note: "OpenAI patterns, retrieval, product usefulness",
-		description:
-			"AI integration that improves workflows without turning the codebase into an opaque experiment.",
-	},
-] as const;
-
-const faqItems = [
-	{
-		question: "What kind of work is the strongest fit?",
-		answer:
-			"Teams get the most value when a product surface needs senior ownership across the UI, service boundaries, data flow, and release quality bar.",
-	},
-	{
-		question: "Where do you usually create leverage first?",
-		answer:
-			"The first gains usually come from making the interface clearer, reducing repeated integration logic, and tightening the contracts that shape the frontend.",
-	},
-	{
-		question: "What should a first message include?",
-		answer:
-			"Share the product context, the current constraint, the stack, and the part of the system that needs senior attention so the first reply can be concrete.",
-	},
-];
-
-const structuredData = [
-	{
-		"@type": "FAQPage",
-		mainEntity: faqItems.map((item) => ({
-			"@type": "Question",
-			name: item.question,
-			acceptedAnswer: {
-				"@type": "Answer",
-				text: item.answer,
-			},
-		})),
-	},
+const capabilities = [
+  {
+    number: "01",
+    title: "Interfaces with intent.",
+    text: "Accessible, responsive React and TypeScript experiences that make complex workflows feel straightforward.",
+    tags: "Frontend architecture / Design systems / Performance",
+  },
+  {
+    number: "02",
+    title: "Systems that hold up.",
+    text: "Node.js services, secure integrations, and thoughtful data boundaries built to support the product as it grows.",
+    tags: "APIs / Redis / Cloud integration",
+  },
+  {
+    number: "03",
+    title: "Agents with a purpose.",
+    text: "Strands agents with AgentCore Runtime and Memory, connected to AWS Batch workloads and results in S3.",
+    tags: "Strands / AgentCore / AWS Batch / S3",
+  },
 ];
 ---
 
-<BaseLayout
-	description="Portfolio for enterprise product engineering, frontend architecture, secure integrations, and AI-assisted workflows."
-	structuredData={structuredData}
->
-	<Hero
-		title="M Rohan Pradev"
-		headline="Senior full-stack engineering for complex product systems."
-		subtitle="I build enterprise interfaces, service integrations, and AI-assisted workflows with a strong bias for clarity, accessibility, performance, and maintainable delivery."
-		ctaText="Open Flagship Case Study"
-		ctaHref={featuredProjectHref}
-		photo={myPhoto}
-		photoAlt="Portrait of M Rohan Pradev"
-		status={site.availability}
-		location={site.location}
-		email={site.email}
-		stats={heroStats}
-		insightCards={heroInsightCards}
-	/>
-
-	<section class="section-shell" aria-labelledby="flagship-proof-heading">
-		<div class="surface-card-strong grid gap-12 p-8 sm:p-12 lg:p-16 lg:grid-cols-[1fr_auto]" data-reveal>
-			<div class="min-w-0">
-				<p class="text-[0.7rem] font-black uppercase tracking-[0.3em] text-accent">
-					Flagship Case Study
-				</p>
-				<h2
-					id="flagship-proof-heading"
-					class="mt-8 text-[clamp(2.5rem,6vw,5.5rem)] font-black leading-[0.85] tracking-tighter text-slate-900"
-				>
-					{featuredProject.data.title}
-				</h2>
-				<p class="mt-8 max-w-3xl text-2xl font-semibold leading-relaxed text-slate-600">
-					{featuredProject.data.company} / {featuredProject.data.role}
-				</p>
-				<div class="mt-12 flex flex-wrap gap-5">
-					<a href={featuredProjectHref} class="primary-button group px-10">
-						Review Case Study
-						<svg aria-hidden="true" focusable="false" class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-						</svg>
-					</a>
-				</div>
-			</div>
-
-			<div class="grid gap-6 sm:grid-cols-3 lg:grid-cols-1 lg:w-80">
-				{featuredProject.data.outcomes.map((outcome) => (
-					<div class="rounded-[32px] border border-line bg-surface-tint p-8">
-						<p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400">
-							{outcome.label}
-						</p>
-						<p class="mt-3 text-3xl font-black text-slate-900">{outcome.value}</p>
-					</div>
-				))}
-			</div>
-		</div>
-	</section>
-
-	<div class="deferred-section" data-reveal>
-		<CompanyMarquee />
-	</div>
-
-	<section
-		id="proof"
-		aria-labelledby="proof-heading"
-		class="section-shell deferred-section"
-	>
-		<div
-			class="grid gap-8 lg:grid-cols-4 lg:grid-rows-2"
-			data-reveal
-		>
-			<div class="surface-card-strong lg:col-span-2 lg:row-span-2 p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
-				<SectionHeading
-					id="proof-heading"
-					eyebrow="Proof of Fit"
-					title="Work that connects product clarity and system design."
-					description="Repeated ownership across interfaces, backend boundaries, and the engineering decisions that keep teams moving."
-				/>
-				<p class="mt-12 text-2xl font-semibold leading-relaxed text-slate-600">
-					Across manufacturing, pensions, and platform work, the pattern stays the same: translate complexity into a clearer product surface.
-				</p>
-			</div>
-
-			{proofSignals.map((signal, index) => (
-				<article
-					class:list={[
-						"surface-card p-10 flex flex-col justify-between transition-all hover:border-accent/40",
-						"lg:col-span-1"
-					]}
-					data-reveal
-					style={`--reveal-delay: ${index * 80}ms;`}
-				>
-					<div>
-						<p class="text-[0.65rem] font-black uppercase tracking-widest text-accent">{signal.label}</p>
-						<h3 class="mt-8 text-2xl font-bold tracking-tight leading-tight text-slate-900">
-							{signal.title}
-						</h3>
-					</div>
-					<p class="mt-8 text-lg leading-relaxed text-slate-500 font-medium">{signal.description}</p>
-				</article>
-			))}
-		</div>
-	</section>
-
-	<section
-		id="projects"
-		aria-labelledby="projects-heading"
-		class="section-shell deferred-section"
-	>
-		<div class="grid gap-16 xl:grid-cols-[0.8fr_1.2fr] xl:items-start">
-			<div class="xl:sticky xl:top-40" data-reveal>
-				<SectionHeading
-					id="projects-heading"
-					eyebrow="Portfolio Highlights"
-					title="Senior full-stack ownership."
-					description="Detailed case studies of systems that hold up under pressure."
-				/>
-
-				<div class="mt-12 space-y-8">
-					<div class="surface-card p-10 bg-surface-tint border-none">
-						<p class="text-[0.65rem] font-bold uppercase tracking-widest text-accent">Current Engagement</p>
-						<p class="mt-6 text-2xl font-black text-slate-900 leading-tight">
-							{featuredProject.data.engagement}
-						</p>
-					</div>
-
-					<div class="flex flex-wrap gap-5">
-						<a href={withBasePath("/projects")} class="primary-button group px-10">
-							Browse All Projects
-							<svg aria-hidden="true" focusable="false" class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-							</svg>
-						</a>
-						<a href={withBasePath("/contact")} class="secondary-button px-10">Request Walkthrough</a>
-					</div>
-				</div>
-			</div>
-
-			<div class="grid gap-10">
-				<ProjectCard
-					title={featuredProject.data.title}
-					description={featuredProject.data.description}
-					tech={featuredProject.data.tech}
-					image={featuredProject.data.cover}
-					alt={featuredProject.data.coverAlt}
-					href={featuredProjectHref}
-					company={featuredProject.data.company}
-					duration={featuredProject.data.duration}
-					outcomes={featuredProject.data.outcomes}
-					featured={true}
-				/>
-
-				<div class="grid gap-8 sm:grid-cols-2">
-					{featuredProject.data.gallery.slice(0, 2).map((item, index) => (
-						<figure class="surface-card overflow-hidden group" data-reveal style={`--reveal-delay: ${index * 100}ms;`}>
-							<Image
-								src={item.src}
-								alt={item.alt}
-								format="webp"
-								quality={84}
-								class="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-110"
-							/>
-							<figcaption class="p-6 text-[0.7rem] font-black text-slate-500 uppercase tracking-[0.2em] border-t border-line">
-								{item.caption || "System Preview"}
-							</figcaption>
-						</figure>
-					))}
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<section
-		id="approach"
-		aria-labelledby="approach-heading"
-		class="section-shell deferred-section"
-	>
-		<div class="grid gap-20 lg:grid-cols-[0.75fr_1.25fr] lg:items-center">
-			<div data-reveal>
-				<SectionHeading
-					id="approach-heading"
-					eyebrow="Approach"
-					title="How the work gets shaped."
-					description="Understand the pressure, define cleaner boundaries, and ship with rigor."
-				/>
-				<div class="mt-16 rounded-[40px] border border-line bg-surface-tint p-12">
-					<p class="text-[0.7rem] font-black uppercase tracking-[0.3em] text-accent">High Leverage</p>
-					<p class="mt-8 text-2xl font-black leading-tight text-slate-800">
-						Product thinking meets technical execution.
-					</p>
-				</div>
-			</div>
-
-			<div class="grid gap-8 sm:grid-cols-2">
-				{deliveryPhases.map((phase, index) => (
-					<div
-						class:list={[
-							"surface-card p-12 transition-all",
-							index === 0 ? "sm:col-span-2" : "sm:col-span-1"
-						]}
-						data-reveal
-						style={`--reveal-delay: ${index * 100}ms;`}
-					>
-						<span class="text-7xl font-black text-slate-900/10 block mb-10">{phase.step}</span>
-						<h3 class="text-3xl font-black tracking-tight text-slate-900 leading-tight">{phase.title}</h3>
-						<p class="mt-8 text-lg leading-relaxed text-slate-500 font-medium">
-							{phase.description}
-						</p>
-					</div>
-				))}
-			</div>
-		</div>
-
-		<div class="mt-24 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-			{focusAreas.map((item, index) => (
-				<article
-					class="surface-card group p-10 transition-all hover:border-accent/40"
-					data-reveal
-					style={`--reveal-delay: ${index * 70}ms;`}
-				>
-					<div class="flex items-start justify-between">
-						<div class="rounded-[24px] bg-accent/10 p-5 text-accent transition-all duration-300 group-hover:bg-accent group-hover:text-white group-hover:scale-110">
-							<svg aria-hidden="true" focusable="false" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								{item.icon === "layers" && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />}
-								{item.icon === "check" && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />}
-								{item.icon === "briefcase" && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />}
-								{item.icon === "sparkles" && <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />}
-							</svg>
-						</div>
-						<span class="max-w-[9rem] text-right text-[0.7rem] font-black uppercase leading-relaxed tracking-[0.25em] text-slate-400">{item.note.split(",")[0]}</span>
-					</div>
-					<h3 class="mt-12 text-2xl font-black tracking-tight text-slate-900 group-hover:text-accent transition-colors leading-tight">
-						{item.title}
-					</h3>
-					<p class="mt-6 text-base leading-relaxed text-slate-500 font-medium">{item.description}</p>
-				</article>
-			))}
-		</div>
-	</section>
-
-	<section
-		id="experience"
-		aria-labelledby="experience-heading"
-		class="section-shell deferred-section"
-	>
-		<div class="grid gap-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-			<div data-reveal>
-				<SectionHeading
-					id="experience-heading"
-					eyebrow="Experience"
-					title="Trusted by industry leaders."
-					description="Ownership across critical modules and architectural shifts."
-				/>
-				<div class="mt-16 p-12 rounded-[40px] bg-slate-900 text-white shadow-float">
-					<p class="text-[0.7rem] font-black uppercase tracking-[0.25em] text-accent">Summary</p>
-					<p class="mt-8 text-3xl font-black leading-tight tracking-tight">
-						9+ years of full-stack delivery.
-					</p>
-				</div>
-			</div>
-			<div class="space-y-10">
-				{experiences.map((experience, index) => (
-					<div data-reveal style={`--reveal-delay: ${index * 90}ms;`}>
-						<ExperienceCard {...experience} />
-					</div>
-				))}
-			</div>
-		</div>
-	</section>
-
-	<section
-		id="testimonials"
-		aria-labelledby="testimonials-heading"
-		class="section-shell deferred-section"
-	>
-		<div class="grid gap-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-			<div data-reveal>
-				<SectionHeading
-					id="testimonials-heading"
-					eyebrow="Testimonials"
-					title="Trust from the teams I have worked with."
-					description="Technical trust and delivery consistency."
-				/>
-			</div>
-
-			<div class="grid gap-8 sm:grid-cols-2">
-				{testimonials.map((testimonial, index) => (
-					<div data-reveal style={`--reveal-delay: ${index * 100}ms;`} class="h-full">
-						<TestimonialCard {...testimonial} />
-					</div>
-				))}
-			</div>
-		</div>
-	</section>
-
-	<section
-		id="faq"
-		aria-labelledby="faq-heading"
-		class="section-shell deferred-section"
-	>
-		<div class="grid gap-20 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
-			<div data-reveal>
-				<SectionHeading
-					id="faq-heading"
-					eyebrow="Hiring FAQ"
-					title="Common questions."
-					description="Decision support for your next senior hire."
-				/>
-				<div class="mt-16 flex flex-wrap gap-5">
-					<a href={`mailto:${site.email}`} class="primary-button group px-10">
-						Email Directly
-						<svg aria-hidden="true" focusable="false" class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-						</svg>
-					</a>
-				</div>
-			</div>
-
-			<div class="grid gap-8">
-				{faqItems.map((item, index) => (
-					<article
-						class="surface-card p-12 transition-all hover:border-accent/40"
-						data-reveal
-						style={`--reveal-delay: ${index * 80}ms;`}
-					>
-						<h3 class="text-3xl font-black tracking-tight text-slate-900 leading-tight">{item.question}</h3>
-						<p class="mt-8 text-xl leading-relaxed text-slate-600 font-medium">{item.answer}</p>
-					</article>
-				))}
-			</div>
-		</div>
-	</section>
-
-	<section
-		id="contact"
-		aria-labelledby="contact-heading"
-		class="section-shell deferred-section"
-	>
-		<div class="surface-card-strong grid gap-16 p-10 sm:p-20 lg:p-24 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-			<div data-reveal>
-				<SectionHeading
-					id="contact-heading"
-					eyebrow="Let us Build"
-					title="Ready for senior full-stack ownership?"
-					description="Start with a brief project context."
-				/>
-
-				<div class="mt-16 flex flex-wrap gap-6">
-					<a href={`mailto:${site.email}`} class="primary-button group px-12 text-base">
-						Email {site.author}
-						<svg aria-hidden="true" focusable="false" class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-						</svg>
-					</a>
-					<a href={site.social.linkedin} target="_blank" rel="noreferrer" class="secondary-button px-12 text-base">
-						LinkedIn Message
-					</a>
-				</div>
-			</div>
-
-			<div class="space-y-6" data-reveal style="--reveal-delay: 200ms;">
-				<div class="surface-card p-10 bg-slate-900 border-none shadow-float">
-					<p class="text-[0.7rem] font-black uppercase tracking-[0.3em] text-accent">Best Fit</p>
-					<p class="mt-8 text-2xl font-black text-white leading-tight tracking-tight">
-						Complex systems needing end-to-end engineering ownership.
-					</p>
-				</div>
-				<div class="surface-card p-10 bg-surface-tint border-line">
-					<p class="text-[0.7rem] font-black uppercase tracking-[0.3em] text-slate-400">Response Time</p>
-					<p class="mt-4 text-lg font-bold text-slate-600">
-						Within 24 hours.
-					</p>
-				</div>
-			</div>
-		</div>
-	</section>
+<BaseLayout description="M Rohan Pradev — lead full-stack engineer at Optum. Explore enterprise interfaces and AWS reagent optimization with Strands Agents, AgentCore, AWS Batch, and S3.">
+  <Hero />
+  <CompanyMarquee />
+  <section id="work" class="section-shell" aria-labelledby="work-heading">
+    <div class="section-intro-row" data-reveal>
+      <div>
+        <p class="micro-label">01 / Selected work</p>
+        <h2 id="work-heading" class="editorial-title mt-4">
+          Built to make
+          <br />
+          <span class="serif-text">a difference.</span>
+        </h2>
+      </div>
+      <p class="section-aside">
+        A closer look at the interfaces, systems, and agent workflows I’ve
+        helped bring to life.
+      </p>
+    </div>
+    <div class="work-list">
+      {projects.map((project, index) => (
+        <div data-reveal>
+          <ProjectCard
+            title={project.data.title}
+            description={project.data.description}
+            tech={project.data.tech}
+            image={project.data.cover}
+            alt={project.data.coverAlt}
+            href={withBasePath(`/projects/${project.id}`)}
+            company={project.data.company}
+            duration={project.data.duration}
+            outcomes={project.data.outcomes}
+            featured={project.data.featured}
+            headingLevel="h3"
+            index={index + 1}
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+  <section id="ai" class="section-shell" aria-labelledby="ai-heading">
+    <div class="ai-feature" data-reveal>
+      <div class="ai-feature-copy">
+        <p class="micro-label">Inside the work / Optum</p>
+        <h2 id="ai-heading" class="editorial-title mt-5">
+          From a request
+          <br />
+          to <span class="serif-text">a result.</span>
+        </h2>
+        <p class="mt-6">
+          I implemented a reagent optimization agent using Strands with
+          AgentCore Runtime and Memory. The agent runs optimization through AWS
+          Batch and stores results in Amazon S3.
+        </p>
+        <a
+          class="text-link mt-5"
+          href={withBasePath("/projects/reagent-optimization-agent")}
+        >
+          Explore the architecture <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <AgentWorkflow />
+    </div>
+  </section>
+  <section
+    id="capabilities"
+    class="section-shell"
+    aria-labelledby="capabilities-heading"
+  >
+    <div class="section-intro-row" data-reveal>
+      <div>
+        <p class="micro-label">02 / What I bring</p>
+        <h2 id="capabilities-heading" class="editorial-title mt-4">
+          Craft meets
+          <br />
+          <span class="serif-text">systems thinking.</span>
+        </h2>
+      </div>
+      <p class="section-aside">
+        From the first interaction to the service behind it, I care about how
+        all the pieces work together.
+      </p>
+    </div>
+    <div class="capability-list">
+      {capabilities.map((item) => (
+        <article class="capability-row" data-reveal>
+          <span class="micro-label">{item.number}</span>
+          <h3>{item.title}</h3>
+          <div>
+            <p>{item.text}</p>
+            <p class="micro-label mt-4">{item.tags}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+  <section
+    id="experience"
+    class="section-shell"
+    aria-labelledby="experience-heading"
+  >
+    <div class="section-intro-row" data-reveal>
+      <div>
+        <p class="micro-label">03 / The journey</p>
+        <h2 id="experience-heading" class="editorial-title mt-4">
+          Built on
+          <br />
+          <span class="serif-text">real experience.</span>
+        </h2>
+      </div>
+      <a href={withBasePath("/about")} class="text-link">
+        The full story <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <ol class="experience-list">
+      {experiences.map((experience, index) => (
+        <li data-reveal>
+          <span class="experience-index">0{index + 1}</span>
+          <div>
+            <p class="micro-label">{experience.company}</p>
+            <h3 class="mt-2 text-xl font-medium text-slate-900">
+              {experience.role}
+            </h3>
+            <p class="mt-3 text-sm leading-6 text-slate-500">
+              {experience.stack.join(" · ")}
+            </p>
+          </div>
+          <p class="experience-date">
+            {experience.start} — {experience.end}
+          </p>
+        </li>
+      ))}
+    </ol>
+  </section>
+  <section
+    id="testimonials"
+    class="section-shell"
+    aria-labelledby="testimonials-heading"
+  >
+    <div class="section-intro-row" data-reveal>
+      <div>
+        <p class="micro-label">04 / In good company</p>
+        <h2 id="testimonials-heading" class="editorial-title mt-4">
+          Better work.
+          <br />
+          <span class="serif-text">Together.</span>
+        </h2>
+      </div>
+      <p class="section-aside">
+        A few words from the engineers I’ve worked alongside.
+      </p>
+    </div>
+    <div class="mt-10 grid gap-5 lg:grid-cols-2">
+      {testimonials.map((testimonial) => (
+        <div data-reveal>
+          <TestimonialCard {...testimonial} />
+        </div>
+      ))}
+    </div>
+  </section>
+  <section id="contact" class="section-shell" aria-labelledby="contact-heading">
+    <div class="contact-panel" data-reveal>
+      <p class="micro-label">Have something in mind?</p>
+      <div class="contact-heading-row">
+        <h2 id="contact-heading">
+          Let’s build
+          <br />
+          <span class="serif-text">something great.</span>
+        </h2>
+        <a
+          class="contact-circle"
+          href={withBasePath("/contact")}
+          aria-label="Start a conversation"
+        >
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <div class="contact-bottom">
+        <a href={`mailto:${site.email}`} class="contact-email">
+          {site.email}
+        </a>
+        <CopyEmail />
+        <p>Based in Bengaluru. Open to the right team.</p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

@@ -5,9 +5,8 @@ seoTitle: Smart Manufacturing and Workplace Operations Case Study | M Rohan Prad
 seoDescription: Explore a flagship case study by M Rohan Pradev covering smart manufacturing interfaces, workplace occupancy data, Redis caching, Node.js orchestration, Azure-aligned integrations, and AI-assisted internal search.
 order: 1
 featured: true
-company: Ericsson India Global Services Pvt. Ltd.
 role: Senior Software Engineer
-duration: May 2022 to Present
+duration: May 2022 to March 2026
 engagement: Frontend architecture, backend orchestration, Redis caching, data synchronization, and AI-assisted workflow design
 publishedDate: 2026-03-14
 updatedDate: 2026-03-14
@@ -33,16 +32,16 @@ outcomes:
     label: Normalized workplace and operations data
   - value: Internal AI assist
     label: Faster answers inside the product experience
-cover: ../../assets/projects/plan-vs-output.png
+cover: ../../assets/projects/plan-vs-output.webp
 coverAlt: Smart manufacturing and workplace operations planning and execution dashboard
 gallery:
-  - src: ../../assets/projects/plan-vs-output.png
+  - src: ../../assets/projects/plan-vs-output.webp
     alt: Smart manufacturing dashboard comparing plans and output
     caption: The product experience balanced planning visibility with clear operational execution data.
-  - src: ../../assets/projects/production-process.png
+  - src: ../../assets/projects/production-process.webp
     alt: Production process monitoring interface
     caption: Manufacturing workflows stayed readable under operational pressure and changing factory context.
-  - src: ../../assets/projects/remote.png
+  - src: ../../assets/projects/remote.webp
     alt: Remote workplace operations and occupancy interface
     caption: Workplace occupancy and services data were surfaced through caching, sync jobs, and guided discovery.
 ---
@@ -50,7 +49,7 @@ gallery:
 
 The strongest portfolio story is not a generic list of disconnected features. It is one product space where frontend architecture, backend orchestration, cloud integration, caching strategy, and AI-assisted workflows all had to work together without becoming fragile.
 
-At Ericsson, the work spanned smart manufacturing interfaces, Digital Gemba delivery, office occupancy views, workplace service flows, and an internal assistant for workplace discovery. The constraint was not just shipping features. The real requirement was to ship useful interfaces that remained understandable, fast, and operable under real delivery pressure.
+The work spanned smart manufacturing interfaces, Digital Gemba delivery, office occupancy views, workplace service flows, and an internal assistant for workplace discovery. The constraint was not just shipping features. The real requirement was to ship useful interfaces that remained understandable, fast, and operable under real delivery pressure.
 
 ## What I owned
 
@@ -73,7 +72,7 @@ The application surface brought together several delivery modes instead of relyi
 - Azure-aligned infrastructure patterns supported secure integration boundaries and operational reliability.
 - Background jobs pulled external data, normalized it, and fed downstream interfaces without forcing the UI to absorb integration complexity.
 
-![Production process monitoring interface](../../assets/projects/production-process.png)
+![Production process monitoring interface](../../assets/projects/production-process.webp)
 
 ## Key problems solved
 
@@ -89,7 +88,7 @@ Where data came from multiple systems, the goal was not to mirror that complexit
 
 The workplace chatbot was valuable because it answered specific internal questions faster, not because it added novelty. The implementation stayed grounded in product usefulness and engineering clarity so the system remained supportable by the team.
 
-![Remote workplace operations and occupancy interface](../../assets/projects/remote.png)
+![Remote workplace operations and occupancy interface](../../assets/projects/remote.webp)
 
 ## Why this case study matters
 

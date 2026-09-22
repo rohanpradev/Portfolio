@@ -1,137 +1,235 @@
 ---
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
-import Badge from "./Badge.astro";
-
-interface Outcome {
-	value: string;
-	label: string;
-}
-
 interface Props {
-	title: string;
-	description: string;
-	tech: string[];
-	image: ImageMetadata;
-	alt: string;
-	href?: string;
-	company?: string;
-	duration?: string;
-	outcomes?: Outcome[];
-	featured?: boolean;
-	headingLevel?: "h2" | "h3";
+  title: string;
+  description: string;
+  tech: string[];
+  image: ImageMetadata;
+  alt: string;
+  href?: string;
+  company?: string;
+  duration?: string;
+  outcomes?: { value: string; label: string }[];
+  featured?: boolean;
+  headingLevel?: "h2" | "h3";
+  index?: number;
 }
-
 const {
-	title,
-	description,
-	tech,
-	image,
-	alt,
-	href,
-	company,
-	duration,
-	outcomes = [],
-	featured = false,
-	headingLevel = "h3",
-} = Astro.props as Props;
-
-const isLinked = Boolean(href);
-const Tag = isLinked ? "a" : "article";
+  title,
+  description,
+  tech,
+  image,
+  alt,
+  href,
+  company,
+  duration,
+  outcomes = [],
+  headingLevel = "h3",
+  index = 1,
+} = Astro.props;
+const Heading = headingLevel;
 ---
 
-<Tag
-	{...(isLinked ? { href } : {})}
-	class:list={[
-		"surface-card-strong group flex h-full flex-col overflow-hidden transition-all duration-500",
-		isLinked && "hover:-translate-y-2 hover:border-accent/30 hover:shadow-float",
-	]}
->
-	<div class="relative aspect-video overflow-hidden">
-		<Image
-			src={image}
-			alt={alt}
-			format="webp"
-			quality={90}
-			widths={[480, 768, 1200]}
-			sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 42vw"
-			class="h-full w-full object-cover object-center transition duration-700 group-hover:scale-110"
-			loading="lazy"
-		/>
-		<div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
-
-		<div class="absolute left-3 right-3 top-3 flex flex-wrap gap-2 sm:left-6 sm:right-auto sm:top-6">
-			{featured && (
-				<Badge variant="accent" icon="sparkles" class="shadow-panel backdrop-blur-md">
-					Featured
-				</Badge>
-			)}
-			{company && (
-				<Badge variant="secondary" class="bg-white/90 text-slate-900 shadow-panel backdrop-blur-md">
-					{company}
-				</Badge>
-			)}
-		</div>
-
-		{duration && (
-			<div class="absolute bottom-3 left-3 sm:bottom-6 sm:left-6">
-				<Badge variant="outline" class="border-white/20 bg-black/40 text-white backdrop-blur-md">
-					{duration}
-				</Badge>
-			</div>
-		)}
-	</div>
-
-	<div class="flex flex-1 flex-col p-6 sm:p-10">
-		<div class="mb-6">
-			{headingLevel === "h2" ? (
-				<h2 class="text-2xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
-					{title}
-				</h2>
-			) : (
-				<h3 class="text-2xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
-					{title}
-				</h3>
-			)}
-			<p class="mt-3 line-clamp-4 text-base leading-8 text-slate-500 sm:mt-4 sm:line-clamp-3 sm:text-lg sm:leading-relaxed">
-				{description}
-			</p>
-		</div>
-
-		{outcomes.length > 0 && (
-			<dl class="mb-7 grid gap-3 sm:mb-8 sm:grid-cols-3 sm:gap-4">
-				{outcomes.map((outcome) => (
-					<div class="rounded-xl border border-line bg-surface-tint p-4 transition-colors group-hover:bg-accent/5 sm:rounded-2xl">
-						<dt class="text-[0.6rem] font-bold uppercase leading-relaxed tracking-widest text-slate-400">
-							{outcome.label}
-						</dt>
-						<dd class="mt-1 text-base font-bold text-slate-900">{outcome.value}</dd>
-					</div>
-				))}
-			</dl>
-		)}
-
-		<div class="mt-auto flex items-end justify-between gap-4">
-			<div class="flex flex-wrap gap-1.5">
-				{tech.slice(0, 3).map((item) => (
-					<span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400 bg-slate-900/5 px-2 py-1 rounded-md">
-						{item}
-					</span>
-				))}
-				{tech.length > 3 && (
-					<span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400 bg-slate-900/5 px-2 py-1 rounded-md">
-						+{tech.length - 3}
-					</span>
-				)}
-			</div>
-
-			{isLinked && (
-				<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white transition-transform group-hover:scale-110">
-					<svg aria-hidden="true" focusable="false" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-					</svg>
-				</div>
-			)}
-		</div>
-	</div>
-</Tag>
+<article class="project-card">
+  <a href={href} class="project-media" tabindex="-1" aria-hidden="true">
+    <div class="project-window">
+      <div class="project-window-bar">
+        <span class="window-dots">● ● ●</span>
+        <span>
+          {company ?? "Enterprise product"} / {"Project overview"}
+        </span>
+        <span aria-hidden="true">↗</span>
+      </div>
+      <Image
+        fit="contain"
+        src={image}
+        alt={alt}
+        widths={[480, 768, 1200]}
+        sizes="(max-width: 959px) calc(100vw - 3rem), 55vw"
+        format={image.format === "svg" ? "svg" : "webp"}
+        quality={82}
+        loading="lazy"
+      />
+    </div>
+  </a>
+  <div class="project-info">
+    <p class="micro-label">
+      0{index} / {company ?? "Enterprise engineering"}
+    </p>
+    <Heading>
+      <a href={href}>
+        {title}
+        <span class="project-arrow" aria-hidden="true">
+          ↗
+        </span>
+      </a>
+    </Heading>
+    <p class="project-description">{description}</p>
+    <ul class="project-tags">
+      {tech.slice(0, 5).map((item) => (
+        <li>{item}</li>
+      ))}
+    </ul>
+    <dl class="project-outcomes">
+      {outcomes.map((outcome) => (
+        <div>
+          <dt>{outcome.label}</dt>
+          <dd>{outcome.value}</dd>
+        </div>
+      ))}
+    </dl>
+    <p class="project-date">{duration}</p>
+  </div>
+</article>
+<style>
+  .project-card {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .project-media {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: 350px;
+    padding: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .project-window {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--surface-strong);
+    box-shadow: 0 16px 30px -20px #0006;
+    transition: transform 400ms var(--ease-out);
+  }
+  .project-card:hover .project-window {
+    transform: translateY(-4px);
+  }
+  .project-window-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem;
+    font-size: 0.53rem;
+    color: var(--text-500);
+    font-family: var(--font-mono);
+    border-bottom: 1px solid var(--line);
+  }
+  .window-dots {
+    font-size: 0.45rem;
+    letter-spacing: 2px;
+    opacity: 0.6;
+  }
+  .project-window img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200/760;
+    object-fit: contain;
+    background: #172b59;
+  }
+  .project-info {
+    min-width: 0;
+  }
+  .project-info h2,
+  .project-info h3 {
+    font-size: clamp(1.7rem, 2.5vw, 2.5rem);
+    line-height: 1.13;
+    margin-top: 0.85rem;
+    font-weight: 500;
+  }
+  .project-info h2 a,
+  .project-info h3 a {
+    display: block;
+  }
+  .project-arrow {
+    display: inline-block;
+    margin-left: 0.5rem;
+    color: var(--text-accent);
+    font-size: 0.85em;
+    transition: translate 200ms;
+  }
+  .project-card:hover .project-arrow {
+    translate: 3px -3px;
+  }
+  .project-description {
+    margin-top: 1rem;
+    font-size: 0.86rem;
+    line-height: 1.8;
+    color: var(--text-600);
+  }
+  .project-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 1.1rem;
+    padding: 0;
+    list-style: none;
+  }
+  .project-tags li {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--text-600);
+  }
+  .project-outcomes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+  }
+  .project-outcomes dt {
+    font-size: 0.58rem;
+    color: var(--text-500);
+    line-height: 1.6;
+  }
+  .project-outcomes dd {
+    font-size: 0.7rem;
+    margin-top: 0.3rem;
+    line-height: 1.6;
+  }
+  .project-date {
+    margin-top: 1.3rem;
+    font-family: var(--font-mono);
+    color: var(--text-500);
+    font-size: 0.6rem;
+  }
+  @media (max-width: 959px) {
+    .project-card {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .project-media {
+      min-height: 0;
+      padding: 1.25rem;
+    }
+    .project-info h2,
+    .project-info h3 {
+      max-width: 25ch;
+    }
+  }
+  @media (max-width: 479px) {
+    .project-media {
+      padding: 0.7rem;
+    }
+    .project-window-bar {
+      font-size: 0.48rem;
+    }
+    .project-outcomes {
+      gap: 0.5rem;
+    }
+  }
+</style>
