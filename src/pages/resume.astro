@@ -1,145 +1,125 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import SectionHeading from "../components/SectionHeading.astro";
 import { site, withBasePath } from "../data/meta";
+import { experiences } from "../data/experiences";
 import { PUBLIC_RESUME_URL } from "astro:env/client";
-
 const configuredResumeUrl = PUBLIC_RESUME_URL?.trim() ?? "";
 const resumeUrl = configuredResumeUrl.startsWith("/")
-	? withBasePath(configuredResumeUrl)
-	: configuredResumeUrl;
-const resumeAvailable = Boolean(resumeUrl);
-const resolvedResumeUrl =
-	resumeAvailable && resumeUrl.startsWith("http")
-		? resumeUrl
-		: resumeAvailable
-			? new URL(resumeUrl, site.url).toString()
-			: "";
-
-const resumeHighlights = [
-	"9+ years across enterprise web delivery, secure integrations, and scalable frontend systems",
-	"Expertise in React, TypeScript, Node.js, PostgreSQL, MongoDB, and Azure-backed application delivery",
-	"Architecture reviews, mentoring, PR quality, and AI integration as recurring strengths",
-];
-
-const resumeSections = [
-	{
-		title: "What the resume covers",
-		description:
-			"Enterprise experience across manufacturing, pensions, hospitality, frontend architecture, backend integration, and product-focused delivery.",
-	},
-	{
-		title: "How it is best used",
-		description:
-			"Treat it as a concise capability snapshot. The strongest signal still comes from the flagship case study and a concrete project conversation.",
-	},
-];
-
-const resumePageUrl = new URL(withBasePath("/resume"), site.url).toString();
-const structuredData = resumeAvailable
-	? [
-			{
-				"@type": "DigitalDocument",
-				"@id": `${resumePageUrl}#resume-document`,
-				name: `${site.author} Resume`,
-				url: resolvedResumeUrl,
-				encodingFormat: "application/pdf",
-				inLanguage: "en",
-				author: {
-					"@id": `${site.homeUrl}#person`,
-				},
-			},
-		]
-	: [];
+  ? withBasePath(configuredResumeUrl)
+  : configuredResumeUrl;
+const requestUrl = `mailto:${site.email}?subject=${encodeURIComponent("Résumé request")}`;
 ---
 
 <BaseLayout
-	title={`Resume | ${site.name}`}
-	description={resumeAvailable ? "Download the latest resume for M Rohan Pradev." : "Resume request page for M Rohan Pradev."}
-	noindex={!resumeAvailable}
-	structuredData={structuredData}
+  title={`Résumé | ${site.name}`}
+  description="Career overview for M Rohan Pradev, lead full-stack engineer at Optum working across enterprise interfaces and applied AI."
 >
-	<section id="resume-intro" aria-labelledby="resume-heading" class="section-shell intro-space">
-		<div class="surface-card-strong grid gap-8 p-8 sm:p-10 lg:grid-cols-[0.94fr_1.06fr] lg:items-start">
-			<div data-reveal>
-				<SectionHeading
-					id="resume-heading"
-					as="h1"
-					eyebrow="Resume"
-					title={resumeAvailable ? "Download the latest resume package." : "Resume is currently shared on request."}
-					description={resumeAvailable
-						? "Use the direct download below for the latest PDF version, then move to the case study or direct outreach for the fuller engineering picture."
-						: "A public PDF is not in the repository right now, so the best path is to request it directly by email or through the contact page."}
-				/>
-
-				<div class="mt-8 flex flex-wrap gap-3">
-					{resumeAvailable ? (
-						<a href={resumeUrl} class="primary-button" download>
-							Download PDF
-						</a>
-					) : (
-						<a href={withBasePath("/contact")} class="primary-button">Request resume</a>
-					)}
-					<a href={`mailto:${site.email}`} class="secondary-button">Email directly</a>
-					<a href={withBasePath("/projects")} class="secondary-button">View case study</a>
-				</div>
-			</div>
-
-			<div class="grid gap-4">
-				{resumeHighlights.map((item, index) => (
-					<div
-						class="surface-card p-5"
-						data-reveal
-						style={`--reveal-delay: ${index * 80}ms;`}
-					>
-						<p class="text-sm leading-7 text-slate-700">{item}</p>
-					</div>
-				))}
-			</div>
-		</div>
-	</section>
-
-	<section class="section-shell">
-		<div class="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-			<div class="surface-card-strong p-8 sm:p-10" data-reveal>
-				<p class="eyebrow">Quick context</p>
-				<h2 class="mt-4 max-w-[14ch] text-[clamp(2.2rem,4vw,3.4rem)] font-semibold leading-[1.02] text-slate-900">
-					The resume is a useful summary, but the engineering depth shows up best in the work itself.
-				</h2>
-				<p class="mt-4 max-w-2xl text-base leading-8 text-slate-600">
-					For product teams, hiring managers, and technical leads, the resume should support the decision, not replace the case study, project discussion, or technical evaluation.
-				</p>
-			</div>
-
-			<div class="grid gap-4">
-				{resumeSections.map((section, index) => (
-					<article
-						class="surface-card h-full p-6"
-						data-reveal
-						style={`--reveal-delay: ${index * 90}ms;`}
-					>
-						<h2 class="text-2xl font-semibold text-slate-900">{section.title}</h2>
-						<p class="mt-3 text-sm leading-7 text-slate-600">{section.description}</p>
-					</article>
-				))}
-			</div>
-		</div>
-
-		<div class="mt-8 surface-card-strong grid gap-6 p-8 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-end" data-reveal>
-			<div>
-				<p class="eyebrow">Next step</p>
-				<h2 class="mt-4 max-w-[14ch] text-[clamp(2.2rem,4vw,3.4rem)] font-semibold leading-[1.02] text-slate-900">
-					If the resume is relevant, the best follow-up is a specific problem statement.
-				</h2>
-				<p class="mt-4 max-w-2xl text-base leading-8 text-slate-600">
-					Share the product context, stack, and the pressure point in the system so the next discussion can focus on fit and tradeoffs instead of generic screening.
-				</p>
-			</div>
-
-			<div class="flex flex-col gap-3">
-				<a href={withBasePath("/contact")} class="primary-button">Open contact page</a>
-				<a href={`mailto:${site.email}`} class="secondary-button">Email directly</a>
-			</div>
-		</div>
-	</section>
+  <section class="section-shell intro-space" aria-labelledby="resume-heading">
+    <div class="section-intro-row">
+      <div>
+        <p class="micro-label">Career at a glance</p>
+        <h1 id="resume-heading" class="editorial-title mt-5">
+          Experience with
+          <br />
+          <span class="serif-text">perspective.</span>
+        </h1>
+      </div>
+      <a
+        href={resumeUrl || requestUrl}
+        class="primary-button"
+        download={resumeUrl ? true : undefined}
+      >
+        {resumeUrl ? "Download résumé" : "Request my résumé"}{" "}
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <p class="resume-intro">
+      Nine years across enterprise product delivery, frontend architecture,
+      secure services, and applied AI. Currently leading full-stack engineering
+      at Optum in Bengaluru.
+    </p>
+    <div class="resume-focus">
+      <p class="micro-label">Recent work / Optum</p>
+      <h2>Reagent optimization with Strands & AWS.</h2>
+      <p>
+        Implemented a Strands agent with AgentCore Runtime and Memory, using AWS
+        Batch for reagent optimization and Amazon S3 for results.
+      </p>
+      <a
+        href={withBasePath("/projects/reagent-optimization-agent")}
+        class="text-link"
+      >
+        Read the case study ↗
+      </a>
+    </div>
+    <ol class="experience-list">
+      {experiences.map((experience, index) => (
+        <li>
+          <span class="experience-index">0{index + 1}</span>
+          <div>
+            <p class="micro-label">{experience.company}</p>
+            <h2 class="text-xl mt-2">{experience.role}</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-500">
+              {experience.stack.join(" · ")}
+            </p>
+          </div>
+          <p class="experience-date">
+            {experience.start} — {experience.end}
+          </p>
+        </li>
+      ))}
+    </ol>
+    <div class="resume-bottom">
+      <p>
+        {resumeUrl
+          ? "Download the PDF for the full career summary."
+          : "The full résumé is available by email. Get in touch and I’ll share the latest version."}
+      </p>
+      <a class="text-link" href={withBasePath("/about")}>
+        More about my work ↗
+      </a>
+    </div>
+  </section>
 </BaseLayout>
+<style>
+  .resume-intro {
+    max-width: 48rem;
+    margin-top: 2rem;
+    font-size: 1.15rem;
+    line-height: 1.85;
+    color: var(--text-600);
+  }
+  .resume-focus {
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-top: 3rem;
+  }
+  .resume-focus h2 {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    margin-top: 1rem;
+    line-height: 1.2;
+  }
+  .resume-focus > p:not(.micro-label) {
+    max-width: 44rem;
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--text-600);
+    margin-block: 1rem;
+  }
+  .resume-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    color: var(--text-600);
+    font-size: 0.85rem;
+    line-height: 1.8;
+  }
+  .resume-bottom > p {
+    max-width: 32rem;
+  }
+</style>

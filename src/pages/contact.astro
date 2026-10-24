@@ -1,136 +1,112 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ContactForm from "../components/ContactForm.astro";
-import SectionHeading from "../components/SectionHeading.astro";
 import { site, withBasePath } from "../data/meta";
-
-const contactReasons = [
-	{
-		title: "Application Delivery",
-		description: "Own a feature area or module that needs senior full-stack execution.",
-	},
-	{
-		title: "Frontend Systems",
-		description: "Improve component systems, PR quality, and maintainable UI foundations.",
-	},
-	{
-		title: "Secure Integration",
-		description: "Design auth flows and API contracts that teams can confidently build on.",
-	},
-	{
-		title: "AI Workflows",
-		description: "Add OpenAI or RAG capabilities with production-minded engineering.",
-	},
-];
-
-const contactHighlights = [
-	{ label: "Primary Route", value: site.email },
-	{ label: "Current Location", value: site.location },
-];
-
-const contactPageUrl = new URL(withBasePath("/contact"), site.url).toString();
-const structuredData = [
-	{
-		"@type": "ContactPage",
-		"@id": `${contactPageUrl}#contact-page`,
-		url: contactPageUrl,
-		name: `Contact ${site.name}`,
-		description:
-			"Contact M Rohan Pradev for senior full-stack engineering, frontend architecture, and AI-enabled product work.",
-		mainEntity: {
-			"@id": `${site.homeUrl}#person`,
-		},
-	},
-	{
-		"@type": "ContactPoint",
-		"@id": `${contactPageUrl}#contact-point`,
-		email: site.email,
-		contactType: "business inquiries",
-		availableLanguage: ["English"],
-		areaServed: "Worldwide",
-	},
-];
+const pageUrl = new URL(withBasePath("/contact"), site.url).toString();
 ---
 
 <BaseLayout
-	title={`Contact | ${site.name}`}
-	description="Contact M Rohan Pradev for senior full-stack engineering, frontend architecture, and AI-enabled product work."
-	structuredData={structuredData}
+  title={`Contact | ${site.name}`}
+  description="Get in touch with M Rohan Pradev for full-stack leadership, frontend architecture, and applied AI engineering."
+  structuredData={[
+    {
+      "@type": "ContactPage",
+      url: pageUrl,
+      name: `Contact ${site.name}`,
+      mainEntity: { "@id": `${site.homeUrl}#person` },
+    },
+  ]}
 >
-	<section id="contact-intro" aria-labelledby="contact-heading" class="section-shell intro-space">
-		<div class="surface-card-strong grid gap-16 p-10 sm:p-16 lg:p-24 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-			<div data-reveal>
-				<SectionHeading
-					id="contact-heading"
-					as="h1"
-					eyebrow="Contact"
-					title="Start with the problem statement."
-					description="The fastest path is a short project brief with enough context to make the first reply useful."
-				/>
-
-				<div class="mt-12 flex flex-wrap gap-5">
-					<a class="primary-button group px-10" href={`mailto:${site.email}`}>
-						Email Directly
-						<svg aria-hidden="true" focusable="false" class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-						</svg>
-					</a>
-					<a class="secondary-button px-10" href={site.social.linkedin} target="_blank" rel="noreferrer">
-						LinkedIn
-					</a>
-				</div>
-			</div>
-
-			<div class="grid gap-6">
-				{contactHighlights.map((item, index) => (
-					<div
-						class="surface-card bg-surface-tint border-none p-8"
-						data-reveal
-						style={`--reveal-delay: ${index * 80}ms;`}
-					>
-						<p class="text-[0.65rem] font-bold uppercase tracking-widest text-slate-500">
-							{item.label}
-						</p>
-						<p class="mt-2 text-2xl font-black text-slate-900 leading-none">{item.value}</p>
-					</div>
-				))}
-				<div class="rounded-[40px] bg-slate-900 p-10 text-white shadow-float" data-reveal style="--reveal-delay: 160ms;">
-					<p class="text-[0.7rem] font-black uppercase tracking-[0.3em] text-accent">Best Fit</p>
-					<p class="mt-6 text-xl font-bold leading-relaxed">
-						Senior product engineering where technical ownership and delivery rigor are non-negotiable.
-					</p>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<section id="contact-fit" aria-labelledby="fit-heading" class="section-shell">
-		<div class="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-			<div class="space-y-16">
-				<SectionHeading
-					id="fit-heading"
-					eyebrow="Capabilities"
-					title="Areas of focus."
-					description="Ownership across the interface, the integration layer, and the engineering quality bar."
-				/>
-
-				<div class="grid gap-6 sm:grid-cols-2">
-					{contactReasons.map((reason, index) => (
-						<article
-							class="surface-card p-8 transition-all hover:border-accent/40"
-							data-reveal
-							style={`--reveal-delay: ${index * 70}ms;`}
-						>
-							<h3 class="text-xl font-black text-slate-900 tracking-tight leading-tight">{reason.title}</h3>
-							<p class="mt-4 text-base leading-relaxed text-slate-500 font-medium">{reason.description}</p>
-						</article>
-					))}
-				</div>
-			</div>
-
-			<div class="surface-card p-1 shadow-float">
-				<ContactForm />
-			</div>
-		</div>
-	</section>
+  <section class="section-shell intro-space" aria-labelledby="contact-heading">
+    <p class="micro-label">Let’s connect</p>
+    <h1 id="contact-heading" class="editorial-title mt-5">
+      Something in mind?
+      <br />
+      <span class="serif-text">Let’s talk.</span>
+    </h1>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-intro">
+          I’m open to lead full-stack, frontend architecture, and AI product
+          roles where thoughtful engineering makes a difference.
+        </p>
+        <dl class="contact-facts">
+          <div>
+            <dt>Based in</dt>
+            <dd>{site.location}</dd>
+          </div>
+          <div>
+            <dt>Currently</dt>
+            <dd>Lead Full Stack Engineer at Optum</dd>
+          </div>
+          <div>
+            <dt>Interested in</dt>
+            <dd>
+              Product engineering, agent workflows, and teams that care about
+              craft.
+            </dd>
+          </div>
+        </dl>
+        <div class="flex flex-wrap gap-6">
+          <a
+            href={site.social.linkedin}
+            target="_blank"
+            rel="noreferrer"
+            class="text-link"
+          >
+            LinkedIn ↗
+          </a>
+          <a
+            href={site.social.github}
+            target="_blank"
+            rel="noreferrer"
+            class="text-link"
+          >
+            GitHub ↗
+          </a>
+        </div>
+      </div>
+      <ContactForm />
+    </div>
+  </section>
 </BaseLayout>
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: clamp(2rem, 7vw, 6rem);
+    margin-top: 3.5rem;
+    align-items: start;
+  }
+  .contact-intro {
+    font-size: 1.15rem;
+    color: var(--text-600);
+    line-height: 1.8;
+    max-width: 29rem;
+  }
+  .contact-facts {
+    margin-block: 2rem;
+  }
+  .contact-facts > div {
+    padding-block: 1.2rem;
+    border-top: 1px solid var(--line);
+  }
+  .contact-facts dt {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-500);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .contact-facts dd {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 767px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      margin-top: 2rem;
+    }
+  }
+</style>

@@ -4,14 +4,17 @@ import Badge from "./Badge.astro";
 import CognizantLogoUrl from "../assets/logos/cognizant.svg?url";
 import EricssonLogoUrl from "../assets/logos/ericsson.svg?url";
 import MindtreeLogoUrl from "../assets/logos/mindtree.svg?url";
+import OptumLogoUrl from "../assets/logos/optum.svg?url";
 import TechmLogoUrl from "../assets/logos/techm.svg?url";
 
-const { company, role, logo, start, end, stack, points } = Astro.props as Experience;
+const { company, role, logo, start, end, stack, points } =
+  Astro.props as Experience;
 
 const logos = {
   cognizant: CognizantLogoUrl,
   ericsson: EricssonLogoUrl,
   mindtree: MindtreeLogoUrl,
+  optum: OptumLogoUrl,
   techm: TechmLogoUrl,
 } as const;
 
@@ -35,20 +38,31 @@ const logoSrc = logos[logo];
     <div class="min-w-0 flex-1">
       <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 sm:text-sm sm:tracking-[0.18em]">{company}</p>
-          <h3 class="mt-2 text-xl font-semibold leading-tight text-slate-900 sm:text-2xl">{role}</h3>
+          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 sm:text-sm sm:tracking-[0.18em]">
+            {company}
+          </p>
+          <h3 class="mt-2 text-xl font-semibold leading-tight text-slate-900 sm:text-2xl">
+            {role}
+          </h3>
         </div>
-        <Badge variant="outline" icon="calendar" class="w-fit">{start} - {end}</Badge>
+        <Badge variant="outline" icon="calendar" class="w-fit">
+          {start} - {end}
+        </Badge>
       </div>
 
       <div class="mt-4 flex flex-wrap gap-2">
-        {stack.map((item) => <Badge variant="secondary">{item}</Badge>)}
+        {stack.map((item) => (
+          <Badge variant="secondary">{item}</Badge>
+        ))}
       </div>
 
       <ul class="mt-5 space-y-3 text-sm leading-7 text-slate-700 sm:text-base">
         {points.map((point) => (
           <li class="flex gap-3">
-            <span aria-hidden="true" class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-accent"></span>
+            <span
+              aria-hidden="true"
+              class="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-accent"
+            ></span>
             <span>{point}</span>
           </li>
         ))}

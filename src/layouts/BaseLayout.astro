@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from "astro";
-import { Font } from "astro:assets";
+import { getImage } from "astro:assets";
+import geistFontUrl from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ScrollEffects from "../components/ScrollEffects.astro";
@@ -10,323 +11,371 @@ import "../styles/globals.css";
 type StructuredDataNode = Record<string, unknown>;
 
 interface Props {
-	title?: string;
-	description?: string;
-	image?: string | ImageMetadata;
-	imageAlt?: string;
-	noindex?: boolean;
-	structuredData?: StructuredDataNode[];
-	publishedTime?: string;
-	modifiedTime?: string;
-	openGraphType?: "website" | "article" | "profile";
+  title?: string;
+  description?: string;
+  image?: string | ImageMetadata;
+  imageAlt?: string;
+  noindex?: boolean;
+  structuredData?: StructuredDataNode[];
+  publishedTime?: string;
+  modifiedTime?: string;
+  openGraphType?: "website" | "article" | "profile";
 }
 
 const {
-	title = site.title,
-	description = site.description,
-	image = site.ogImage,
-	imageAlt = `${site.name} portfolio preview`,
-	noindex = false,
-	structuredData = [],
-	publishedTime,
-	modifiedTime,
-	openGraphType = "website",
+  title = site.title,
+  description = site.description,
+  image = site.ogImage,
+  imageAlt = `${site.name} portfolio preview`,
+  noindex = false,
+  structuredData = [],
+  publishedTime,
+  modifiedTime,
+  openGraphType = "website",
 } = Astro.props as Props;
 
-const canonical = new URL(Astro.url.pathname, site.url).toString();
+const canonicalPath = /\/404\/?$/.test(Astro.url.pathname)
+  ? withBasePath("/404.html")
+  : Astro.url.pathname;
+const canonical = new URL(canonicalPath, site.url).toString();
 const websiteId = `${site.homeUrl}#website`;
 const personId = `${site.homeUrl}#person`;
 const pageId = `${canonical}#webpage`;
-const resolvedImage = typeof image === "string" ? image : image.src;
-const imageWidth = typeof image === "string" ? site.ogImageWidth : image.width;
-const imageHeight = typeof image === "string" ? site.ogImageHeight : image.height;
-const imageType =
-	resolvedImage.endsWith(".png")
-		? "image/png"
-		: resolvedImage.endsWith(".webp")
-			? "image/webp"
-			: resolvedImage.endsWith(".jpg") || resolvedImage.endsWith(".jpeg")
-				? "image/jpeg"
-				: resolvedImage.endsWith(".avif")
-					? "image/avif"
-					: undefined;
+const optimizedSocialImage =
+  typeof image === "string"
+    ? null
+    : await getImage({
+        src: image,
+        width: Math.min(image.width, 1200),
+        format: "webp",
+        quality: 82,
+      });
+const resolvedImage =
+  typeof image === "string" ? image : optimizedSocialImage!.src;
+const imageWidth =
+  typeof image === "string"
+    ? site.ogImageWidth
+    : optimizedSocialImage!.attributes.width;
+const imageHeight =
+  typeof image === "string"
+    ? site.ogImageHeight
+    : optimizedSocialImage!.attributes.height;
+const imageType = resolvedImage.endsWith(".png")
+  ? "image/png"
+  : resolvedImage.endsWith(".webp")
+    ? "image/webp"
+    : resolvedImage.endsWith(".jpg") || resolvedImage.endsWith(".jpeg")
+      ? "image/jpeg"
+      : resolvedImage.endsWith(".avif")
+        ? "image/avif"
+        : undefined;
 const socialImage = resolvedImage.startsWith("http")
-	? resolvedImage
-	: new URL(resolvedImage, site.url).toString();
+  ? resolvedImage
+  : new URL(resolvedImage, site.url).toString();
 const sameAs = [site.social.github, site.social.linkedin].filter(Boolean);
-const profileImage = new URL(site.profilePhoto.src, site.url).toString();
+const optimizedProfileImage = await getImage({
+  src: site.profilePhoto,
+  width: Math.min(site.profilePhoto.width, 800),
+  format: "webp",
+  quality: 82,
+});
+const profileImage = new URL(optimizedProfileImage.src, site.url).toString();
 const pathnameWithoutBase =
-	site.basePath && Astro.url.pathname.startsWith(site.basePath)
-		? Astro.url.pathname.slice(site.basePath.length) || "/"
-		: Astro.url.pathname;
+  site.basePath && Astro.url.pathname.startsWith(site.basePath)
+    ? Astro.url.pathname.slice(site.basePath.length) || "/"
+    : Astro.url.pathname;
 const pathname = pathnameWithoutBase.replace(/\/$/, "") || "/";
 const isHomePage = pathname === "/";
 const segments = pathname === "/" ? [] : pathname.slice(1).split("/");
 const breadcrumbs = [
-	{ name: "Home", item: new URL(withBasePath("/"), site.url).toString() },
-	...segments.map((segment, index) => ({
-		name: segment
-			.split("-")
-			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-			.join(" "),
-		item: new URL(
-			withBasePath(`/${segments.slice(0, index + 1).join("/")}`),
-			site.url,
-		).toString(),
-	})),
+  { name: "Home", item: new URL(withBasePath("/"), site.url).toString() },
+  ...segments.map((segment, index) => ({
+    name: segment
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" "),
+    item: new URL(
+      withBasePath(`/${segments.slice(0, index + 1).join("/")}`),
+      site.url,
+    ).toString(),
+  })),
 ];
 
 const baseGraph: StructuredDataNode[] = [
-	{
-		"@type": "WebSite",
-		"@id": websiteId,
-		name: site.name,
-		url: site.homeUrl,
-		description: site.description,
-		inLanguage: "en-IN",
-	},
-	{
-		"@type": "Person",
-		"@id": personId,
-		name: site.author,
-		url: site.homeUrl,
-		image: profileImage,
-		jobTitle: site.role,
-		description: site.headline,
-		email: site.email,
-		address: {
-			"@type": "PostalAddress",
-			addressLocality: site.location,
-		},
-		knowsAbout: site.expertise,
-		sameAs,
-	},
-	{
-		"@type": "WebPage",
-		"@id": pageId,
-		name: title,
-		url: canonical,
-		description,
-		isPartOf: {
-			"@id": websiteId,
-		},
-		about: {
-			"@id": personId,
-		},
-		primaryImageOfPage: {
-			"@type": "ImageObject",
-			url: socialImage,
-		},
-	},
+  {
+    "@type": "WebSite",
+    "@id": websiteId,
+    name: site.name,
+    url: site.homeUrl,
+    description: site.description,
+    inLanguage: "en-IN",
+  },
+  {
+    "@type": "Person",
+    "@id": personId,
+    name: site.author,
+    url: site.homeUrl,
+    image: profileImage,
+    jobTitle: site.role,
+    description: site.headline,
+    email: site.email,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: site.location,
+    },
+    knowsAbout: site.expertise,
+    sameAs,
+  },
+  {
+    "@type": "WebPage",
+    "@id": pageId,
+    name: title,
+    url: canonical,
+    description,
+    isPartOf: {
+      "@id": websiteId,
+    },
+    about: {
+      "@id": personId,
+    },
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: socialImage,
+    },
+  },
 ];
 
 if (isHomePage) {
-	baseGraph.push({
-		"@type": "ProfilePage",
-		"@id": `${site.homeUrl}#profile`,
-		url: site.homeUrl,
-		name: site.title,
-		description: site.shortDescription,
-		mainEntity: {
-			"@id": personId,
-		},
-		isPartOf: {
-			"@id": websiteId,
-		},
-	});
+  baseGraph.push({
+    "@type": "ProfilePage",
+    "@id": `${site.homeUrl}#profile`,
+    url: site.homeUrl,
+    name: site.title,
+    description: site.shortDescription,
+    mainEntity: {
+      "@id": personId,
+    },
+    isPartOf: {
+      "@id": websiteId,
+    },
+  });
 }
 
 if (breadcrumbs.length > 1) {
-	baseGraph.push({
-		"@type": "BreadcrumbList",
-		itemListElement: breadcrumbs.map((crumb, index) => ({
-			"@type": "ListItem",
-			position: index + 1,
-			name: crumb.name,
-			item: crumb.item,
-		})),
-	});
+  baseGraph.push({
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.name,
+      item: crumb.item,
+    })),
+  });
 }
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@graph": [...baseGraph, ...structuredData],
+  "@context": "https://schema.org",
+  "@graph": [...baseGraph, ...structuredData],
 };
 
 const robots = noindex
-	? "noindex,nofollow"
-	: "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
+  ? "noindex,nofollow"
+  : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
 ---
 
 <!doctype html>
 <html lang="en" class="scroll-smooth">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>{title}</title>
-		<meta name="description" content={description} />
-		<meta name="author" content={site.author} />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="theme-color" content="#0b1220" data-theme-color />
-		<meta name="referrer" content="strict-origin-when-cross-origin" />
-		<meta name="robots" content={robots} />
-		<meta name="googlebot" content={robots} />
-		<script is:inline>
-			(() => {
-				const storageKey = "theme-preference";
-				const root = document.documentElement;
-				const getPreferredTheme = () => {
-					try {
-						const savedTheme = window.localStorage.getItem(storageKey);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.author} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#121416" data-theme-color />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="robots" content={robots} />
+    <meta name="googlebot" content={robots} />
+    <script is:inline>
+      (() => {
+        const storageKey = "theme-preference";
+        const root = document.documentElement;
+        const getPreferredTheme = () => {
+          try {
+            const savedTheme = window.localStorage.getItem(storageKey);
 
-						if (savedTheme === "light" || savedTheme === "dark") {
-							return savedTheme;
-						}
-					} catch {}
+            if (savedTheme === "light" || savedTheme === "dark") {
+              return savedTheme;
+            }
+          } catch {}
 
-					return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-				};
+          return window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+        };
 
-				const theme = getPreferredTheme();
-				root.dataset.theme = theme;
-				root.style.colorScheme = theme;
-				document
-					.querySelector("[data-theme-color]")
-					?.setAttribute("content", theme === "light" ? "#f3f7fb" : "#0b1220");
-			})();
-		</script>
-		<link rel="canonical" href={canonical} />
-		<link rel="alternate" hreflang="en-IN" href={canonical} />
-		<link rel="alternate" hreflang="x-default" href={canonical} />
-		<Font cssVariable="--font-geist-sans" preload />
-		<Font cssVariable="--font-geist-mono" preload />
-		<link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
-		<link rel="shortcut icon" href={withBasePath("/favicon.svg")} />
-		<link rel="apple-touch-icon" href={withBasePath("/apple-touch-icon.png")} />
-		<link rel="manifest" href={withBasePath("/site.webmanifest")} />
-		<link
-			rel="sitemap"
-			type="application/xml"
-			href={new URL(withBasePath("/sitemap-index.xml"), site.url).toString()}
-		/>
+        const theme = getPreferredTheme();
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+        document
+          .querySelector("[data-theme-color]")
+          ?.setAttribute("content", theme === "light" ? "#f7f6f2" : "#121416");
+      })();
+    </script>
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en-IN" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+    <link
+      rel="preload"
+      href={geistFontUrl}
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+    <link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
+    <link rel="shortcut icon" href={withBasePath("/favicon.svg")} />
+    <link rel="apple-touch-icon" href={withBasePath("/apple-touch-icon.png")} />
+    <link rel="manifest" href={withBasePath("/site.webmanifest")} />
+    <link
+      rel="sitemap"
+      type="application/xml"
+      href={new URL(withBasePath("/sitemap-index.xml"), site.url).toString()}
+    />
 
-		<meta property="og:type" content={openGraphType} />
-		<meta property="og:site_name" content={site.name} />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<meta property="og:url" content={canonical} />
-		<meta property="og:image" content={socialImage} />
-		<meta property="og:image:secure_url" content={socialImage} />
-		<meta property="og:image:alt" content={imageAlt} />
-		<meta property="og:image:width" content={String(imageWidth)} />
-		<meta property="og:image:height" content={String(imageHeight)} />
-		{imageType && <meta property="og:image:type" content={imageType} />}
-		<meta property="og:locale" content="en_IN" />
+    <meta property="og:type" content={openGraphType} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:secure_url" content={socialImage} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:image:width" content={String(imageWidth)} />
+    <meta property="og:image:height" content={String(imageHeight)} />
+    {imageType && <meta property="og:image:type" content={imageType} />}
+    <meta property="og:locale" content="en_IN" />
 
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content={title} />
-		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={socialImage} />
-		<meta name="twitter:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
 
-		{publishedTime && <meta property="article:published_time" content={publishedTime} />}
-		{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    {publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {modifiedTime && (
+      <meta property="article:modified_time" content={modifiedTime} />
+    )}
 
-		<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-	</head>
-	<body>
-		<a
-			href="#main-content"
-			class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm"
-		>
-			Skip to content
-		</a>
-		<Header />
-		<main id="main-content" class="page-stack pb-12 sm:pb-16">
-			<slot />
-		</main>
-		<Footer />
-		<ScrollEffects />
-		<script is:inline>
-			(() => {
-				const storageKey = "theme-preference";
-				const root = document.documentElement;
-				const metaTheme = document.querySelector("[data-theme-color]");
-				const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLd).replace(/</g, "\\u003c")}
+    ></script>
+  </head>
+  <body>
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main-content" class="page-stack pb-12 sm:pb-16">
+      <slot />
+    </main>
+    <Footer />
+    <ScrollEffects />
+    <script>
+      (() => {
+        const storageKey = "theme-preference";
+        const root = document.documentElement;
+        const metaTheme = document.querySelector("[data-theme-color]");
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
 
-				const themeColors = {
-					light: "#f3f7fb",
-					dark: "#0b1220",
-				};
+        const themeColors = {
+          light: "#f7f6f2",
+          dark: "#121416",
+        };
 
-				const getStoredTheme = () => {
-					try {
-						const savedTheme = window.localStorage.getItem(storageKey);
-						return savedTheme === "light" || savedTheme === "dark" ? savedTheme : null;
-					} catch {
-						return null;
-					}
-				};
+        const getStoredTheme = () => {
+          try {
+            const savedTheme = window.localStorage.getItem(storageKey);
+            return savedTheme === "light" || savedTheme === "dark"
+              ? savedTheme
+              : null;
+          } catch {
+            return null;
+          }
+        };
 
-				const getPreferredTheme = () => getStoredTheme() ?? (mediaQuery.matches ? "light" : "dark");
+        const getPreferredTheme = () =>
+          getStoredTheme() ?? (mediaQuery.matches ? "light" : "dark");
 
-				const updateToggleButtons = (theme) => {
-					document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-						if (!(button instanceof HTMLButtonElement)) {
-							return;
-						}
+        const updateToggleButtons = (theme: "light" | "dark") => {
+          document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+            if (!(button instanceof HTMLButtonElement)) {
+              return;
+            }
 
-						const nextTheme = theme === "dark" ? "light" : "dark";
-						const label = nextTheme === "light" ? "Switch to light theme" : "Switch to dark theme";
-						button.setAttribute("aria-label", label);
-						button.setAttribute("title", label);
-						button.dataset.themeValue = nextTheme;
+            const nextTheme = theme === "dark" ? "light" : "dark";
+            const label =
+              nextTheme === "light"
+                ? "Switch to light theme"
+                : "Switch to dark theme";
+            button.setAttribute("aria-label", label);
+            button.setAttribute("title", label);
+            button.dataset.themeValue = nextTheme;
 
-						const textNode = button.querySelector("[data-theme-text]");
+            const textNode = button.querySelector("[data-theme-text]");
 
-						if (textNode) {
-							textNode.textContent = nextTheme === "light" ? "Light mode" : "Dark mode";
-						}
-					});
-				};
+            if (textNode) {
+              textNode.textContent =
+                nextTheme === "light" ? "Light mode" : "Dark mode";
+            }
+          });
+        };
 
-				const applyTheme = (theme) => {
-					root.dataset.theme = theme;
-					root.style.colorScheme = theme;
-					metaTheme?.setAttribute("content", themeColors[theme]);
-					updateToggleButtons(theme);
-				};
+        const applyTheme = (theme: "light" | "dark") => {
+          root.dataset.theme = theme;
+          root.style.colorScheme = theme;
+          metaTheme?.setAttribute("content", themeColors[theme]);
+          updateToggleButtons(theme);
+        };
 
-				applyTheme(getPreferredTheme());
+        applyTheme(getPreferredTheme());
 
-				document.addEventListener("click", (event) => {
-					const button = event.target instanceof Element
-						? event.target.closest("[data-theme-toggle]")
-						: null;
+        document.addEventListener("click", (event) => {
+          const button =
+            event.target instanceof Element
+              ? event.target.closest("[data-theme-toggle]")
+              : null;
 
-					if (!(button instanceof HTMLButtonElement)) {
-						return;
-					}
+          if (!(button instanceof HTMLButtonElement)) {
+            return;
+          }
 
-					const nextTheme = button.dataset.themeValue === "light" ? "light" : "dark";
+          const nextTheme =
+            button.dataset.themeValue === "light" ? "light" : "dark";
 
-					try {
-						window.localStorage.setItem(storageKey, nextTheme);
-					} catch {}
+          try {
+            window.localStorage.setItem(storageKey, nextTheme);
+          } catch {}
 
-					applyTheme(nextTheme);
-				});
+          applyTheme(nextTheme);
+        });
 
-				const syncWithSystem = () => {
-					if (getStoredTheme() !== null) {
-						return;
-					}
+        const syncWithSystem = () => {
+          if (getStoredTheme() !== null) {
+            return;
+          }
 
-					applyTheme(getPreferredTheme());
-				};
+          applyTheme(getPreferredTheme());
+        };
 
-				mediaQuery.addEventListener?.("change", syncWithSystem);
-			})();
-		</script>
-	</body>
+        mediaQuery.addEventListener?.("change", syncWithSystem);
+      })();
+    </script>
+  </body>
 </html>

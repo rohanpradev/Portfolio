@@ -1,0 +1,237 @@
+---
+const steps = [
+  {
+    title: "Strands agent",
+    tag: "01 / Orchestrate",
+    detail: "A Strands agent coordinates the reagent optimization workflow.",
+  },
+  {
+    title: "AgentCore",
+    tag: "02 / Runtime + Memory",
+    detail:
+      "AgentCore Runtime hosts the agent. AgentCore Memory provides its memory integration.",
+  },
+  {
+    title: "AWS Batch",
+    tag: "03 / Optimize",
+    detail: "The agent uses AWS Batch to execute reagent optimization jobs.",
+  },
+  {
+    title: "Amazon S3",
+    tag: "04 / Store results",
+    detail: "Optimization results are stored in Amazon S3.",
+  },
+];
+---
+
+<agent-workflow class="workflow">
+  <div class="workflow-heading">
+    <span class="micro-label">Reagent optimization</span>
+    <span class="workflow-label">Architecture walkthrough</span>
+  </div>
+  <ol class="workflow-steps">
+    {steps.map((step, index) => (
+      <li>
+        <button
+          type="button"
+          data-step={index}
+          aria-pressed={index === 0}
+          aria-controls="workflow-detail"
+        >
+          <span class="workflow-dot" aria-hidden="true">
+            {index === 3 ? "↗" : "◇"}
+          </span>
+          <span>
+            <span class="micro-label">{step.tag}</span>
+            <strong>{step.title}</strong>
+          </span>
+          <span class="workflow-arrow" aria-hidden="true">
+            {index === 3 ? "✓" : "↓"}
+          </span>
+        </button>
+        <p class="workflow-static-detail">{step.detail}</p>
+      </li>
+    ))}
+  </ol>
+  <div
+    class="workflow-detail"
+    id="workflow-detail"
+    role="status"
+    aria-live="polite"
+  >
+    {steps[0].detail}
+  </div>
+  <div class="workflow-footer">
+    <span>Explore each step</span>
+    <button type="button" class="workflow-play" hidden>
+      Play walkthrough <span aria-hidden="true">↗</span>
+    </button>
+  </div>
+</agent-workflow>
+<script>
+  class AgentWorkflow extends HTMLElement {
+    connectedCallback() {
+      const buttons = Array.from(
+        this.querySelectorAll<HTMLButtonElement>("[data-step]"),
+      );
+      const descriptions = Array.from(
+        this.querySelectorAll(".workflow-static-detail"),
+      );
+      const detail = this.querySelector(".workflow-detail");
+      const play = this.querySelector<HTMLButtonElement>(".workflow-play");
+      if (!detail || !play) return;
+      this.classList.add("is-enhanced");
+      play.hidden = false;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const select = (index: number) => {
+        buttons.forEach((button, i) =>
+          button.setAttribute("aria-pressed", String(i === index)),
+        );
+        detail.textContent = descriptions[index]?.textContent ?? "";
+      };
+      const stop = () => {
+        clearTimeout(timer);
+        play.textContent = "Play walkthrough ↗";
+      };
+      buttons.forEach(
+        (button, index) =>
+          (button.onclick = () => {
+            stop();
+            select(index);
+          }),
+      );
+      play.onclick = () => {
+        stop();
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          select(3);
+          return;
+        }
+        let index = 0;
+        select(index);
+        play.textContent = "Restart walkthrough ↺";
+        const next = () => {
+          select(++index);
+          if (index < buttons.length - 1) timer = setTimeout(next, 1400);
+          else stop();
+        };
+        timer = setTimeout(next, 1400);
+      };
+      this.cleanup = stop;
+    }
+    cleanup?: () => void;
+    disconnectedCallback() {
+      this.cleanup?.();
+    }
+  }
+  if (!customElements.get("agent-workflow"))
+    customElements.define("agent-workflow", AgentWorkflow);
+</script>
+<style>
+  .workflow {
+    display: block;
+    padding: 1.6rem;
+    background: var(--page-bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    min-width: 0;
+  }
+  .workflow-heading,
+  .workflow-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .workflow-label,
+  .workflow-footer {
+    font-size: 0.65rem;
+    color: var(--text-500);
+  }
+  .workflow-steps {
+    list-style: none;
+    padding: 1.4rem 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .workflow-steps button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface-strong);
+    text-align: left;
+    transition:
+      background 220ms,
+      border-color 220ms,
+      translate 220ms;
+  }
+  .workflow-steps button[aria-pressed="true"] {
+    border-color: var(--text-accent);
+    background: var(--eyebrow-bg);
+    translate: 3px 0;
+  }
+  .workflow-dot {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    color: var(--text-accent);
+    font-size: 1.5rem;
+  }
+  .workflow-steps strong {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 1rem;
+    font-weight: 550;
+  }
+  .workflow-steps .micro-label {
+    font-size: 0.56rem;
+  }
+  .workflow-arrow {
+    margin-left: auto;
+    color: var(--text-accent);
+  }
+  .workflow-detail {
+    min-height: 5rem;
+    font-size: 0.83rem;
+    line-height: 1.65;
+    color: var(--text-600);
+    padding: 1rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .workflow-play {
+    font-size: 0.7rem;
+    color: var(--text-accent);
+    min-height: 44px;
+  }
+  .workflow-static-detail {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    padding: 0.5rem;
+  }
+  .is-enhanced .workflow-static-detail {
+    display: none;
+  }
+  .workflow:not(.is-enhanced) .workflow-detail {
+    display: none;
+  }
+  @media (max-width: 479px) {
+    .workflow {
+      padding: 1rem;
+    }
+    .workflow-heading {
+      align-items: start;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .workflow-detail {
+      min-height: 6rem;
+    }
+  }
+</style>

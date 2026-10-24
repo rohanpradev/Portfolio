@@ -1,0 +1,32 @@
+---
+import { site } from "../data/meta";
+---
+
+<copy-email data-email={site.email}>
+  <button type="button" class="secondary-button" hidden>
+    Copy email <span aria-hidden="true">⧉</span>
+  </button>
+  <span class="sr-only" role="status" aria-live="polite"></span>
+</copy-email>
+<script>
+  class CopyEmail extends HTMLElement {
+    connectedCallback() {
+      const button = this.querySelector("button");
+      const status = this.querySelector("[role=status]");
+      if (!button || !status || !navigator.clipboard) return;
+      button.hidden = false;
+      button.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(this.dataset.email ?? "");
+          button.textContent = "Copied ✓";
+          status.textContent = "Email address copied to clipboard.";
+        } catch {
+          status.textContent = `Copy unavailable. Email ${this.dataset.email}.`;
+          button.textContent = "Use email link";
+        }
+      };
+    }
+  }
+  if (!customElements.get("copy-email"))
+    customElements.define("copy-email", CopyEmail);
+</script>
