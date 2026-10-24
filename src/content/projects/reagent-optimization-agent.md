@@ -36,6 +36,7 @@ gallery:
     alt: Strands agent with AgentCore Runtime and Memory, AWS Batch, and Amazon S3
     caption: Architecture overview of the reagent optimization workflow implemented at Optum.
 ---
+
 ## The project
 
 At Optum, I worked on a reagent optimization project where an AI agent could perform optimization using AWS Batch and store the results in Amazon S3.
@@ -61,4 +62,3 @@ These services play distinct roles: Strands handles the agent workflow, AgentCor
 This work connected agent behavior to an executable cloud workflow. My contribution covered the agent implementation and its integration with runtime, memory, compute, and result storage.
 
 It is an example of the engineering I enjoy: taking an AI capability beyond conversation and connecting it to useful work in a larger system.
-

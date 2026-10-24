@@ -37,14 +37,22 @@ const classes = ["badge", `badge-${variant}`, className];
 
 {href ? (
   <a href={href} target={target} rel={rel} class:list={classes}>
-    {icon && iconPosition === "left" && <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />}
+    {icon && iconPosition === "left" && (
+      <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />
+    )}
     <slot />
-    {icon && iconPosition === "right" && <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />}
+    {icon && iconPosition === "right" && (
+      <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />
+    )}
   </a>
 ) : (
   <span class:list={classes}>
-    {icon && iconPosition === "left" && <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />}
+    {icon && iconPosition === "left" && (
+      <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />
+    )}
     <slot />
-    {icon && iconPosition === "right" && <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />}
+    {icon && iconPosition === "right" && (
+      <Icon name={icon} class="h-3.5 w-3.5 shrink-0" />
+    )}
   </span>
 )}

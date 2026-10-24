@@ -2,11 +2,14 @@
 import { Image } from "astro:assets";
 import type { Testimonial } from "../data/testimonials";
 
-const { name, role, feedback, avatar, date, context } = Astro.props as Testimonial;
+const { name, role, feedback, avatar, date, context } =
+  Astro.props as Testimonial;
 ---
 
 <blockquote class="surface-card flex h-full flex-col gap-5 p-6 sm:p-8">
-  <div aria-hidden="true" class="font-mono text-4xl leading-none text-accent">“</div>
+  <div aria-hidden="true" class="font-mono text-4xl leading-none text-accent">
+    “
+  </div>
   <div class="flex items-start gap-4">
     <Image
       src={avatar}
@@ -22,13 +25,13 @@ const { name, role, feedback, avatar, date, context } = Astro.props as Testimoni
     <div class="min-w-0">
       <p class="text-base font-semibold text-slate-900 sm:text-lg">{name}</p>
       <p class="mt-1 text-sm leading-6 text-slate-600">{role}</p>
-      <p class="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{date}</p>
+      <p class="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+        {date}
+      </p>
     </div>
   </div>
 
-  <p class="text-base leading-8 text-slate-700">
-    {feedback}
-  </p>
+  <p class="text-base leading-8 text-slate-700">{feedback}</p>
 
   <cite class="mt-auto border-t border-slate-900/8 pt-4 text-sm not-italic text-slate-500">
     {context}

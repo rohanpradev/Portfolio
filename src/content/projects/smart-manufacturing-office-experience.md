@@ -45,6 +45,7 @@ gallery:
     alt: Remote workplace operations and occupancy interface
     caption: Workplace occupancy and services data were surfaced through caching, sync jobs, and guided discovery.
 ---
+
 ## Context
 
 The strongest portfolio story is not a generic list of disconnected features. It is one product space where frontend architecture, backend orchestration, cloud integration, caching strategy, and AI-assisted workflows all had to work together without becoming fragile.

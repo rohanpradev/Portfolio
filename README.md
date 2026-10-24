@@ -4,18 +4,25 @@ An Astro-native engineering portfolio with an editorial layout, warm ivory and c
 
 ## Develop and verify
 
-Use Node 24.21.0 (`.node-version`) and Bun 1.4.2. Astro requires Node 22.12.0 or newer.
+Use Node 24.22.1 (`.node-version`) and Bun 1.4.4. This project requires Node 22.23.4 or newer, matching Astro 7.4.2.
 
 ```sh
 bun ci
 bun run dev
+bun run format
 bun run ci
 bun run preview
 ```
 
-`bun run ci` runs the image-service integration tests, Astro diagnostics, the production build, and `scripts/verify-build.mjs`. The verifier checks every generated HTML page for headings, descriptions, image dimensions and alt attributes, duplicate IDs, valid JSON-LD, internal links, assets, anchor targets, deployment base paths, and the AI case study. `bun audit` checks dependencies against the advisory database.
+`bun run ci` checks formatting, runs the image-service integration tests, Astro diagnostics and Bun's native type checker, builds the site, and runs `scripts/verify-build.mjs`. The verifier checks every generated HTML page for headings, descriptions, image dimensions and alt attributes, duplicate IDs, valid JSON-LD, internal links, assets, anchor targets, deployment base paths, and the AI case study. `bun audit` checks dependencies against the advisory database.
 
-The pull-request workflow checks the site at both `/` and `/portfolio` to catch domain-root and GitHub Pages subpath regressions; it can also be run manually. Both workflows use frozen installs, pinned action versions, Node from `.node-version`, and Bun from `package.json`. Build jobs time out after 15 minutes. Deployment is restricted to `main`, has a 10-minute timeout, and scopes publishing permissions to the deploy job.
+The pull-request workflow checks the site at both `/` and `/portfolio` to catch domain-root and GitHub Pages subpath regressions; it can also be run manually. Both workflows use frozen installs, pinned action versions, Node from `.node-version`, and Bun from `package.json`. Dependency installation sets `BUN_CONFIG_HTTP_RETRY_BACKOFF=250` to give Bun 1.4.4's exponential retries more time to recover from transient registry failures. Build jobs time out after 15 minutes. Deployment is restricted to `main`, has a 10-minute timeout, and scopes publishing permissions to the deploy job.
+
+`bun run format` uses Bun 1.4.4's built-in formatter; `bun run format:check` checks without writing and is the first step in CI. Bun formats supported files natively and delegates `.astro` files to the installed Prettier 3.9.10 and `prettier-plugin-astro` 1.1.2 through `.prettierrc.json`. The configuration uses LF line endings across Windows and Linux. `bun fmt --doctor` shows which files use the fallback.
+
+`bun run check` runs `astro check` for Astro components and generated types, then `bun --check` for the TypeScript project. The explicit flag invokes Bun's native checker even though a package script is also named `check`. TypeScript 6.0.3 remains installed because `@astrojs/check` 0.9.12 supports TypeScript 5 and 6 and needs its programmatic API; Bun's checker does not replace Astro component diagnostics.
+
+References: [Bun 1.4.4 release notes](https://bun.com/blog/bun-v1.4.4), [Bun formatter and Astro fallback](https://bun.com/docs/format).
 
 ## Content and design
 
@@ -65,20 +72,22 @@ Rebuild without that variable before previewing at the root.
 
 ## Version review
 
-Registry and official release checks, reverified September 13, 2026:
+Package and runtime selections reviewed October 24, 2026:
 
-| Package/tool           | Selected | Notes                                                                                |
-| ---------------------- | -------- | ------------------------------------------------------------------------------------ |
-| Astro                  | 7.3.2    | Latest stable in the registry.                                                       |
-| `@astrojs/sitemap`     | 3.7.4    | Latest stable.                                                                       |
-| Tailwind / Vite plugin | 4.3.3    | Latest stable.                                                                       |
-| `@astrojs/check`       | 0.9.10   | Latest stable; declares TypeScript 5 or 6 support.                                   |
-| TypeScript             | 6.0.3    | Retained for checker compatibility; latest 7.0.2 is outside its declared peer range. |
-| Geist Variable         | 5.3.0    | Latest stable.                                                                       |
-| Bun                    | 1.4.2    | Pinned for reproducible installs.                                                    |
-| Node                   | 24.21.0  | Latest Node 24 LTS patch verified for CI.                                            |
+| Package/tool            | Selected | Notes                                                  |
+| ----------------------- | -------- | ------------------------------------------------------ |
+| Astro                   | 7.4.2    | Updated framework release; Node minimum is 22.23.4.    |
+| `@astrojs/sitemap`      | 3.7.4    | Sitemap integration.                                   |
+| Tailwind / Vite plugin  | 4.3.3    | Matching CSS framework and build plugin.               |
+| `@astrojs/check`        | 0.9.12   | Declares TypeScript 5 or 6 support.                    |
+| TypeScript              | 6.0.3    | Retained for Astro checker compatibility.              |
+| Geist Variable          | 5.3.0    | Locally hosted variable font.                          |
+| Prettier                | 3.9.10   | Fallback formatter for Astro components.               |
+| `prettier-plugin-astro` | 1.1.2    | Provides Astro parsing and formatting.                 |
+| Bun                     | 1.4.4    | Pinned in `package.json` for local development and CI. |
+| Node                    | 24.22.1  | Pinned in `.node-version` for CI.                      |
 
-The dependency audit originally found eight advisories in `fast-uri`, `js-yaml`, `smol-toml`, and `svgo`. Compatible patches were applied; the subsequent audit reported no vulnerabilities.
+Run `bun audit` to check the installed dependency graph against the current advisory database.
 
 References: [Astro 7 migration guide](https://docs.astro.build/en/guides/upgrade-to/v7/), [Astro images](https://docs.astro.build/en/guides/images/), [Astro GitHub Pages deployment](https://docs.astro.build/en/guides/deploy/github/), [AgentCore overview](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html), [AgentCore Memory](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory-get-started.html).
 

@@ -8,11 +8,7 @@
   "display": "standalone",
   "theme_color": "#234fbd",
   "background_color": "#f7f6f2",
-  "categories": [
-    "portfolio",
-    "technology",
-    "developer"
-  ],
+  "categories": ["portfolio", "technology", "developer"],
   "icons": [
     {
       "src": "./favicon.svg",
